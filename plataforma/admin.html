@@ -1,0 +1,2092 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Admin - Discipulado AD CML CAB</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    
+    <!-- CDN Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+        /* Admin specific styles */
+        .app-layout {
+            display: flex;
+            min-height: 100vh;
+            background-color: var(--gray-50);
+        }
+        .sidebar {
+            width: 280px;
+            background: var(--blue-900);
+            color: white;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .sidebar-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            color: var(--gold-500);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .sidebar-subtitle {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.7);
+            margin-top: 4px;
+        }
+        .nav-section {
+            padding: 16px 0;
+        }
+        .nav-section-title {
+            padding: 0 24px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 24px;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            gap: 12px;
+        }
+        .nav-item:hover {
+            background: rgba(255,255,255,0.05);
+            color: white;
+        }
+        .nav-item.active {
+            background: rgba(212, 168, 67, 0.1);
+            color: var(--gold-500);
+            border-right: 3px solid var(--gold-500);
+        }
+        .nav-item-icon {
+            font-size: 1.2rem;
+            width: 24px;
+            text-align: center;
+        }
+        
+        .main-content {
+            flex-grow: 1;
+            padding: 32px;
+            overflow-y: auto;
+            height: 100vh;
+        }
+        .section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        .section.active {
+            display: block;
+        }
+        
+        /* Topbar & Mobile toggle */
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+        }
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--blue-900);
+            cursor: pointer;
+        }
+        
+        /* Dashboard Cards */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        .stat-card {
+            background: white;
+            padding: 24px;
+            border-radius: 1rem;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            border-top: 4px solid var(--gold-500);
+        }
+        .stat-card-title {
+            font-size: 0.875rem;
+            color: var(--gray-500);
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .stat-card-value {
+            font-size: 2rem;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            color: var(--blue-900);
+        }
+        
+        /* Layout Grids */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+        }
+        .card {
+            background: white;
+            border-radius: 1rem;
+            padding: 24px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        /* Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .data-table th, .data-table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        .data-table th {
+            font-weight: 600;
+            color: var(--gray-500);
+            font-size: 0.875rem;
+        }
+        .badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .badge.active { background: #e6f4ea; color: #1e8e3e; }
+        .badge.inactive { background: #fce8e6; color: #d93025; }
+        .badge.graduated { background: #fef7e0; color: #b06000; }
+        
+        /* Progress Bar */
+        .progress-wrapper {
+            width: 100%;
+            background: #eee;
+            border-radius: 8px;
+            height: 8px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: var(--gold-500);
+            border-radius: 8px;
+        }
+        
+        /* Modals */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 1rem;
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        .modal-header {
+            padding: 24px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-body {
+            padding: 24px;
+        }
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray-500);
+        }
+        
+        /* Controls */
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            font-size: 1.1rem;
+            color: var(--gray-500);
+            transition: color 0.2s;
+        }
+        .action-btn:hover { color: var(--blue-900); }
+        .action-btn.whatsapp:hover { color: #25D366; }
+        .action-btn.delete:hover { color: #d93025; }
+        
+        .filter-bar {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+        .search-input {
+            flex-grow: 1;
+            padding: 10px 16px;
+            border: 1px solid #ddd;
+            border-radius: 0.5rem;
+            font-family: inherit;
+        }
+        
+        /* Templates */
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+        }
+        .template-card {
+            border: 1px solid #eee;
+            border-radius: 0.5rem;
+            padding: 20px;
+        }
+        
+        /* QR Code */
+        .qr-card-preview {
+            border: 2px solid var(--gold-500);
+            padding: 32px;
+            border-radius: 1rem;
+            text-align: center;
+            max-width: 300px;
+            margin: 0 auto;
+            background: white;
+        }
+        .qr-container {
+            margin: 24px auto;
+            display: flex;
+            justify-content: center;
+        }
+        
+        /* Forms */
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 0.5rem;
+            font-family: inherit;
+        }
+        
+        /* Utilities */
+        .empty-state {
+            text-align: center;
+            padding: 48px 24px;
+            color: var(--gray-500);
+        }
+        .btn {
+            padding: 10px 20px;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        .btn-primary { background: var(--blue-900); color: white; }
+        .btn-primary:hover { background: var(--blue-700); }
+        .btn-outline { background: transparent; border: 1px solid #ddd; color: var(--gray-800); }
+        .btn-outline:hover { background: #f9f9f9; }
+        .btn-outline.active { background: var(--blue-900); color: white; border-color: var(--blue-900); }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -280px;
+                height: 100vh;
+            }
+            .sidebar.show {
+                left: 0;
+            }
+            .mobile-toggle {
+                display: block;
+            }
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            .main-content {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ADMIN LOGIN OVERLAY -->
+    <div id="admin-login-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--blue-900); z-index: 9999; display: flex; align-items: center; justify-content: center; flex-direction: column; color: white;">
+        <div style="background: white; color: var(--text-dark); padding: 40px; border-radius: 1rem; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+            <h2 style="font-family: 'Outfit'; color: var(--blue-900); margin-bottom: 24px;">Login Administrativo</h2>
+            <div class="form-group" style="text-align: left;">
+                <label>Email / Usuário</label>
+                <input type="text" id="admin-user" class="form-control" placeholder="admin">
+            </div>
+            <div class="form-group" style="text-align: left;">
+                <label>Senha</label>
+                <input type="password" id="admin-pass" class="form-control" placeholder="****">
+            </div>
+            <button class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 16px;" onclick="tryAdminLogin()">Entrar</button>
+            <p id="admin-login-error" style="color: #d93025; font-size: 0.85rem; margin-top: 16px; display: none;">Credenciais inválidas.</p>
+        </div>
+    </div>
+
+<div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2 class="sidebar-title">✝️ Painel Admin</h2>
+            <div class="sidebar-subtitle">AD CML CAB</div>
+        </div>
+        
+        <div class="nav-section">
+            <div class="nav-section-title">Principal</div>
+            <a class="nav-item active" data-target="dashboard">
+                <span class="nav-item-icon">📊</span> Dashboard
+            </a>
+            <a class="nav-item" data-target="alunos">
+                <span class="nav-item-icon">👥</span> Alunos
+            </a>
+            <a class="nav-item" data-target="professores">
+                <span class="nav-item-icon">👨‍🏫</span> Professores
+            </a>
+            <a class="nav-item" data-target="frequencia">
+                <span class="nav-item-icon">📅</span> Frequência
+            </a>
+        </div>
+        
+        <div class="nav-section">
+            <div class="nav-section-title">Ferramentas</div>
+            <a class="nav-item" data-target="licoes">
+                <span class="nav-item-icon">📖</span> Disciplinas/Lições
+            </a>
+            <a class="nav-item" data-target="calendario">
+                <span class="nav-item-icon">📅</span> Calendário
+            </a>
+            <a class="nav-item" data-target="atividades">
+                <span class="nav-item-icon">🎭</span> Atividades
+            </a>
+            <a class="nav-item" data-target="mensagens">
+                <span class="nav-item-icon">💬</span> Mensagens
+            </a>
+            <a class="nav-item" data-target="qrcodes">
+                <span class="nav-item-icon">📱</span> QR Codes
+            </a>
+            <a class="nav-item" data-target="certificados">
+                <span class="nav-item-icon">🎓</span> Certificados
+            </a>
+        </div>
+        
+        <div class="nav-section">
+            <div class="nav-section-title">Dados</div>
+            <a class="nav-item" data-target="exportar">
+                <span class="nav-item-icon">📤</span> Exportar Dados
+            </a>
+            <a class="nav-item" data-target="backup">
+                <span class="nav-item-icon">💾</span> Backup
+            </a>
+            <a class="nav-item" data-target="configuracoes">
+                <span class="nav-item-icon">⚙️</span> Configurações
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="topbar">
+            <button class="mobile-toggle" id="mobileToggle">☰</button>
+            <div id="topbar-title">
+                <h1 style="font-family: 'Outfit'; margin:0;">Dashboard</h1>
+                <p style="color: var(--text-light); margin:0;" id="current-date-display"></p>
+            </div>
+            <div class="user-profile">
+                <span class="badge active">Admin</span>
+            </div>
+        </div>
+
+        <!-- SECTION: DASHBOARD -->
+        <section id="dashboard" class="section active">
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="stat-card-title">Total de Alunos</div>
+                    <div class="stat-card-value" id="stat-total">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-title">Alunos Ativos</div>
+                    <div class="stat-card-value" id="stat-active">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-title">Formados</div>
+                    <div class="stat-card-value" id="stat-graduated">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-title">Ausentes (Últ. Encontro)</div>
+                    <div class="stat-card-value" id="stat-absent">0</div>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Crescimento de Alunos</h3>
+                    </div>
+                    <canvas id="growthChart" height="250"></canvas>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Retenção vs Evasão</h3>
+                    </div>
+                    <canvas id="retentionChart" height="250"></canvas>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Média de Frequência</h3>
+                    </div>
+                    <canvas id="attendanceChart" height="250"></canvas>
+                </div>
+                <div class="flex-column" style="display:flex; flex-direction:column; gap:24px;">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Atividade Recente</h3>
+                        </div>
+                        <div id="recent-activity-list">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Aniversariantes do Mês</h3>
+                        </div>
+                        <div id="birthdays-list">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: ALUNOS -->
+        <section id="alunos" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Gerenciamento de Alunos</h2>
+                    <button class="btn btn-primary" onclick="openModal('cadastro-modal')">➕ Cadastrar Novo</button>
+                </div>
+                
+                <div class="filter-bar">
+                    <input type="text" id="student-search" class="search-input" placeholder="Buscar por nome ou telefone..." onkeyup="renderStudentsTable()">
+                    <button class="btn btn-outline active" data-filter="all" onclick="setStudentFilter('all', this)">Todos</button>
+                    <button class="btn btn-outline" data-filter="active" onclick="setStudentFilter('active', this)">Ativos</button>
+                    <button class="btn btn-outline" data-filter="graduated" onclick="setStudentFilter('graduated', this)">Formados</button>
+                    <button class="btn btn-outline" data-filter="inactive" onclick="setStudentFilter('inactive', this)">Inativos</button>
+                </div>
+
+                <div style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Telefone</th>
+                                <th>Status</th>
+                                <th>Progresso</th>
+                                <th>Frequência</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="students-table-body">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: PROFESSORES -->
+        <section id="professores" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Gerenciamento de Professores</h2>
+                    <button class="btn btn-primary" onclick="openTeacherModal()">+ Cadastrar Novo</button>
+                </div>
+                
+                <div style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Telefone</th>
+                                <th>Disciplinas</th>
+                                <th>Código de Acesso</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="teachers-table-body">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: FREQUÊNCIA -->
+        <section id="frequencia" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Registro de Frequência</h2>
+                    <div style="display: flex; gap: 16px; align-items: center;">
+                        <input type="date" id="attendance-date" class="form-control" style="width: auto;" onchange="renderAttendanceList()">
+                    </div>
+                </div>
+                
+                <div id="attendance-list-container">
+                    <!-- Populated by JS -->
+                </div>
+                
+                <div style="margin-top: 24px; text-align: right;">
+                    <button class="btn btn-primary" onclick="saveAttendance()">Salvar Frequência</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: DISCIPLINAS/LIÇÕES -->
+        <section id="licoes" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Disciplinas e Lições</h2>
+                    <button class="btn btn-primary" onclick="openModal('lesson-modal'); document.getElementById('lesson-form').reset(); currentLessonId=null;">➕ Nova Lição</button>
+                </div>
+                
+                <div class="filter-bar" style="margin-top: 16px;">
+                    <button class="btn btn-outline active" onclick="renderLessons('cycle1', this)">Ciclo 1</button>
+                    <button class="btn btn-outline" onclick="renderLessons('cycle2', this)">Ciclo 2</button>
+                </div>
+
+                <div style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Tema</th>
+                                <th>Título</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lessons-table-body">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: CALENDÁRIO -->
+        <section id="calendario" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Calendário Anual de Aulas</h2>
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <label style="margin:0;">Data de Início:</label>
+                        <input type="date" id="calendar-start-date" class="form-control" style="width: auto;">
+                        <button class="btn btn-primary" onclick="generateCalendar()">Gerar Calendário (1 Ano)</button>
+                    </div>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Data (A cada 15 dias)</th>
+                                <th>Ciclo</th>
+                                <th>Disciplina / Lição</th>
+                                <th>Professor Responsável</th>
+                            </tr>
+                        </thead>
+                        <tbody id="calendar-table-body">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: ATIVIDADES -->
+        <section id="atividades" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Eventos e Atividades</h2>
+                    <button class="btn btn-primary" onclick="openModal('activity-modal')">➕ Nova Atividade</button>
+                </div>
+                
+                <div style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Título</th>
+                                <th>Data</th>
+                                <th>Descrição</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="activities-table-body">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: MENSAGENS -->
+        <section id="mensagens" class="section">
+            <h2 style="margin-bottom: 24px;">Mensagens via WhatsApp</h2>
+            <div class="template-grid">
+                
+                <div class="template-card">
+                    <h3>👋 Boas-vindas</h3>
+                    <p style="font-size:0.85rem; color:var(--text-light); margin-bottom:16px;">Envie uma mensagem para novos alunos.</p>
+                    <div class="form-group">
+                        <select id="msg-welcome-student" class="form-control">
+                            <option value="">Selecione um aluno...</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" style="width:100%; justify-content:center; background:#25D366;" onclick="sendMsgWelcome()">Enviar WhatsApp</button>
+                </div>
+
+                <div class="template-card">
+                    <h3>📅 Lembrete de Encontro</h3>
+                    <p style="font-size:0.85rem; color:var(--text-light); margin-bottom:16px;">Avise sobre a próxima aula.</p>
+                    <div class="form-group">
+                        <input type="text" id="msg-reminder-topic" class="form-control" placeholder="Tópico da Aula">
+                    </div>
+                    <div class="form-group">
+                        <select id="msg-reminder-student" class="form-control">
+                            <option value="">Selecione um aluno (ou todos ativos)...</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" style="width:100%; justify-content:center; background:#25D366;" onclick="sendMsgReminder()">Enviar WhatsApp</button>
+                </div>
+
+                <div class="template-card">
+                    <h3>⚠️ Aluno Ausente</h3>
+                    <p style="font-size:0.85rem; color:var(--text-light); margin-bottom:16px;">Mostre que sentimos a falta dele.</p>
+                    <div class="form-group">
+                        <select id="msg-absent-student" class="form-control">
+                            <option value="">Selecione um aluno ausente...</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" style="width:100%; justify-content:center; background:#25D366;" onclick="sendMsgAbsent()">Enviar WhatsApp</button>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION: QR CODES -->
+        <section id="qrcodes" class="section">
+            <div class="dashboard-grid">
+                <div class="card">
+                    <h2>Gerador de QR Code</h2>
+                    <p>Facilite o acesso dos alunos às plataformas.</p>
+                    
+                    <div class="form-group" style="margin-top: 24px;">
+                        <label>Selecione o Link:</label>
+                        <select id="qr-link-select" class="form-control" onchange="generateQRCode()">
+                            <option value="cadastro.html">Página de Cadastro de Novos Alunos</option>
+                            <option value="portal.html">Portal do Aluno</option>
+                        </select>
+                    </div>
+                    
+                    <div style="display: flex; gap:16px; margin-top:24px;">
+                        <button class="btn btn-primary" onclick="printQRCode()">🖨️ Imprimir Card</button>
+                        <button class="btn btn-outline" onclick="downloadQRCode()">⬇️ Baixar Imagem</button>
+                    </div>
+                </div>
+                
+                <div class="card" style="display:flex; align-items:center; justify-content:center; background:#f9f9f9;">
+                    <div class="qr-card-preview" id="qr-print-area">
+                        <h3 style="font-family:'Outfit'; color:var(--blue-dark); margin:0;">Discipulado</h3>
+                        <p style="font-size:0.8rem; color:var(--gold); font-weight:bold; margin-bottom:16px;">AD CML CAB</p>
+                        
+                        <div id="qrcode-display" class="qr-container"></div>
+                        
+                        <p style="font-size:0.85rem; color:var(--text-dark); margin-top:16px;">Aponte a câmera para acessar.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: CERTIFICADOS -->
+        <section id="certificados" class="section">
+            <div class="card">
+                <h2>Emissão de Certificados</h2>
+                <p style="color:var(--text-light); margin-bottom: 24px;">Alunos que concluíram todas as 13 lições do Ciclo 1 ou 2.</p>
+                
+                <div class="form-group">
+                    <label>Selecione o Aluno Elegível:</label>
+                    <select id="cert-student-select" class="form-control">
+                        <option value="">Nenhum aluno elegível no momento...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Selecione o Ciclo:</label>
+                    <select id="cert-cycle-select" class="form-control">
+                        <option value="1">Ciclo 1</option>
+                        <option value="2">Ciclo 2</option>
+                    </select>
+                </div>
+                
+                <button class="btn btn-primary" onclick="generateCertificate()">Gerar PDF</button>
+            </div>
+        </section>
+
+        <!-- SECTION: EXPORTAR -->
+        <section id="exportar" class="section">
+            <div class="card">
+                <h2>Exportar Dados</h2>
+                <p style="color:var(--text-light); margin-bottom: 24px;">Baixe os dados do sistema em formato CSV (pode ser aberto no Excel ou Google Sheets).</p>
+                
+                <div style="display: flex; gap:16px;">
+                    <button class="btn btn-primary" onclick="exportStudentsCSV()">📊 Exportar Alunos (CSV)</button>
+                    <button class="btn btn-outline" onclick="exportAttendanceCSV()">📅 Exportar Frequência (CSV)</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: BACKUP -->
+        <section id="backup" class="section">
+            <div class="card">
+                <h2>Backup do Sistema</h2>
+                <p style="color:var(--text-light); margin-bottom: 24px;">Como o sistema funciona no seu navegador, é essencial fazer backups regulares dos dados.</p>
+                
+                <div style="margin-bottom: 32px;">
+                    <h3>Fazer Backup</h3>
+                    <p style="font-size:0.9rem;">Baixa um arquivo completo com todos os dados atuais.</p>
+                    <button class="btn btn-primary" style="margin-top: 8px;" onclick="downloadBackup()">💾 Baixar Arquivo de Backup</button>
+                </div>
+                
+                <hr style="border:0; border-top:1px solid #eee; margin:24px 0;">
+                
+                <div>
+                    <h3 style="color:var(--error, #d93025);">Restaurar Backup</h3>
+                    <p style="font-size:0.9rem; color:var(--error, #d93025);">⚠️ ATENÇÃO: Isso irá sobrescrever todos os dados atuais!</p>
+                    <input type="file" id="backup-file" accept=".json" class="form-control" style="margin: 16px 0;">
+                    <button class="btn btn-outline" onclick="restoreBackup()">Restaurar Dados</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: CONFIGURAÇÕES -->
+        <section id="configuracoes" class="section">
+            <div class="card" style="max-width: 600px;">
+                <h2>Configurações da Igreja</h2>
+                
+                <div class="form-group" style="margin-top: 24px;">
+                    <label>Nome da Igreja</label>
+                    <input type="text" id="config-church-name" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Pastor / Presidente</label>
+                    <input type="text" id="config-pastor-name" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Endereço</label>
+                    <input type="text" id="config-address" class="form-control">
+                </div>
+                
+                <button class="btn btn-primary" onclick="saveSettings()">Salvar Configurações</button>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<!-- MODALS -->
+
+<!-- Student Modal -->
+<div class="modal" id="student-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modal-student-name">Nome do Aluno</h2>
+            <button class="close-modal" onclick="closeModal('student-modal')">×</button>
+        </div>
+        <div class="modal-body">
+            <div id="student-view-mode">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+                    <div style="display:flex; gap:16px; align-items:center;">
+                        <span id="modal-student-status" class="badge">Ativo</span>
+                        <span style="color:var(--text-light); font-size:0.9rem;">Registrado em: <span id="modal-student-date"></span></span>
+                    </div>
+                    <button class="btn btn-outline" onclick="toggleStudentEditMode(true)">✏️ Editar Dados</button>
+                </div>
+                
+                <h3>Progresso</h3>
+                <div style="margin-bottom: 24px;">
+                    <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:4px;">
+                        <span>Ciclo 1</span>
+                        <span id="modal-progress-c1-text">0/13</span>
+                    </div>
+                    <div class="progress-wrapper">
+                        <div class="progress-fill" id="modal-progress-c1-bar" style="width:0%"></div>
+                    </div>
+                </div>
+                
+                <h3>Anotações</h3>
+                <div class="form-group">
+                    <textarea id="modal-student-note" class="form-control" rows="3" placeholder="Adicione uma nota sobre o aluno..."></textarea>
+                    <button class="btn btn-outline" style="margin-top:8px;" onclick="addStudentNote()">Adicionar Nota</button>
+                </div>
+                <div id="modal-notes-list" style="margin-bottom: 24px; font-size:0.9rem;"></div>
+                
+                <h3>Ações</h3>
+                <div style="display:flex; gap:16px; flex-wrap:wrap; margin-top:16px;">
+                    <button class="btn btn-outline" onclick="changeStudentStatus('active')">Marcar Ativo</button>
+                    <button class="btn btn-outline" onclick="changeStudentStatus('graduated')">Marcar Formado</button>
+                    <button class="btn btn-outline" onclick="changeStudentStatus('inactive')">Marcar Inativo</button>
+                    <button class="btn btn-outline" style="color:#d93025; border-color:#d93025;" onclick="deleteStudent()">Excluir Aluno</button>
+                </div>
+            </div>
+            <div id="student-edit-mode" style="display:none;">
+                <form id="student-edit-form" onsubmit="saveStudentEdit(event)">
+                    <div class="form-group">
+                        <label>Nome Completo *</label>
+                        <input type="text" id="edit-nome" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>WhatsApp *</label>
+                        <input type="tel" id="edit-telefone" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Data de Nascimento</label>
+                        <input type="date" id="edit-nascimento" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Endereço</label>
+                        <input type="text" id="edit-endereco" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Professor (Vínculo)</label>
+                        <select id="edit-teacher" class="form-control">
+                            <option value="">Nenhum (Sem Professor)</option>
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+                    <div style="display:flex; gap:16px; margin-top: 24px;">
+                        <button type="submit" class="btn btn-primary" style="flex:1;">Salvar Alterações</button>
+                        <button type="button" class="btn btn-outline" style="flex:1;" onclick="toggleStudentEditMode(false)">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Teacher Modal -->
+<div class="modal" id="teacher-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Cadastrar Professor</h2>
+            <button class="close-modal" onclick="closeModal('teacher-modal')">×</button>
+        </div>
+        <div class="modal-body">
+            <form id="teacher-form" onsubmit="handleTeacherSubmit(event)">
+                <div class="form-group">
+                    <label>Nome Completo *</label>
+                    <input type="text" id="teacher-name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Telefone *</label>
+                    <input type="tel" id="teacher-phone" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Disciplinas (Segure Ctrl para selecionar várias)</label>
+                    <select id="teacher-disciplines" class="form-control" multiple style="height: 120px;">
+                        <!-- Injetado via JS -->
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%;">Cadastrar Professor</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Lesson Modal -->
+<div class="modal" id="lesson-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Nova/Editar Lição</h2>
+            <button class="close-modal" onclick="closeModal('lesson-modal')">×</button>
+        </div>
+        <div class="modal-body">
+            <form id="lesson-form" onsubmit="handleLessonSubmit(event)">
+                <div class="form-group">
+                    <label>Ciclo *</label>
+                    <select id="lesson-cycle" class="form-control" required>
+                        <option value="cycle1">Ciclo 1</option>
+                        <option value="cycle2">Ciclo 2</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Título da Lição *</label>
+                    <input type="text" id="lesson-title" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Tema *</label>
+                    <input type="text" id="lesson-theme" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Versículo(s)</label>
+                    <input type="text" id="lesson-verses" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Resumo</label>
+                    <textarea id="lesson-summary" class="form-control" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%;">Salvar Lição</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Activity Modal -->
+<div class="modal" id="activity-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Nova Atividade/Evento</h2>
+            <button class="close-modal" onclick="closeModal('activity-modal')">×</button>
+        </div>
+        <div class="modal-body">
+            <form id="activity-form" onsubmit="handleActivitySubmit(event)">
+                <div class="form-group">
+                    <label>Título *</label>
+                    <input type="text" id="activity-title" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Data *</label>
+                    <input type="date" id="activity-date" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Descrição</label>
+                    <textarea id="activity-description" class="form-control" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%;">Cadastrar Atividade</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Cadastro Modal -->
+<div class="modal" id="cadastro-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Cadastrar Novo Aluno</h2>
+            <button class="close-modal" onclick="closeModal('cadastro-modal')">×</button>
+        </div>
+        <div class="modal-body">
+            <form id="admin-cadastro-form" onsubmit="handleAdminCadastro(event)">
+                <div class="form-group">
+                    <label>Nome Completo *</label>
+                    <input type="text" id="cad-nome" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>WhatsApp *</label>
+                    <input type="tel" id="cad-telefone" class="form-control" placeholder="(00) 00000-0000" required>
+                </div>
+                <div class="form-group">
+                    <label>Data de Nascimento</label>
+                    <input type="date" id="cad-nascimento" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label>Endereço</label>
+                    <input type="text" id="cad-endereco" class="form-control">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%;">Cadastrar</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- Scripts -->
+<script src="js/data.js"></script>
+<script type="module" src="js/firebase-sync.js"></script>
+<script type="module" src="js/auth.js"></script>
+<script type="module">
+    // Wait for auth to be ready
+    document.addEventListener('DOMContentLoaded', async () => {
+        try {
+            const authData = await window.checkAuth();
+            if (!authData || authData.role !== 'admin') {
+                // If not admin, redirect to portal (where login is)
+                window.location.href = 'portal.html';
+            }
+        } catch (e) {
+            window.location.href = 'portal.html';
+        }
+    });
+</script>
+<script>
+    // Toast Notification System
+    window.showToast = function(message, type = 'success') {
+        let container = document.getElementById('toast-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'toast-container';
+            container.className = 'toast-container';
+            document.body.appendChild(container);
+        }
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        toast.innerHTML = `<div style="display:flex; align-items:center; gap:10px;">
+                               <div>${type === 'success' ? '✅' : (type === 'error' ? '❌' : 'ℹ️')}</div>
+                               <div>${message}</div>
+                           </div>`;
+        container.appendChild(toast);
+        setTimeout(() => {
+            toast.classList.add('removing');
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    };
+
+    // Global State
+    let currentStudentFilter = 'all';
+    let currentStudentId = null;
+    let qrCodeInstance = null;
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        // Init sidebar nav
+        const navItems = document.querySelectorAll('.nav-item');
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                navItems.forEach(nav => nav.classList.remove('active'));
+                item.classList.add('active');
+                
+                const target = item.getAttribute('data-target');
+                document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+                document.getElementById(target).classList.add('active');
+                
+                document.getElementById('topbar-title').querySelector('h1').innerText = 
+                    item.innerText.replace(/[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2580-\u27BF]|\uD83E[\uDD10-\uDDFF]/g, '').trim();
+                
+                if (window.innerWidth <= 768) {
+                    document.getElementById('sidebar').classList.remove('show');
+                }
+                
+                // Triggers
+                if (target === 'dashboard') initDashboard();
+                if (target === 'alunos') renderStudentsTable();
+                if (target === 'professores') renderTeachersTable();
+                if (target === 'frequencia') initAttendance();
+                if (target === 'licoes') renderLessons('cycle1');
+                if (target === 'calendario') renderCalendar();
+                if (target === 'atividades') renderActivities();
+                if (target === 'mensagens') initMessages();
+                if (target === 'qrcodes') generateQRCode();
+                if (target === 'certificados') initCertificates();
+                if (target === 'configuracoes') initConfig();
+            });
+        });
+        
+        // Mobile toggle
+        document.getElementById('mobileToggle').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('show');
+        });
+        
+        // Setup Date
+        const dateOpt = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('current-date-display').innerText = new Date().toLocaleDateString('pt-BR', dateOpt);
+        
+        // Initial setup
+        initDashboard();
+        generateQRCode();
+        
+        // Check local auth state
+        if (localStorage.getItem('disc_admin_auth') === 'true') {
+            document.getElementById('admin-login-overlay').style.display = 'none';
+        }
+    });
+
+    function tryAdminLogin() {
+        const user = document.getElementById('admin-user').value;
+        const pass = document.getElementById('admin-pass').value;
+        
+        // Mock authentication (Will be replaced by Firebase Auth)
+        if (user === 'admin' && pass === '1234') {
+            localStorage.setItem('disc_admin_auth', 'true');
+            document.getElementById('admin-login-overlay').style.display = 'none';
+            if(window.showToast) showToast('Login realizado com sucesso!');
+        } else {
+            document.getElementById('admin-login-error').style.display = 'block';
+        }
+    }
+    
+    // Add logout functionality to user profile badge
+    document.querySelector('.user-profile').innerHTML = `
+        <span class="badge active" style="cursor:pointer;" onclick="adminLogout()">Admin (Sair)</span>
+    `;
+    
+    function adminLogout() {
+        localStorage.removeItem('disc_admin_auth');
+        document.getElementById('admin-login-overlay').style.display = 'flex';
+    }
+    
+    // --- DASHBOARD ---
+    function initDashboard() {
+        if (typeof StudentManager === 'undefined') return;
+        
+        const all = StudentManager.getAll();
+        const active = StudentManager.getActive();
+        const graduated = StudentManager.getGraduated();
+        const absent = StudentManager.getAbsentStudents ? StudentManager.getAbsentStudents() : [];
+        
+        document.getElementById('stat-total').innerText = all.length;
+        document.getElementById('stat-active').innerText = active.length;
+        document.getElementById('stat-graduated').innerText = graduated.length;
+        document.getElementById('stat-absent').innerText = absent.length;
+        
+        // Recent Activity
+        const recentList = document.getElementById('recent-activity-list');
+        recentList.innerHTML = '';
+        const recent = [...all].sort((a,b) => new Date(b.registrationDate) - new Date(a.registrationDate)).slice(0,5);
+        if(recent.length === 0) {
+            recentList.innerHTML = '<p class="empty-state" style="padding:16px;">Nenhum aluno registrado.</p>';
+        } else {
+            recent.forEach(s => {
+                const dateStr = window.timeAgo ? timeAgo(s.registrationDate) : new Date(s.registrationDate).toLocaleDateString();
+                recentList.innerHTML += `
+                    <div style="padding:12px 0; border-bottom:1px solid #eee; display:flex; justify-content:space-between;">
+                        <span><strong>${s.name}</strong> se cadastrou</span>
+                        <span style="color:#888; font-size:0.85rem;">${dateStr}</span>
+                    </div>
+                `;
+            });
+        }
+        
+        // Birthdays
+        const bdaysList = document.getElementById('birthdays-list');
+        bdaysList.innerHTML = '';
+        const bdays = StudentManager.getBirthdays ? StudentManager.getBirthdays(new Date().getMonth() + 1) : [];
+        if(bdays.length === 0) {
+            bdaysList.innerHTML = '<p class="empty-state" style="padding:16px;">Nenhum aniversariante neste mês.</p>';
+        } else {
+            bdays.forEach(s => {
+                const d = new Date(s.birthDate + 'T12:00:00');
+                bdaysList.innerHTML += `
+                    <div style="padding:12px 0; border-bottom:1px solid #eee; display:flex; justify-content:space-between;">
+                        <span>🎂 <strong>${s.name}</strong></span>
+                        <span style="color:#888; font-size:0.85rem;">Dia ${d.getDate()}</span>
+                    </div>
+                `;
+            });
+        }
+        
+        // Charts
+        initChart(all);
+        initRetentionChart(active.length, all.filter(s=>s.status==='inativo').length, graduated.length);
+        initAttendanceChart();
+    }
+    
+    let dashboardChart = null;
+    let retentionChart = null;
+    let attendanceChartObj = null;
+    
+    function initChart(students) {
+        const ctx = document.getElementById('growthChart');
+        if (!ctx) return;
+        if (dashboardChart) dashboardChart.destroy();
+        
+        // Group by month
+        const months = {};
+        const monthNames = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
+        
+        students.forEach(s => {
+            const d = new Date(s.registrationDate);
+            const key = `${monthNames[d.getMonth()]} ${d.getFullYear()}`;
+            months[key] = (months[key] || 0) + 1;
+        });
+        
+        const labels = Object.keys(months).slice(-6);
+        const data = labels.map(l => months[l]);
+        
+        dashboardChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels.length ? labels : ['Sem dados'],
+                datasets: [{
+                    label: 'Novos Alunos',
+                    data: data.length ? data : [0],
+                    borderColor: '#D4A843',
+                    backgroundColor: 'rgba(212, 168, 67, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } }
+            }
+        });
+    }
+
+    function initRetentionChart(activeCount, inactiveCount, graduatedCount) {
+        const ctx = document.getElementById('retentionChart');
+        if (!ctx) return;
+        if (retentionChart) retentionChart.destroy();
+        
+        retentionChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Ativos', 'Inativos', 'Formados'],
+                datasets: [{
+                    data: [activeCount, inactiveCount, graduatedCount],
+                    backgroundColor: ['#1e8e3e', '#d93025', '#D4A843'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%',
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+    }
+
+    function initAttendanceChart() {
+        const ctx = document.getElementById('attendanceChart');
+        if (!ctx) return;
+        if (attendanceChartObj) attendanceChartObj.destroy();
+        
+        if (typeof AttendanceManager === 'undefined') return;
+        const allAttArray = DB ? DB.getAll(DB.KEYS.ATTENDANCE) : [];
+        const allAtt = {};
+        allAttArray.forEach(a => {
+            if(!allAtt[a.date]) allAtt[a.date] = {};
+            allAtt[a.date][a.studentId] = a.present;
+        });
+        const dates = Object.keys(allAtt).sort().slice(-5); // last 5 meetings
+        
+        const labels = [];
+        const data = [];
+        
+        dates.forEach(d => {
+            const dateObj = new Date(d + 'T12:00:00');
+            labels.push(dateObj.toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'}));
+            
+            const recs = Object.values(allAtt[d]);
+            const pres = recs.filter(v => v === true).length;
+            const total = recs.length || 1;
+            data.push(Math.round((pres/total)*100));
+        });
+
+        attendanceChartObj = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels.length ? labels : ['Sem dados'],
+                datasets: [{
+                    label: 'Média (%)',
+                    data: data.length ? data : [0],
+                    backgroundColor: '#1a237e',
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, max: 100 }
+                }
+            }
+        });
+    }
+
+    // --- ALUNOS ---
+    function setStudentFilter(filter, btnElement) {
+        currentStudentFilter = filter;
+        document.querySelectorAll('.filter-bar .btn').forEach(b => b.classList.remove('active'));
+        btnElement.classList.add('active');
+        renderStudentsTable();
+    }
+    
+    function renderStudentsTable() {
+        if (typeof StudentManager === 'undefined') return;
+        const tbody = document.getElementById('students-table-body');
+        const searchTerm = document.getElementById('student-search').value.toLowerCase();
+        
+        let students = StudentManager.getAll();
+        
+        if (currentStudentFilter === 'active') students = StudentManager.getActive();
+        if (currentStudentFilter === 'graduated') students = StudentManager.getGraduated();
+        if (currentStudentFilter === 'inactive') students = students.filter(s => s.status === 'inativo');
+        
+        if (searchTerm) {
+            students = students.filter(s => 
+                s.name.toLowerCase().includes(searchTerm) || 
+                s.phone.includes(searchTerm)
+            );
+        }
+        
+        tbody.innerHTML = '';
+        if (students.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" class="empty-state">Nenhum aluno encontrado.</td></tr>`;
+            return;
+        }
+        
+        students.forEach(s => {
+            const progress = s.progress ? s.progress.c1.length : 0;
+            const progressPct = (progress / 13) * 100;
+            const attData = typeof AttendanceManager !== 'undefined' ? AttendanceManager.getByStudent(s.id) : [];
+            const attPct = attData.length ? Math.round((attData.filter(a=>a.present).length / attData.length)*100) : 0;
+            
+            let statusClass = s.status === 'ativo' ? 'active' : (s.status === 'formado' ? 'graduated' : 'inactive');
+            let statusText = s.status.charAt(0).toUpperCase() + s.status.slice(1);
+            
+            tbody.innerHTML += `
+                <tr>
+                    <td><strong>${s.name}</strong></td>
+                    <td>${s.phone}</td>
+                    <td><span class="badge ${statusClass}">${statusText}</span></td>
+                    <td>
+                        <div style="font-size:0.75rem;">${progress}/13</div>
+                        <div class="progress-wrapper"><div class="progress-fill" style="width:${progressPct}%"></div></div>
+                    </td>
+                    <td>${attPct}% freq.</td>
+                    <td>
+                        <button class="action-btn" title="Ver Detalhes" onclick="openStudentModal('${s.id}')">👁️</button>
+                        <button class="action-btn whatsapp" title="WhatsApp" onclick="window.open('https://wa.me/${s.phone.replace(/\D/g,'')}', '_blank')"><i class="bx bxl-whatsapp"></i>💬</button>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    function openStudentModal(id) {
+        currentStudentId = id;
+        const s = StudentManager.getById(id);
+        if(!s) return;
+        
+        document.getElementById('modal-student-name').innerText = s.name;
+        
+        let statusClass = s.status === 'ativo' ? 'active' : (s.status === 'formado' ? 'graduated' : 'inactive');
+        const badge = document.getElementById('modal-student-status');
+        badge.className = `badge ${statusClass}`;
+        badge.innerText = s.status.toUpperCase();
+        
+        document.getElementById('modal-student-date').innerText = new Date(s.registrationDate).toLocaleDateString('pt-BR');
+        
+        const prog = s.progress ? s.progress.c1.length : 0;
+        document.getElementById('modal-progress-c1-text').innerText = `${prog}/13`;
+        document.getElementById('modal-progress-c1-bar').style.width = `${(prog/13)*100}%`;
+        
+        renderStudentNotes();
+        openModal('student-modal');
+    }
+    
+    function changeStudentStatus(status) {
+        if(!currentStudentId) return;
+        StudentManager.updateStatus(currentStudentId, status);
+        openStudentModal(currentStudentId);
+        renderStudentsTable();
+        if(window.showToast) showToast('Status atualizado.');
+    }
+    
+    function deleteStudent() {
+        if(!currentStudentId) return;
+        if(confirm('Tem certeza que deseja excluir este aluno? Esta ação não pode ser desfeita.')) {
+            StudentManager.deleteStudent(currentStudentId);
+            closeModal('student-modal');
+            renderStudentsTable();
+            if(window.showToast) showToast('Aluno excluído.');
+        }
+    }
+    
+    function renderStudentNotes() {
+        if(typeof NotesManager === 'undefined' || !currentStudentId) return;
+        const notes = NotesManager.getByStudent(currentStudentId);
+        const container = document.getElementById('modal-notes-list');
+        container.innerHTML = '';
+        
+        if(notes.length === 0) {
+            container.innerHTML = '<p style="color:#888;">Nenhuma nota registrada.</p>';
+        } else {
+            notes.forEach(n => {
+                container.innerHTML += `
+                    <div style="background:#f9f9f9; padding:12px; border-radius:8px; margin-bottom:8px;">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                            <small style="color:#888;">${new Date(n.date).toLocaleString('pt-BR')}</small>
+                            <button class="action-btn delete" style="padding:0; font-size:1rem;" onclick="deleteNote('${n.id}')">🗑️</button>
+                        </div>
+                        <div>${n.text}</div>
+                    </div>
+                `;
+            });
+        }
+    }
+    
+    function addStudentNote() {
+        const text = document.getElementById('modal-student-note').value;
+        if(!text.trim() || !currentStudentId) return;
+        NotesManager.add(currentStudentId, text);
+        document.getElementById('modal-student-note').value = '';
+        renderStudentNotes();
+    }
+    function deleteNote(noteId) {
+        if(confirm('Excluir nota?')) {
+            NotesManager.delete(noteId);
+            renderStudentNotes();
+        }
+    }
+    
+    function handleAdminCadastro(e) {
+        e.preventDefault();
+        const data = {
+            name: document.getElementById('cad-nome').value,
+            phone: document.getElementById('cad-telefone').value,
+            birthDate: document.getElementById('cad-nascimento').value,
+            address: document.getElementById('cad-endereco').value
+        };
+        StudentManager.add(data);
+        if(window.showToast) showToast('Aluno cadastrado com sucesso!');
+        e.target.reset();
+        closeModal('cadastro-modal');
+        renderStudentsTable();
+        initDashboard();
+    }
+
+    // --- FREQUENCIA ---
+    function initAttendance() {
+        const dateInput = document.getElementById('attendance-date');
+        if(!dateInput.value) {
+            dateInput.valueAsDate = new Date();
+        }
+        renderAttendanceList();
+    }
+    
+    function renderAttendanceList() {
+        if(typeof AttendanceManager === 'undefined' || typeof StudentManager === 'undefined') return;
+        const date = document.getElementById('attendance-date').value;
+        const students = StudentManager.getActive();
+        const existingArr = AttendanceManager.getByDate(date) || [];
+        
+        const existing = {};
+        existingArr.forEach(a => existing[a.studentId] = a.present);
+        
+        const container = document.getElementById('attendance-list-container');
+        container.innerHTML = '';
+        
+        if(students.length === 0) {
+            container.innerHTML = '<p class="empty-state">Nenhum aluno ativo no momento.</p>';
+            return;
+        }
+        
+        let html = '<table class="data-table"><thead><tr><th>Aluno</th><th>Presente</th></tr></thead><tbody>';
+        students.forEach(s => {
+            const isPresent = existing[s.id] === true;
+            html += `
+                <tr>
+                    <td>${s.name}</td>
+                    <td>
+                        <input type="checkbox" class="att-checkbox" data-id="${s.id}" ${isPresent ? 'checked' : ''} style="width:20px; height:20px;">
+                    </td>
+                </tr>
+            `;
+        });
+        html += '</tbody></table>';
+        container.innerHTML = html;
+    }
+    
+    function saveAttendance() {
+        const date = document.getElementById('attendance-date').value;
+        const checkboxes = document.querySelectorAll('.att-checkbox');
+        
+        // Remove existing records for this date to prevent duplicates
+        const existingArr = AttendanceManager.getByDate(date) || [];
+        existingArr.forEach(a => DB.delete(DB.KEYS.ATTENDANCE, a.id));
+        
+        checkboxes.forEach(cb => {
+            const studentId = cb.getAttribute('data-id');
+            const present = cb.checked;
+            AttendanceManager.record(studentId, date, present);
+        });
+        
+        if(window.showToast) showToast('Frequência salva com sucesso!');
+        initDashboard(); // Update absent stats
+    }
+    
+    // --- MENSAGENS ---
+    function initMessages() {
+        if(typeof StudentManager === 'undefined') return;
+        const active = StudentManager.getActive();
+        const absent = StudentManager.getAbsentStudents ? StudentManager.getAbsentStudents() : [];
+        
+        const populateSelect = (id, list) => {
+            const sel = document.getElementById(id);
+            if(!sel) return;
+            sel.innerHTML = '<option value="">Selecione...</option>';
+            list.forEach(s => sel.innerHTML += `<option value="${s.id}">${s.name}</option>`);
+        };
+        
+        populateSelect('msg-welcome-student', StudentManager.getAll());
+        populateSelect('msg-reminder-student', active);
+        populateSelect('msg-absent-student', absent);
+    }
+    
+    function sendMsgWelcome() {
+        const id = document.getElementById('msg-welcome-student').value;
+        if(!id) return alert('Selecione um aluno');
+        const s = StudentManager.getById(id);
+        const text = window.WhatsAppTemplates ? WhatsAppTemplates.welcome(s.name) : `Olá ${s.name}, bem-vindo(a)!`;
+        window.open(`https://wa.me/${s.phone.replace(/\D/g,'')}?text=${encodeURIComponent(text)}`, '_blank');
+    }
+    function sendMsgReminder() {
+        const id = document.getElementById('msg-reminder-student').value;
+        const topic = document.getElementById('msg-reminder-topic').value || 'nossa próxima aula';
+        if(!id) return alert('Selecione um aluno');
+        const s = StudentManager.getById(id);
+        const text = window.WhatsAppTemplates ? WhatsAppTemplates.reminder(s.name, topic, '', '') : `Olá ${s.name}, lembrete do encontro sobre ${topic}.`;
+        window.open(`https://wa.me/${s.phone.replace(/\D/g,'')}?text=${encodeURIComponent(text)}`, '_blank');
+    }
+    function sendMsgAbsent() {
+        const id = document.getElementById('msg-absent-student').value;
+        if(!id) return alert('Selecione um aluno');
+        const s = StudentManager.getById(id);
+        const text = window.WhatsAppTemplates ? WhatsAppTemplates.absent(s.name) : `Olá ${s.name}, sentimos sua falta!`;
+        window.open(`https://wa.me/${s.phone.replace(/\D/g,'')}?text=${encodeURIComponent(text)}`, '_blank');
+    }
+    
+    // --- QR CODES ---
+    function generateQRCode() {
+        const urlPath = document.getElementById('qr-link-select').value;
+        const fullUrl = window.location.origin + window.location.pathname.replace('admin.html', '') + urlPath;
+        
+        const container = document.getElementById('qrcode-display');
+        container.innerHTML = '';
+        
+        qrCodeInstance = new QRCode(container, {
+            text: fullUrl,
+            width: 200,
+            height: 200,
+            colorDark : "#1a237e",
+            colorLight : "#ffffff",
+            correctLevel : QRCode.CorrectLevel.H
+        });
+    }
+    
+    function printQRCode() {
+        const printContent = document.getElementById('qr-print-area').innerHTML;
+        const w = window.open('', '_blank');
+        w.document.write(`
+            <html><head><title>Print QR Code</title>
+            <style>
+                body { font-family: sans-serif; text-align: center; padding: 40px; }
+                .card { border: 2px solid #D4A843; padding: 32px; border-radius: 16px; display: inline-block; }
+            </style>
+            </head><body><div class="card">${printContent}</div>
+            <script>window.onload=()=>{window.print();window.close();}<\/script></body></html>
+        `);
+        w.document.close();
+    }
+    
+    function downloadQRCode() {
+        html2canvas(document.getElementById('qr-print-area')).then(canvas => {
+            const link = document.createElement('a');
+            link.download = 'qrcode_discipulado.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        });
+    }
+    
+    // --- CERTIFICADOS ---
+    function initCertificates() {
+        if(typeof StudentManager === 'undefined') return;
+        const sel = document.getElementById('cert-student-select');
+        sel.innerHTML = '<option value="">Selecione...</option>';
+        
+        // Find eligible (13 lessons completed in c1 or c2)
+        const eligible = StudentManager.getAll().filter(s => 
+            (s.progress && s.progress.c1 && s.progress.c1.length === 13) || 
+            (s.progress && s.progress.c2 && s.progress.c2.length === 13) ||
+            s.status === 'formado'
+        );
+        
+        eligible.forEach(s => {
+            sel.innerHTML += `<option value="${s.id}">${s.name}</option>`;
+        });
+    }
+    
+    function generateCertificate() {
+        const id = document.getElementById('cert-student-select').value;
+        if(!id) return alert('Selecione um aluno');
+        const s = StudentManager.getById(id);
+        const cycle = document.getElementById('cert-cycle-select').value;
+        const churchName = window.DB ? (DB.getSettings().churchName || 'AD CML CAB') : 'AD CML CAB';
+        
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({
+            orientation: 'landscape',
+            unit: 'mm',
+            format: 'a4'
+        });
+        
+        // Background and border
+        doc.setFillColor(255, 255, 255);
+        doc.rect(0, 0, 297, 210, 'F');
+        
+        doc.setDrawColor(212, 168, 67); // Gold
+        doc.setLineWidth(5);
+        doc.rect(10, 10, 277, 190);
+        doc.setLineWidth(1);
+        doc.rect(12, 12, 273, 186);
+        
+        // Text
+        doc.setTextColor(26, 35, 126); // Blue
+        doc.setFontSize(40);
+        doc.setFont('helvetica', 'bold');
+        doc.text("CERTIFICADO", 148, 50, { align: 'center' });
+        
+        doc.setFontSize(20);
+        doc.setFont('helvetica', 'normal');
+        doc.text("DE CONCLUSÃO", 148, 65, { align: 'center' });
+        
+        doc.setTextColor(50, 50, 50);
+        doc.setFontSize(16);
+        doc.text("Certificamos que", 148, 90, { align: 'center' });
+        
+        doc.setTextColor(212, 168, 67);
+        doc.setFontSize(32);
+        doc.setFont('helvetica', 'bold');
+        doc.text(s.name, 148, 110, { align: 'center' });
+        
+        doc.setTextColor(50, 50, 50);
+        doc.setFontSize(14);
+        doc.setFont('helvetica', 'normal');
+        const text = `concluiu com êxito o Ciclo ${cycle} do programa de Discipulado da ${churchName}.`;
+        doc.text(text, 148, 130, { align: 'center' });
+        
+        doc.text(`Data: ${new Date().toLocaleDateString('pt-BR')}`, 148, 150, { align: 'center' });
+        
+        doc.setDrawColor(0,0,0);
+        doc.setLineWidth(0.5);
+        doc.line(100, 180, 197, 180);
+        doc.setFontSize(12);
+        doc.text("Assinatura do Pastor/Líder", 148, 186, { align: 'center' });
+        
+        doc.save(`Certificado_${s.name.replace(/\s+/g,'_')}.pdf`);
+    }
+    
+    // --- EXPORT/BACKUP/CONFIG ---
+    function exportStudentsCSV() {
+        if(window.ExportManager) ExportManager.exportStudents();
+    }
+    function exportAttendanceCSV() {
+        if(window.ExportManager) ExportManager.exportAttendance();
+    }
+    
+    function downloadBackup() {
+        if(window.ExportManager) ExportManager.backupAll();
+    }
+    
+    function restoreBackup() {
+        const file = document.getElementById('backup-file').files[0];
+        if(!file) return alert('Selecione um arquivo de backup.');
+        if(window.ExportManager) {
+            ExportManager.restoreBackup(file).then(success => {
+                if(success) {
+                    alert('Backup restaurado com sucesso! A página será recarregada.');
+                    location.reload();
+                }
+            });
+        }
+    }
+    
+    function initConfig() {
+        if(window.DB) {
+            const s = DB.getSettings();
+            document.getElementById('config-church-name').value = s.churchName || '';
+            document.getElementById('config-pastor-name').value = s.pastorName || '';
+            document.getElementById('config-address').value = s.address || '';
+        }
+    }
+    
+    function saveSettings() {
+        if(window.DB) {
+            DB.saveSettings({
+                churchName: document.getElementById('config-church-name').value,
+                pastorName: document.getElementById('config-pastor-name').value,
+                address: document.getElementById('config-address').value
+            });
+            if(window.showToast) showToast('Configurações salvas!');
+        }
+    }
+    
+    // Modal Utils
+    function openModal(id) {
+        document.getElementById(id).classList.add('active');
+    }
+    function closeModal(id) {
+        document.getElementById(id).classList.remove('active');
+    }
+    
+    // Close modal on outside click
+    window.onclick = function(event) {
+        if (event.target.classList.contains('modal')) {
+            event.target.classList.remove('active');
+        }
+    }
+
+    // --- PHASE 3: PROFESSORES ---
+    function renderTeachersTable() {
+        if (typeof TeacherManager === 'undefined') return;
+        const tbody = document.getElementById('teachers-table-body');
+        const teachers = TeacherManager.getAll();
+        tbody.innerHTML = '';
+        if (teachers.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" class="empty-state">Nenhum professor cadastrado.</td></tr>`;
+            return;
+        }
+        
+        const allLessons = [...LessonManager.getCycle('cycle1'), ...LessonManager.getCycle('cycle2')];
+        const getLessonName = (id) => {
+            const lesson = allLessons.find(l => l.id === id);
+            return lesson ? lesson.title : id;
+        };
+
+        teachers.forEach(t => {
+            const discNames = t.disciplines ? t.disciplines.map(getLessonName).join(', ') : 'Nenhuma';
+            tbody.innerHTML += `
+                <tr>
+                    <td><strong>${t.name}</strong></td>
+                    <td>${t.phone}</td>
+                    <td><small>${discNames}</small></td>
+                    <td><code>${t.accessCode}</code></td>
+                    <td>
+                        <button class="action-btn delete" onclick="deleteTeacher('${t.id}')">🗑️</button>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    function openTeacherModal() {
+        const select = document.getElementById('teacher-disciplines');
+        select.innerHTML = '';
+        const cycle1 = LessonManager.getCycle('cycle1');
+        const cycle2 = LessonManager.getCycle('cycle2');
+        [...cycle1, ...cycle2].forEach(l => {
+            select.innerHTML += `<option value="${l.id}">${l.title}</option>`;
+        });
+        openModal('teacher-modal');
+    }
+
+    function handleTeacherSubmit(e) {
+        e.preventDefault();
+        const select = document.getElementById('teacher-disciplines');
+        const selectedDisciplines = Array.from(select.selectedOptions).map(opt => opt.value);
+
+        const data = {
+            name: document.getElementById('teacher-name').value,
+            phone: document.getElementById('teacher-phone').value,
+            accessCode: Math.random().toString(36).substring(2, 8).toUpperCase(),
+            disciplines: selectedDisciplines
+        };
+        TeacherManager.add(data);
+        if(window.showToast) showToast('Professor cadastrado!');
+        e.target.reset();
+        closeModal('teacher-modal');
+        renderTeachersTable();
+    }
+
+    function deleteTeacher(id) {
+        if(confirm('Tem certeza que deseja remover este professor?')) {
+            TeacherManager.remove(id);
+            renderTeachersTable();
+            if(window.showToast) showToast('Professor removido.');
+        }
+    }
+
+    // --- PHASE 3: DISCIPLINAS/LIÇÕES ---
+    let currentCycleView = 'cycle1';
+    let currentLessonId = null;
+
+    function renderLessons(cycle, btnElement) {
+        if(btnElement) {
+            document.querySelectorAll('#licoes .filter-bar .btn').forEach(b => b.classList.remove('active'));
+            btnElement.classList.add('active');
+        }
+        currentCycleView = cycle;
+        if (typeof LessonManager === 'undefined') return;
+        const tbody = document.getElementById('lessons-table-body');
+        const lessons = LessonManager.getCycle(cycle);
+        tbody.innerHTML = '';
+        if (lessons.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" class="empty-state">Nenhuma lição encontrada neste ciclo.</td></tr>`;
+            return;
+        }
+        lessons.forEach(l => {
+            tbody.innerHTML += `
+                <tr>
+                    <td><strong>${l.id}</strong></td>
+                    <td><span class="badge active">${l.theme}</span></td>
+                    <td>${l.title}</td>
+                    <td>
+                        <button class="action-btn" onclick="editLesson('${cycle}', '${l.id}')">✏️</button>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    function editLesson(cycle, id) {
+        currentLessonId = id;
+        const lesson = LessonManager.getCycle(cycle).find(l => l.id === id);
+        if(!lesson) return;
+        document.getElementById('lesson-cycle').value = cycle;
+        document.getElementById('lesson-title').value = lesson.title;
+        document.getElementById('lesson-theme').value = lesson.theme;
+        document.getElementById('lesson-verses').value = lesson.verses || '';
+        document.getElementById('lesson-summary').value = lesson.summary || '';
+        openModal('lesson-modal');
+    }
+
+    function handleLessonSubmit(e) {
+        e.preventDefault();
+        const cycle = document.getElementById('lesson-cycle').value;
+        const data = {
+            title: document.getElementById('lesson-title').value,
+            theme: document.getElementById('lesson-theme').value,
+            verses: document.getElementById('lesson-verses').value,
+            summary: document.getElementById('lesson-summary').value
+        };
+        
+        if (currentLessonId) {
+            data.id = currentLessonId;
+            LessonManager.updateLesson(cycle, currentLessonId, data);
+            if(window.showToast) showToast('Lição atualizada!');
+        } else {
+            data.id = 'L' + (LessonManager.getCycle(cycle).length + 1);
+            LessonManager.addLesson(cycle, data);
+            if(window.showToast) showToast('Lição criada!');
+        }
+        
+        closeModal('lesson-modal');
+        renderLessons(currentCycleView);
+    }
+
+    // --- PHASE 3: ATIVIDADES ---
+    // --- PHASE 4: CALENDÁRIO ---
+    function generateCalendar() {
+        const startDateInput = document.getElementById('calendar-start-date').value;
+        if (!startDateInput) {
+            if(window.showToast) showToast('Selecione uma data de início!', 'error');
+            else alert('Selecione uma data de início!');
+            return;
+        }
+
+        const startDate = new Date(startDateInput + 'T12:00:00'); // Evita timezone offset issues
+        const allLessons = [...LessonManager.getCycle('cycle1'), ...LessonManager.getCycle('cycle2')];
+        const teachers = TeacherManager.getAll();
+        
+        let schedule = [];
+        let currentDate = new Date(startDate);
+
+        allLessons.forEach((lesson, index) => {
+            // Find a teacher that teaches this discipline
+            const responsibleTeacher = teachers.find(t => t.disciplines && t.disciplines.includes(lesson.id));
+            
+            schedule.push({
+                id: 'CAL_' + Date.now() + '_' + index,
+                date: currentDate.toISOString(),
+                lessonId: lesson.id,
+                cycle: index < 13 ? 'Ciclo 1' : 'Ciclo 2',
+                teacherId: responsibleTeacher ? responsibleTeacher.id : null
+            });
+
+            // Adiciona 15 dias
+            currentDate.setDate(currentDate.getDate() + 15);
+        });
+
+        CalendarManager.saveCalendar(schedule);
+        if(window.showToast) showToast('Calendário de 1 ano gerado com sucesso!');
+        renderCalendar();
+    }
+
+    function renderCalendar() {
+        if (typeof CalendarManager === 'undefined') return;
+        const schedule = CalendarManager.getCalendar();
+        const tbody = document.getElementById('calendar-table-body');
+        tbody.innerHTML = '';
+
+        if (schedule.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="4" class="empty-state">Nenhum calendário gerado. Selecione uma data e clique em Gerar.</td></tr>`;
+            return;
+        }
+
+        const allLessons = [...LessonManager.getCycle('cycle1'), ...LessonManager.getCycle('cycle2')];
+        const teachers = TeacherManager.getAll();
+
+        schedule.forEach(item => {
+            const dateObj = new Date(item.date);
+            const dateStr = dateObj.toLocaleDateString('pt-BR');
+            const lesson = allLessons.find(l => l.id === item.lessonId);
+            const teacher = teachers.find(t => t.id === item.teacherId);
+
+            tbody.innerHTML += `
+                <tr>
+                    <td><strong>${dateStr}</strong></td>
+                    <td><span class="badge ${item.cycle === 'Ciclo 1' ? 'badge-primary' : 'badge-gold'}">${item.cycle}</span></td>
+                    <td>${lesson ? lesson.title : 'Lição não encontrada'}</td>
+                    <td>${teacher ? teacher.name : '<span style="color:var(--danger)">A Definir</span>'}</td>
+                </tr>
+            `;
+        });
+    }
+
+    // --- PHASE 3: ATIVIDADES ---
+    function renderActivities() {
+        if (typeof ActivityManager === 'undefined') return;
+        const tbody = document.getElementById('activities-table-body');
+        const activities = ActivityManager.getAll();
+        tbody.innerHTML = '';
+        if (activities.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="4" class="empty-state">Nenhuma atividade cadastrada.</td></tr>`;
+            return;
+        }
+        activities.forEach(a => {
+            const d = new Date(a.date + 'T12:00:00');
+            tbody.innerHTML += `
+                <tr>
+                    <td><strong>${a.title}</strong></td>
+                    <td>${d.toLocaleDateString('pt-BR')}</td>
+                    <td>${a.description || '-'}</td>
+                    <td>
+                        <button class="action-btn delete" onclick="deleteActivity('${a.id}')">🗑️</button>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    function handleActivitySubmit(e) {
+        e.preventDefault();
+        const data = {
+            title: document.getElementById('activity-title').value,
+            date: document.getElementById('activity-date').value,
+            description: document.getElementById('activity-description').value
+        };
+        ActivityManager.add(data);
+        if(window.showToast) showToast('Atividade cadastrada!');
+        e.target.reset();
+        closeModal('activity-modal');
+        renderActivities();
+    }
+    
+    function deleteActivity(id) {
+        if(confirm('Remover atividade?')) {
+            ActivityManager.delete(id);
+            renderActivities();
+        }
+    }
+
+    // --- PHASE 3: STUDENT EDIT ---
+    function toggleStudentEditMode(edit) {
+        document.getElementById('student-view-mode').style.display = edit ? 'none' : 'block';
+        document.getElementById('student-edit-mode').style.display = edit ? 'block' : 'none';
+        
+        if(edit && currentStudentId) {
+            const s = StudentManager.getById(currentStudentId);
+            document.getElementById('edit-nome').value = s.name;
+            document.getElementById('edit-telefone').value = s.phone;
+            document.getElementById('edit-nascimento').value = s.birthDate || '';
+            document.getElementById('edit-endereco').value = s.address || '';
+            
+            // Populate teachers dropdown
+            const sel = document.getElementById('edit-teacher');
+            sel.innerHTML = '<option value="">Nenhum (Sem Professor)</option>';
+            if (typeof TeacherManager !== 'undefined') {
+                TeacherManager.getAll().forEach(t => {
+                    sel.innerHTML += `<option value="${t.id}" ${s.teacherId === t.id ? 'selected' : ''}>${t.name}</option>`;
+                });
+            }
+        }
+    }
+
+    function saveStudentEdit(e) {
+        e.preventDefault();
+        if(!currentStudentId) return;
+        const data = {
+            name: document.getElementById('edit-nome').value,
+            phone: document.getElementById('edit-telefone').value,
+            birthDate: document.getElementById('edit-nascimento').value,
+            address: document.getElementById('edit-endereco').value,
+            teacherId: document.getElementById('edit-teacher').value || null
+        };
+        StudentManager.update(currentStudentId, data);
+        if(window.showToast) showToast('Dados do aluno atualizados!');
+        toggleStudentEditMode(false);
+        openStudentModal(currentStudentId); // Refresh modal view
+        renderStudentsTable();
+    }
+</script>
+
+</body>
+</html>

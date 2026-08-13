@@ -1,0 +1,1806 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal do Discípulo | Assembleia de Deus CML CAB</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- External Libs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
+    <style>
+        /* Portal Specific Styles */
+        body {
+            background-color: var(--bg-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Login Screen */
+        #login-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+        }
+
+        .login-card {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+        }
+
+        .login-header {
+            margin-bottom: 2rem;
+        }
+
+        .login-icon {
+            font-size: 3rem;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+        }
+
+        .login-title {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-subtitle {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .login-divider {
+            display: flex;
+            align-items: center;
+            margin: 1.5rem 0;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        .login-divider::before, .login-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background-color: var(--border-color);
+        }
+        
+        .login-divider::before { margin-right: 1rem; }
+        .login-divider::after { margin-left: 1rem; }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 1.5rem;
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+        
+        .back-link:hover {
+            color: var(--primary-color);
+        }
+
+        /* Dashboard Screen */
+        #dashboard-screen {
+            display: none;
+            flex: 1;
+            flex-direction: column;
+        }
+
+        .dashboard-header {
+            background-color: white;
+            padding: 1.5rem 2rem;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .welcome-msg h2 {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .welcome-msg p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .header-progress {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            color: var(--secondary-color);
+            background: rgba(212, 168, 67, 0.1);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+        }
+
+        .btn-logout {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: color 0.3s;
+        }
+
+        .btn-logout:hover {
+            color: var(--danger-color);
+        }
+
+        .dashboard-content {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Progress Overview */
+        .progress-overview {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-md);
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .progress-stat {
+            text-align: center;
+        }
+
+        .progress-stat h3 {
+            color: var(--text-color);
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .circular-progress {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: conic-gradient(var(--secondary-color) 0deg, var(--bg-light) 0deg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem auto;
+        }
+
+        .circular-progress::before {
+            content: '';
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background-color: white;
+            border-radius: 50%;
+        }
+
+        .progress-value {
+            position: relative;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .linear-progress-container {
+            margin-top: 1.5rem;
+        }
+
+        .linear-progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .linear-progress-bar {
+            height: 10px;
+            background: var(--bg-light);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .linear-progress-fill {
+            height: 100%;
+            background: var(--secondary-color);
+            border-radius: 5px;
+            transition: width 1s ease-in-out;
+        }
+        
+        .stat-details {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-top: 0.5rem;
+        }
+
+        /* Tabs */
+        .portal-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 1px;
+        }
+
+        .portal-tab {
+            padding: 1rem 2rem;
+            background: none;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-light);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .portal-tab.active {
+            color: var(--primary-color);
+        }
+
+        .portal-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--secondary-color);
+            border-radius: 3px 3px 0 0;
+        }
+
+        .tab-pane {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-pane.active {
+            display: block;
+        }
+
+        /* Lessons Tab */
+        .cycle-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .cycle-tab {
+            padding: 0.8rem 1.5rem;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 25px;
+            font-weight: 600;
+            color: var(--text-color);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .cycle-tab.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .lessons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .lesson-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--border-color);
+        }
+
+        .lesson-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .lesson-card.completed {
+            border-color: var(--success-color);
+        }
+
+        .lesson-card.completed::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background-color: var(--success-color);
+        }
+
+        .lesson-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .lesson-number {
+            width: 35px;
+            height: 35px;
+            background: var(--secondary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .lesson-status {
+            font-size: 1.2rem;
+            color: var(--border-color);
+        }
+        
+        .lesson-card.completed .lesson-status {
+            color: var(--success-color);
+        }
+
+        .lesson-card h4 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+            line-height: 1.3;
+        }
+
+        .lesson-badge {
+            align-self: flex-start;
+            background: var(--bg-light);
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-light);
+            margin-top: auto;
+        }
+
+        /* Certificates Tab */
+        .certificates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+        }
+        
+        .certificate-container {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-md);
+            text-align: center;
+        }
+        
+        .cert-status-locked {
+            padding: 3rem 2rem;
+            color: var(--text-light);
+        }
+        
+        .cert-status-locked i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--border-color);
+        }
+        
+        .cert-progress {
+            margin-top: 1.5rem;
+        }
+
+        /* Beautiful Certificate Preview */
+        .certificate-preview-wrapper {
+            position: relative;
+            background: white;
+            padding: 20px;
+            margin: 0 auto 1.5rem auto;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+            width: 100%;
+            aspect-ratio: 1.414; /* A4 landscape aspect ratio */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .certificate-preview {
+            width: 100%;
+            height: 100%;
+            border: 2px solid var(--secondary-color);
+            padding: 4px;
+            position: relative;
+            background: #fffdf5; /* slightly warm bg */
+        }
+        
+        .certificate-inner {
+            border: 1px solid var(--primary-color);
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+        }
+        
+        /* Ornaments */
+        .cert-corner {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border: 2px solid var(--secondary-color);
+        }
+        .cert-tl { top: 10px; left: 10px; border-right: none; border-bottom: none; }
+        .cert-tr { top: 10px; right: 10px; border-left: none; border-bottom: none; }
+        .cert-bl { bottom: 10px; left: 10px; border-right: none; border-top: none; }
+        .cert-br { bottom: 10px; right: 10px; border-left: none; border-top: none; }
+        
+        .cert-logo {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        
+        .cert-church {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        
+        .cert-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+        
+        .cert-body {
+            font-size: 1rem;
+            color: var(--text-color);
+            margin-bottom: 10px;
+        }
+        
+        .cert-name {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 5px;
+            margin: 10px 0 15px 0;
+            min-width: 80%;
+        }
+        
+        .cert-course {
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 30px;
+        }
+        
+        .cert-footer {
+            display: flex;
+            justify-content: space-between;
+            width: 80%;
+            margin-top: 20px;
+        }
+        
+        .cert-sign {
+            text-align: center;
+        }
+        
+        .cert-sign-line {
+            width: 150px;
+            height: 1px;
+            background: var(--text-color);
+            margin-bottom: 5px;
+        }
+        
+        .cert-sign-name {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        /* Profile Tab */
+        .profile-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+        }
+
+        .profile-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .profile-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            background: var(--bg-light);
+            color: var(--primary-color);
+            font-size: 3rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem auto;
+        }
+        
+        .profile-info-item {
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--bg-light);
+        }
+        
+        .profile-info-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .info-label {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.3rem;
+        }
+        
+        .info-value {
+            font-weight: 500;
+            color: var(--text-color);
+        }
+        
+        .timeline-container {
+            position: relative;
+            padding-left: 20px;
+        }
+        
+        .timeline-container::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 2px;
+            background: var(--bg-light);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -24px;
+            top: 5px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--secondary-color);
+            border: 2px solid white;
+            box-shadow: 0 0 0 2px var(--bg-light);
+        }
+        
+        .timeline-date {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-bottom: 0.3rem;
+        }
+        
+        .timeline-content {
+            background: var(--bg-light);
+            padding: 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        /* Modal specific to Portal */
+        .portal-modal-content {
+            max-width: 800px;
+        }
+
+        .lesson-content-body {
+            line-height: 1.6;
+            color: var(--text-color);
+            margin-bottom: 2rem;
+        }
+
+        .lesson-content-body h3 {
+            color: var(--primary-color);
+            margin: 1.5rem 0 1rem 0;
+            font-size: 1.2rem;
+        }
+        
+        .lesson-content-body p {
+            margin-bottom: 1rem;
+        }
+
+        .lesson-content-body ul, .lesson-content-body ol {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+        }
+
+        .lesson-content-body li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .verse-box {
+            background: rgba(212, 168, 67, 0.1);
+            border-left: 4px solid var(--secondary-color);
+            padding: 1rem;
+            margin: 1rem 0;
+            font-style: italic;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .completion-action {
+            display: flex;
+            justify-content: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+        
+        .badge-completed-large {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: var(--success-color);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        /* Footer */
+        .portal-footer {
+            background: white;
+            padding: 1.5rem;
+            text-align: center;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: auto;
+        }
+
+        @media (max-width: 768px) {
+            .progress-overview {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .header-actions .header-progress {
+                display: none; /* Hide progress on mobile header to save space */
+            }
+
+            .portal-tabs {
+                overflow-x: auto;
+                white-space: nowrap;
+                padding-bottom: 5px;
+            }
+            
+            .profile-container {
+                grid-template-columns: 1fr;
+            }
+
+            .certificates-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .cert-footer {
+                flex-direction: column;
+                gap: 20px;
+                align-items: center;
+            }
+        }
+
+        /* Teacher Dashboard Specifics */
+        #teacher-dashboard-screen {
+            display: none;
+            flex: 1;
+            flex-direction: column;
+        }
+
+        .students-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .student-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .student-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .student-card h4 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .student-card p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .student-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-item .stat-value {
+            font-weight: 700;
+            color: var(--secondary-color);
+            font-size: 1.1rem;
+        }
+
+        .stat-item .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        /* Activities Tab */
+        .activities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .activity-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            border-left: 4px solid var(--secondary-color);
+        }
+
+        .activity-date {
+            font-weight: 600;
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .activity-title {
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .activity-desc {
+            color: var(--text-color);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .activity-type {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.3rem 0.8rem;
+            background: var(--bg-light);
+            border-radius: 15px;
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- STATE 1: LOGIN SCREEN -->
+    <div id="login-screen">
+        <div class="login-card">
+            <div class="login-header">
+                <i class="fa-solid fa-cross login-icon"></i>
+                <h1 class="login-title">Portal do Discípulo</h1>
+                <p class="login-subtitle">Assembleia de Deus CML CAB</p>
+            </div>
+
+            <form id="login-form">
+                <div class="form-group">
+                    <label class="form-label" for="login-email">E-mail</label>
+                    <input type="email" id="login-email" class="form-control" placeholder="Seu e-mail">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="login-password">Senha</label>
+                    <input type="password" id="login-password" class="form-control" placeholder="Sua senha">
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+                    Acessar Portal <i class="fa-solid fa-arrow-right" style="margin-left: 0.5rem;"></i>
+                </button>
+                
+                <a href="index.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Voltar ao Início</a>
+            </form>
+        </div>
+    </div>
+
+    <!-- STATE 2: TEACHER DASHBOARD -->
+    <div id="teacher-dashboard-screen">
+        <header class="dashboard-header">
+            <div class="welcome-msg">
+                <h2 id="teacher-welcome-name">Olá, Professor(a)! 👋</h2>
+                <p>Acompanhe o progresso dos seus alunos.</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn-logout" id="btn-teacher-logout" title="Sair">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </button>
+            </div>
+        </header>
+
+        <main class="dashboard-content">
+            <h3 style="color: var(--primary-color); margin-bottom: 1rem;">Minhas Disciplinas</h3>
+            <div id="teacher-disciplines-list" style="margin-bottom: 2rem; display: flex; gap: 10px; flex-wrap: wrap;">
+                <!-- Populated by JS -->
+            </div>
+
+            <h3 style="color: var(--primary-color); margin-bottom: 1rem;">Meus Alunos</h3>
+            <div class="students-grid" id="teacher-students-grid">
+                <!-- Populated by JS -->
+            </div>
+        </main>
+        
+        <footer class="portal-footer">
+            <p><strong>Assembleia de Deus CML CAB</strong></p>
+            <p>Rua das Mangueiras 19 – Novo Horizonte</p>
+            <p>Pr. Edvaldo Romualdo</p>
+        </footer>
+    </div>
+
+    <!-- STATE 3: STUDENT DASHBOARD -->
+    <div id="dashboard-screen">
+        
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div class="welcome-msg">
+                <h2 id="welcome-name">Olá, Aluno! 👋</h2>
+                <p>Acompanhe seu progresso no discipulado.</p>
+            </div>
+            <div class="header-actions">
+                <div class="header-progress" id="header-progress-badge">
+                    <i class="fa-solid fa-trophy"></i> <span>0%</span>
+                </div>
+                <button class="btn-logout" id="btn-logout" title="Sair">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </button>
+            </div>
+        </header>
+
+        <main class="dashboard-content">
+            
+            <!-- Progress Overview Card -->
+            <section class="progress-overview">
+                <div class="progress-stat">
+                    <h3>Progresso Geral</h3>
+                    <div class="circular-progress" id="overall-progress-circle">
+                        <span class="progress-value" id="overall-progress-value">0%</span>
+                    </div>
+                    <div class="stat-details">
+                        <span id="overall-completed-text">0</span> de 26 lições concluídas
+                    </div>
+                </div>
+
+                <div class="progress-stat" style="display: flex; flex-direction: column; justify-content: center;">
+                    <h3>Ciclo 1: Fundamentos</h3>
+                    <div class="linear-progress-container">
+                        <div class="linear-progress-label">
+                            <span>Concluído</span>
+                            <span id="c1-progress-text">0%</span>
+                        </div>
+                        <div class="linear-progress-bar">
+                            <div class="linear-progress-fill" id="c1-progress-fill" style="width: 0%;"></div>
+                        </div>
+                        <div class="stat-details" style="text-align: right;">
+                            <span id="c1-completed-text">0</span>/13
+                        </div>
+                    </div>
+                </div>
+
+                <div class="progress-stat" style="display: flex; flex-direction: column; justify-content: center;">
+                    <h3>Ciclo 2: Vida Cristã</h3>
+                    <div class="linear-progress-container">
+                        <div class="linear-progress-label">
+                            <span>Concluído</span>
+                            <span id="c2-progress-text">0%</span>
+                        </div>
+                        <div class="linear-progress-bar">
+                            <div class="linear-progress-fill" id="c2-progress-fill" style="width: 0%;"></div>
+                        </div>
+                        <div class="stat-details" style="text-align: right;">
+                            <span id="c2-completed-text">0</span>/13
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tabs Navigation -->
+            <div class="portal-tabs">
+                <button class="portal-tab active" data-target="tab-lessons">Lições</button>
+                <button class="portal-tab" data-target="tab-activities">Eventos/Atividades</button>
+                <button class="portal-tab" data-target="tab-certificates">Certificados</button>
+                <button class="portal-tab" data-target="tab-profile">Meu Perfil</button>
+            </div>
+
+            <!-- Tab Content: Lessons -->
+            <div id="tab-lessons" class="tab-pane active">
+                <div class="cycle-tabs">
+                    <button class="cycle-tab active" data-cycle="cycle1">Ciclo 1 – Fundamentos</button>
+                    <button class="cycle-tab" data-cycle="cycle2">Ciclo 2 – Vida Cristã</button>
+                </div>
+
+                <div id="lessons-grid-cycle1" class="lessons-grid">
+                    <!-- Populated by JS -->
+                </div>
+                
+                <div id="lessons-grid-cycle2" class="lessons-grid" style="display: none;">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <!-- Tab Content: Activities -->
+            <div id="tab-activities" class="tab-pane">
+                <h3 style="color: var(--primary-color); margin-bottom: 1.5rem;">Próximos Eventos e Atividades</h3>
+                <div class="activities-grid" id="activities-grid-container">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <!-- Tab Content: Certificates -->
+            <div id="tab-certificates" class="tab-pane">
+                <div class="certificates-grid">
+                    
+                    <!-- Cycle 1 Certificate -->
+                    <div class="certificate-container" id="cert-c1-container">
+                        <h3>Certificado - Ciclo 1</h3>
+                        <p class="text-light" style="margin-bottom: 1.5rem;">Fundamentos da Fé</p>
+                        
+                        <div id="cert-c1-locked" class="cert-status-locked">
+                            <i class="fa-solid fa-lock"></i>
+                            <h4>Certificado Bloqueado</h4>
+                            <p>Complete todas as 13 lições do Ciclo 1 para desbloquear.</p>
+                            <div class="cert-progress linear-progress-container">
+                                <div class="linear-progress-bar">
+                                    <div class="linear-progress-fill" id="cert-c1-progress" style="width: 0%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="cert-c1-unlocked" style="display: none;">
+                            <div class="certificate-preview-wrapper" id="certificate-dom-c1">
+                                <div class="certificate-preview">
+                                    <div class="certificate-inner">
+                                        <div class="cert-corner cert-tl"></div>
+                                        <div class="cert-corner cert-tr"></div>
+                                        <div class="cert-corner cert-bl"></div>
+                                        <div class="cert-corner cert-br"></div>
+                                        
+                                        <i class="fa-solid fa-cross cert-logo"></i>
+                                        <div class="cert-church">Assembleia de Deus CML CAB</div>
+                                        <div class="cert-title">CERTIFICADO DE CONCLUSÃO</div>
+                                        
+                                        <div class="cert-body">Certificamos que</div>
+                                        <div class="cert-name" id="cert-c1-name">[NOME DO ALUNO]</div>
+                                        <div class="cert-body">concluiu com êxito o</div>
+                                        <div class="cert-course">Ciclo 1 – Fundamentos da Fé do Programa de Discipulado</div>
+                                        
+                                        <div class="cert-footer">
+                                            <div class="cert-sign">
+                                                <div class="cert-sign-line"></div>
+                                                <div class="cert-sign-name">Pr. Edvaldo Romualdo</div>
+                                            </div>
+                                            <div class="cert-sign">
+                                                <div class="cert-sign-line"></div>
+                                                <div class="cert-sign-name" id="cert-c1-date">00/00/0000</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" onclick="downloadCertificate('c1')">
+                                <i class="fa-solid fa-download"></i> Baixar Certificado PDF
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Cycle 2 Certificate -->
+                    <div class="certificate-container" id="cert-c2-container">
+                        <h3>Certificado - Ciclo 2</h3>
+                        <p class="text-light" style="margin-bottom: 1.5rem;">Vida Cristã</p>
+                        
+                        <div id="cert-c2-locked" class="cert-status-locked">
+                            <i class="fa-solid fa-lock"></i>
+                            <h4>Certificado Bloqueado</h4>
+                            <p>Complete todas as 13 lições do Ciclo 2 para desbloquear.</p>
+                            <div class="cert-progress linear-progress-container">
+                                <div class="linear-progress-bar">
+                                    <div class="linear-progress-fill" id="cert-c2-progress" style="width: 0%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="cert-c2-unlocked" style="display: none;">
+                            <div class="certificate-preview-wrapper" id="certificate-dom-c2">
+                                <div class="certificate-preview">
+                                    <div class="certificate-inner">
+                                        <div class="cert-corner cert-tl"></div>
+                                        <div class="cert-corner cert-tr"></div>
+                                        <div class="cert-corner cert-bl"></div>
+                                        <div class="cert-corner cert-br"></div>
+                                        
+                                        <i class="fa-solid fa-cross cert-logo"></i>
+                                        <div class="cert-church">Assembleia de Deus CML CAB</div>
+                                        <div class="cert-title">CERTIFICADO DE CONCLUSÃO</div>
+                                        
+                                        <div class="cert-body">Certificamos que</div>
+                                        <div class="cert-name" id="cert-c2-name">[NOME DO ALUNO]</div>
+                                        <div class="cert-body">concluiu com êxito o</div>
+                                        <div class="cert-course">Ciclo 2 – Vida Cristã do Programa de Discipulado</div>
+                                        
+                                        <div class="cert-footer">
+                                            <div class="cert-sign">
+                                                <div class="cert-sign-line"></div>
+                                                <div class="cert-sign-name">Pr. Edvaldo Romualdo</div>
+                                            </div>
+                                            <div class="cert-sign">
+                                                <div class="cert-sign-line"></div>
+                                                <div class="cert-sign-name" id="cert-c2-date">00/00/0000</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" onclick="downloadCertificate('c2')">
+                                <i class="fa-solid fa-download"></i> Baixar Certificado PDF
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Tab Content: Profile -->
+            <div id="tab-profile" class="tab-pane">
+                <div class="profile-container">
+                    <div class="profile-card">
+                        <div class="profile-header">
+                            <div class="profile-avatar">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+                            <h3 id="profile-name">Nome do Aluno</h3>
+                            <p class="text-light">Aluno do Discipulado</p>
+                        </div>
+                        
+                        <div class="profile-info">
+                            <div class="profile-info-item">
+                                <div class="info-label">Código de Acesso</div>
+                                <div class="info-value" id="profile-code" style="font-family: monospace; font-size: 1.2rem; letter-spacing: 2px;">---</div>
+                            </div>
+                            <div class="profile-info-item">
+                                <div class="info-label">Telefone</div>
+                                <div class="info-value" id="profile-phone">---</div>
+                            </div>
+                            <div class="profile-info-item">
+                                <div class="info-label">Data de Matrícula</div>
+                                <div class="info-value" id="profile-enrollment">---</div>
+                            </div>
+                            <div class="profile-info-item">
+                                <div class="info-label">Taxa de Presença (Aulas)</div>
+                                <div class="info-value" id="profile-attendance">---</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="profile-card">
+                        <h3 style="margin-bottom: 1.5rem; color: var(--primary-color);">Linha do Tempo</h3>
+                        <div class="timeline-container" id="profile-timeline">
+                            <!-- Populated by JS -->
+                            <p class="text-light">Nenhuma lição concluída ainda.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <footer class="portal-footer">
+            <p><strong>Assembleia de Deus CML CAB</strong></p>
+            <p>Rua das Mangueiras 19 – Novo Horizonte</p>
+            <p>Pr. Edvaldo Romualdo</p>
+        </footer>
+    </div>
+
+    <!-- Lesson Detail Modal -->
+    <div id="lesson-modal" class="modal-overlay">
+        <div class="modal portal-modal-content">
+            <div class="modal-header">
+                <h3 id="modal-lesson-title">Título da Lição</h3>
+                <button class="close-modal" id="close-lesson-modal">&times;</button>
+            </div>
+            <div class="modal-body" style="max-height: 70vh; overflow-y: auto; padding-right: 10px;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 1.5rem;">
+                    <span id="modal-lesson-number" class="lesson-number">1</span>
+                    <span id="modal-lesson-theme" class="lesson-badge" style="margin: 0;">Tema</span>
+                </div>
+                
+                <div class="lesson-content-body">
+                    <p id="modal-lesson-summary" style="font-size: 1.1rem; font-weight: 500;"></p>
+                    
+                    <h3>Pontos Chave</h3>
+                    <ul id="modal-lesson-points"></ul>
+                    
+                    <h3>Versículos Chave</h3>
+                    <div id="modal-lesson-verses"></div>
+                    
+                    <h3>Perguntas para Reflexão</h3>
+                    <ol id="modal-lesson-questions"></ol>
+                </div>
+                
+                <div class="completion-action" id="modal-completion-action">
+                    <!-- Button or Badge populated by JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Data and Logic -->
+    <script src="js/data.js"></script>`n    <script type="module" src="js/firebase-sync.js"></script>`n    <script type="module" src="js/auth.js"></script>
+    <script>
+        // Toast Notification System
+        window.showToast = function(message, type = 'success') {
+            let container = document.getElementById('toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-container';
+                container.className = 'toast-container';
+                document.body.appendChild(container);
+            }
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.innerHTML = `<div style="display:flex; align-items:center; gap:10px;">
+                                   <div>${type === 'success' ? '✅' : (type === 'error' ? '❌' : 'ℹ️')}</div>
+                                   <div>${message}</div>
+                               </div>`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.add('removing');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        };
+
+        // Portal State
+        let currentStudent = null;
+        let currentTeacher = null;
+        let currentLessonView = null; // {cycleId, lessonId}
+
+        // DOM Elements
+        const loginScreen = document.getElementById('login-screen');
+        const teacherDashboardScreen = document.getElementById('teacher-dashboard-screen');
+        const dashboardScreen = document.getElementById('dashboard-screen');
+        const loginForm = document.getElementById('login-form');
+        
+        // Format Phone input removed since it is not used in login anymore
+
+        // Initialize Portal
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Check auth first
+            try {
+                const authData = await window.checkAuth();
+                if (authData) {
+                    const { user, role } = authData;
+                    if (role === 'teacher' || role === 'admin') {
+                        const allTeachers = TeacherManager.getAll();
+                        let teacher = allTeachers.find(t => t.email === user.email);
+                        if (teacher || role === 'admin') {
+                            currentTeacher = teacher || { name: 'Admin', role: 'admin' };
+                            loginScreen.style.display = 'none';
+                            teacherDashboardScreen.style.display = 'flex';
+                            updateTeacherDashboard();
+                            showToast(`Bem-vindo de volta, ${currentTeacher.name}!`, 'success');
+                        }
+                    } else if (role === 'student') {
+                        const allStudents = StudentManager.getAll();
+                        let student = allStudents.find(s => s.email === user.email);
+                        if (student) {
+                            currentStudent = student;
+                            loginScreen.style.display = 'none';
+                            dashboardScreen.style.display = 'flex';
+                            updateDashboard();
+                            showToast(`Bem-vindo de volta, ${student.name.split(' ')[0]}!`, 'success');
+                        }
+                    }
+                }
+            } catch (e) {
+                console.error("Auto-login error", e);
+            }
+
+            // Setup Tabs
+            document.querySelectorAll('.portal-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.portal-tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-pane').forEach(c => c.classList.remove('active'));
+                    tab.classList.add('active');
+                    document.getElementById(tab.dataset.target).classList.add('active');
+                });
+            });
+
+            // Setup Cycle Tabs in Lessons
+            document.querySelectorAll('.cycle-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.cycle-tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.lessons-grid').forEach(g => g.style.display = 'none');
+                    tab.classList.add('active');
+                    document.getElementById(`lessons-grid-${tab.dataset.cycle}`).style.display = 'grid';
+                });
+            });
+
+            // Logout Student
+            document.getElementById('btn-logout').addEventListener('click', async () => {
+                await window.logoutUser();
+                currentStudent = null;
+                loginScreen.style.display = 'flex';
+                dashboardScreen.style.display = 'none';
+                loginForm.reset();
+                showToast('Você saiu do portal.', 'info');
+            });
+
+            // Logout Teacher
+            document.getElementById('btn-teacher-logout').addEventListener('click', async () => {
+                await window.logoutUser();
+                currentTeacher = null;
+                loginScreen.style.display = 'flex';
+                teacherDashboardScreen.style.display = 'none';
+                loginForm.reset();
+                showToast('Você saiu do portal.', 'info');
+            });
+
+            // Modal Close
+            document.getElementById('close-lesson-modal').addEventListener('click', () => {
+                document.getElementById('lesson-modal').classList.remove('active');
+            });
+            window.addEventListener('click', (e) => {
+                const modal = document.getElementById('lesson-modal');
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+        });
+
+        // Helper function
+        function formatDate(dateString) {
+            if (!dateString) return '--/--/----';
+            const d = new Date(dateString);
+            if (isNaN(d.getTime())) return '--/--/----';
+            return d.toLocaleDateString('pt-BR');
+        }
+
+        // Handle Login
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value.trim();
+
+            if (!email || !password) {
+                showToast('Preencha e-mail e senha.', 'error');
+                return;
+            }
+
+            try {
+                showToast('Autenticando...', 'info');
+                // Usa a função do auth.js injetada no window
+                const authResult = await window.loginUser(email, password);
+                const { user, role } = authResult;
+
+                if (role === 'teacher' || role === 'admin') {
+                    // Find teacher by email
+                    const allTeachers = TeacherManager.getAll();
+                    let teacher = allTeachers.find(t => t.email === email);
+                    
+                    if (teacher || role === 'admin') {
+                        currentTeacher = teacher || { name: 'Admin', role: 'admin' };
+                        showToast(`Bem-vindo, Professor(a) ${currentTeacher.name}!`, 'success');
+                        loginScreen.style.display = 'none';
+                        teacherDashboardScreen.style.display = 'flex';
+                        updateTeacherDashboard();
+                    } else {
+                        showToast('Perfil de professor não encontrado.', 'error');
+                    }
+                } else if (role === 'student') {
+                    // Find student by email
+                    const allStudents = StudentManager.getAll();
+                    let student = allStudents.find(s => s.email === email);
+                    
+                    if (student) {
+                        currentStudent = student;
+                        showToast(`Bem-vindo, ${student.name.split(' ')[0]}!`, 'success');
+                        loginScreen.style.display = 'none';
+                        dashboardScreen.style.display = 'flex';
+                        updateDashboard();
+                    } else {
+                        showToast('Perfil de aluno não encontrado.', 'error');
+                    }
+                } else {
+                    showToast('Função de usuário desconhecida.', 'error');
+                }
+
+            } catch (error) {
+                console.error(error);
+                showToast('E-mail ou senha incorretos.', 'error');
+            }
+        });
+
+        // Update Teacher Dashboard
+        function updateTeacherDashboard() {
+            if (!currentTeacher) return;
+            
+            document.getElementById('teacher-welcome-name').innerText = `Olá, Professor(a) ${currentTeacher.name}! 👋`;
+            
+            // Populate Disciplines
+            const discList = document.getElementById('teacher-disciplines-list');
+            discList.innerHTML = '';
+            if (currentTeacher.disciplines && currentTeacher.disciplines.length > 0) {
+                const allLessons = [...(LessonManager.getCycle('cycle1')||[]), ...(LessonManager.getCycle('cycle2')||[])];
+                currentTeacher.disciplines.forEach(discId => {
+                    const lesson = allLessons.find(l => l.id === discId);
+                    if (lesson) {
+                        discList.innerHTML += `<span class="lesson-badge" style="margin:0; font-size: 0.9rem;">${lesson.icon} ${lesson.title}</span>`;
+                    }
+                });
+            } else {
+                discList.innerHTML = '<span class="text-light">Nenhuma disciplina atribuída.</span>';
+            }
+
+            const grid = document.getElementById('teacher-students-grid');
+            grid.innerHTML = '';
+            
+            const allStudents = StudentManager.getAll();
+            const myStudents = allStudents.filter(s => s.teacherId === currentTeacher.id);
+            
+            if (myStudents.length === 0) {
+                grid.innerHTML = '<p class="text-light" style="grid-column: 1/-1;">Você ainda não possui alunos vinculados.</p>';
+                return;
+            }
+            
+            myStudents.forEach(student => {
+                const totalLessons = (LessonManager.getCycle('cycle1')?.length || 13) + (LessonManager.getCycle('cycle2')?.length || 13);
+                const completed = student.completedLessons ? student.completedLessons.length : 0;
+                const progress = totalLessons === 0 ? 0 : Math.round((completed / totalLessons) * 100);
+                
+                const attendances = AttendanceManager.getByStudent(student.id);
+                const attendanceTotal = attendances.length;
+                const presenceCount = attendances.filter(a => a.status === 'present').length;
+                const rate = attendanceTotal > 0 ? Math.round((presenceCount / attendanceTotal) * 100) : 0;
+                
+                const card = document.createElement('div');
+                card.className = 'student-card';
+                // Can be hooked up to show a student profile modal if needed
+                card.innerHTML = `
+                    <h4>${student.name}</h4>
+                    <p><i class="fa-solid fa-phone"></i> ${student.phone || 'N/A'}</p>
+                    <p><i class="fa-solid fa-calendar"></i> Cadastrado em: ${formatDate(student.enrollmentDate)}</p>
+                    
+                    <div class="student-stats">
+                        <div class="stat-item">
+                            <div class="stat-value">${progress}%</div>
+                            <div class="stat-label">Conclusão</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value">${rate}%</div>
+                            <div class="stat-label">Presença</div>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Update Dashboard Data
+        function updateDashboard() {
+            if (!currentStudent) return;
+
+            // 1. Header
+            const firstName = currentStudent.name.split(' ')[0];
+            document.getElementById('welcome-name').innerText = `Olá, ${firstName}! 👋`;
+
+            // 2. Calculate Progress
+            const completedIds = currentStudent.completedLessons || [];
+            
+            let c1Total = 0, c1Completed = 0;
+            let c2Total = 0, c2Completed = 0;
+
+            // Populate Lessons Grid Cycle 1
+            const gridC1 = document.getElementById('lessons-grid-cycle1');
+            gridC1.innerHTML = '';
+            const cycle1Lessons = LessonManager.getCycle('cycle1') || [];
+            cycle1Lessons.forEach(lesson => {
+                c1Total++;
+                const isCompleted = completedIds.includes(lesson.id);
+                if (isCompleted) c1Completed++;
+                gridC1.appendChild(createLessonCard(lesson, isCompleted, 'cycle1'));
+            });
+
+            // Populate Lessons Grid Cycle 2
+            const gridC2 = document.getElementById('lessons-grid-cycle2');
+            gridC2.innerHTML = '';
+            const cycle2Lessons = LessonManager.getCycle('cycle2') || [];
+            cycle2Lessons.forEach(lesson => {
+                c2Total++;
+                const isCompleted = completedIds.includes(lesson.id);
+                if (isCompleted) c2Completed++;
+                gridC2.appendChild(createLessonCard(lesson, isCompleted, 'cycle2'));
+            });
+
+            const totalLessons = c1Total + c2Total;
+            const totalCompleted = c1Completed + c2Completed;
+            const overallPercent = totalLessons === 0 ? 0 : Math.round((totalCompleted / totalLessons) * 100);
+            const c1Percent = c1Total === 0 ? 0 : Math.round((c1Completed / c1Total) * 100);
+            const c2Percent = c2Total === 0 ? 0 : Math.round((c2Completed / c2Total) * 100);
+
+            // Update Progress Overview UI
+            document.getElementById('header-progress-badge').innerHTML = `<i class="fa-solid fa-trophy"></i> <span>${overallPercent}%</span>`;
+            
+            const circle = document.getElementById('overall-progress-circle');
+            circle.style.background = `conic-gradient(var(--secondary-color) ${overallPercent * 3.6}deg, var(--bg-light) 0deg)`;
+            document.getElementById('overall-progress-value').innerText = `${overallPercent}%`;
+            document.getElementById('overall-completed-text').innerText = totalCompleted;
+
+            document.getElementById('c1-progress-fill').style.width = `${c1Percent}%`;
+            document.getElementById('c1-progress-text').innerText = `${c1Percent}%`;
+            document.getElementById('c1-completed-text').innerText = c1Completed;
+
+            document.getElementById('c2-progress-fill').style.width = `${c2Percent}%`;
+            document.getElementById('c2-progress-text').innerText = `${c2Percent}%`;
+            document.getElementById('c2-completed-text').innerText = c2Completed;
+
+            // Update Certificates Tab
+            updateCertificatesTab(c1Completed, c1Total, c2Completed, c2Total);
+
+            // Update Profile Tab
+            updateProfileTab();
+            
+            // Update Activities Tab
+            updateActivitiesTab();
+        }
+
+        function updateActivitiesTab() {
+            const grid = document.getElementById('activities-grid-container');
+            grid.innerHTML = '';
+            
+            if (typeof ActivityManager === 'undefined') {
+                grid.innerHTML = '<p class="text-light">Módulo de atividades não disponível.</p>';
+                return;
+            }
+            
+            const activities = ActivityManager.getAll();
+            // Sort by date (future first)
+            activities.sort((a, b) => new Date(a.date) - new Date(b.date));
+            
+            if (activities.length === 0) {
+                grid.innerHTML = '<p class="text-light" style="grid-column: 1/-1;">Nenhuma atividade agendada no momento.</p>';
+                return;
+            }
+            
+            activities.forEach(activity => {
+                const card = document.createElement('div');
+                card.className = 'activity-card';
+                card.innerHTML = `
+                    <div class="activity-date"><i class="fa-regular fa-calendar"></i> ${formatDate(activity.date)}</div>
+                    <h4 class="activity-title">${activity.title}</h4>
+                    <p class="activity-desc">${activity.description}</p>
+                    <div class="activity-type">${activity.type || 'Evento'}</div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function createLessonCard(lesson, isCompleted, cycleId) {
+            const div = document.createElement('div');
+            div.className = `lesson-card ${isCompleted ? 'completed' : ''}`;
+            div.onclick = () => openLessonModal(lesson, isCompleted, cycleId);
+            
+            // Check calendar for scheduled date
+            let scheduledDateHtml = '';
+            if (typeof CalendarManager !== 'undefined') {
+                const schedule = CalendarManager.getCalendar();
+                const scheduledItem = schedule.find(s => s.lessonId === lesson.id);
+                if (scheduledItem) {
+                    const dateStr = new Date(scheduledItem.date).toLocaleDateString('pt-BR');
+                    scheduledDateHtml = `<div style="font-size: 0.8rem; color: var(--gold-500); margin-top: 8px;">📅 Previsto: ${dateStr}</div>`;
+                }
+            }
+
+            div.innerHTML = `
+                <div class="lesson-card-header">
+                    <div class="lesson-number">${lesson.number}</div>
+                    <div class="lesson-status">
+                        ${isCompleted ? '✅ Concluída' : '⏳ Pendente'}
+                    </div>
+                </div>
+                <h3>${lesson.icon} ${lesson.title}</h3>
+                <p>${lesson.summary.substring(0, 60)}...</p>
+                <div class="lesson-badge">${lesson.theme}</div>
+                ${scheduledDateHtml}
+            `;
+            return div;
+        }
+
+        function openLessonModal(lesson, isCompleted, cycleId) {
+            currentLessonView = { lessonId: lesson.id, cycleId: cycleId };
+            
+            document.getElementById('modal-lesson-title').innerHTML = `${lesson.icon} ${lesson.title}`;
+            document.getElementById('modal-lesson-number').innerText = lesson.number;
+            document.getElementById('modal-lesson-theme').innerText = lesson.theme;
+            document.getElementById('modal-lesson-summary').innerText = lesson.summary;
+            
+            const pointsList = document.getElementById('modal-lesson-points');
+            pointsList.innerHTML = '';
+            lesson.keyPoints.forEach(p => {
+                const li = document.createElement('li');
+                li.innerText = p;
+                pointsList.appendChild(li);
+            });
+
+            const versesList = document.getElementById('modal-lesson-verses');
+            versesList.innerHTML = '';
+            lesson.keyVerses.forEach(v => {
+                const b = document.createElement('div');
+                b.className = 'verse-box';
+                b.innerText = v;
+                versesList.appendChild(b);
+            });
+
+            const questionsList = document.getElementById('modal-lesson-questions');
+            questionsList.innerHTML = '';
+            lesson.reflectionQuestions.forEach(q => {
+                const li = document.createElement('li');
+                li.innerText = q;
+                questionsList.appendChild(li);
+            });
+
+            const actionDiv = document.getElementById('modal-completion-action');
+            if (isCompleted) {
+                actionDiv.innerHTML = `
+                    <div class="badge-completed-large">
+                        <i class="fa-solid fa-check"></i> Lição Concluída
+                    </div>
+                `;
+            } else {
+                actionDiv.innerHTML = `
+                    <button class="btn btn-secondary" onclick="markCurrentLessonCompleted()" style="padding: 1rem 2rem; font-size: 1.1rem;">
+                        <i class="fa-solid fa-check-circle"></i> Marcar como Concluída
+                    </button>
+                `;
+            }
+
+            document.getElementById('lesson-modal').classList.add('active');
+        }
+
+        function markCurrentLessonCompleted() {
+            if (!currentStudent || !currentLessonView) return;
+            
+            try {
+                // Add to completed lessons array
+                const completed = currentStudent.completedLessons || [];
+                if (!completed.includes(currentLessonView.lessonId)) {
+                    completed.push(currentLessonView.lessonId);
+                    
+                    // Note: If data.js has StudentManager.update, use it. Otherwise, update DB directly.
+                    // Assuming StudentManager.update is available or similar
+                    currentStudent.completedLessons = completed;
+                    const allStudents = StudentManager.getAll();
+                    const index = allStudents.findIndex(s => s.id === currentStudent.id);
+                    if (index !== -1) {
+                        allStudents[index] = currentStudent;
+                        DB.save('discipulado_students', allStudents);
+                    }
+                }
+                
+                showToast('Lição marcada como concluída!', 'success');
+                document.getElementById('lesson-modal').classList.remove('active');
+                updateDashboard(); // Refresh UI
+            } catch (error) {
+                console.error(error);
+                showToast('Erro ao atualizar lição.', 'error');
+            }
+        }
+
+        function updateCertificatesTab(c1Completed, c1Total, c2Completed, c2Total) {
+            // Cycle 1
+            const c1Progress = c1Total === 0 ? 0 : Math.round((c1Completed / c1Total) * 100);
+            if (c1Completed === c1Total && c1Total > 0) {
+                document.getElementById('cert-c1-locked').style.display = 'none';
+                document.getElementById('cert-c1-unlocked').style.display = 'block';
+                document.getElementById('cert-c1-name').innerText = currentStudent.name.toUpperCase();
+                document.getElementById('cert-c1-date').innerText = formatDate(new Date().toISOString());
+            } else {
+                document.getElementById('cert-c1-locked').style.display = 'block';
+                document.getElementById('cert-c1-unlocked').style.display = 'none';
+                document.getElementById('cert-c1-progress').style.width = `${c1Progress}%`;
+            }
+
+            // Cycle 2
+            const c2Progress = c2Total === 0 ? 0 : Math.round((c2Completed / c2Total) * 100);
+            if (c2Completed === c2Total && c2Total > 0) {
+                document.getElementById('cert-c2-locked').style.display = 'none';
+                document.getElementById('cert-c2-unlocked').style.display = 'block';
+                document.getElementById('cert-c2-name').innerText = currentStudent.name.toUpperCase();
+                document.getElementById('cert-c2-date').innerText = formatDate(new Date().toISOString());
+            } else {
+                document.getElementById('cert-c2-locked').style.display = 'block';
+                document.getElementById('cert-c2-unlocked').style.display = 'none';
+                document.getElementById('cert-c2-progress').style.width = `${c2Progress}%`;
+            }
+        }
+
+        function updateProfileTab() {
+            document.getElementById('profile-name').innerText = currentStudent.name;
+            document.getElementById('profile-code').innerText = currentStudent.accessCode;
+            document.getElementById('profile-phone').innerText = currentStudent.phone || 'Não informado';
+            document.getElementById('profile-enrollment').innerText = formatDate(currentStudent.enrollmentDate);
+
+            // Attendance Rate
+            const attendances = AttendanceManager.getByStudent(currentStudent.id);
+            const attendanceTotal = attendances.length;
+            const presenceCount = attendances.filter(a => a.status === 'present').length;
+            const rate = attendanceTotal > 0 ? Math.round((presenceCount / attendanceTotal) * 100) : 0;
+            document.getElementById('profile-attendance').innerText = `${rate}% (${presenceCount} presenças em ${attendanceTotal} registros)`;
+
+            // Timeline (Mock dates for completed lessons, since we only store IDs)
+            // Ideally we would store {id, date} for completion, but based on typical DB schema provided, we just have IDs.
+            const timelineContainer = document.getElementById('profile-timeline');
+            const completed = currentStudent.completedLessons || [];
+            
+            if (completed.length === 0) {
+                timelineContainer.innerHTML = '<p class="text-light">Nenhuma lição concluída ainda.</p>';
+            } else {
+                timelineContainer.innerHTML = '';
+                // Get lesson details for completed IDs
+                const completedDetails = [];
+                const c1 = LessonManager.getCycle('cycle1') || [];
+                const c2 = LessonManager.getCycle('cycle2') || [];
+                
+                completed.forEach(id => {
+                    const l1 = c1.find(l => l.id === id);
+                    if (l1) completedDetails.push({...l1, cycle: 'Ciclo 1'});
+                    const l2 = c2.find(l => l.id === id);
+                    if (l2) completedDetails.push({...l2, cycle: 'Ciclo 2'});
+                });
+
+                // Display latest first (assuming they were appended in order)
+                completedDetails.reverse().forEach((lesson, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'timeline-item';
+                    item.innerHTML = `
+                        <div class="timeline-date">Concluída (Lição ${lesson.number})</div>
+                        <div class="timeline-content">
+                            ${lesson.icon} ${lesson.title} <span class="text-light" style="font-size:0.8rem">(${lesson.cycle})</span>
+                        </div>
+                    `;
+                    timelineContainer.appendChild(item);
+                });
+            }
+        }
+
+        async function downloadCertificate(cycle) {
+            const certElement = document.getElementById(`certificate-dom-${cycle}`);
+            
+            try {
+                showToast('Gerando PDF... aguarde', 'info');
+                
+                const canvas = await html2canvas(certElement, {
+                    scale: 2, // Higher quality
+                    backgroundColor: '#fffdf5',
+                    useCORS: true
+                });
+                
+                const imgData = canvas.toDataURL('image/jpeg', 1.0);
+                
+                // A4 Landscape: 297 x 210 mm
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF({
+                    orientation: 'landscape',
+                    unit: 'mm',
+                    format: 'a4'
+                });
+                
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+                
+                // Center vertically if needed
+                const yPos = (pdf.internal.pageSize.getHeight() - pdfHeight) / 2;
+                
+                pdf.addImage(imgData, 'JPEG', 0, yPos > 0 ? yPos : 0, pdfWidth, pdfHeight);
+                pdf.save(`Certificado_Discipulado_Ciclo${cycle === 'c1' ? '1' : '2'}_${currentStudent.name.replace(/\s+/g, '_')}.pdf`);
+                
+                showToast('Certificado baixado com sucesso!', 'success');
+            } catch (err) {
+                console.error('Error generating PDF:', err);
+                showToast('Erro ao gerar certificado. Tente novamente.', 'error');
+            }
+        }
+
+    </script>
+</body>
+</html>

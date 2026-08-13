@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projeto Discipulando 2026 - Apresentação Oficial</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Colors */
+            --deep-blue: #0a0f3d;
+            --blue-light: #1a237e;
+            --gold: #D4A843;
+            --gold-dark: #C9952B;
+            --text-light: #f8f9fa;
+            --text-muted: #b0bec5;
+            
+            /* Gradients */
+            --bg-gradient: linear-gradient(135deg, var(--deep-blue) 0%, #060922 100%);
+            --gold-gradient: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+            
+            /* Glassmorphism */
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(212, 168, 67, 0.15);
+            --glass-blur: 12px;
+            
+            /* Typography */
+            --font-body: 'Inter', sans-serif;
+            --font-heading: 'Outfit', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-gradient);
+            color: var(--text-light);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-heading);
+            font-weight: 700;
+        }
+
+        /* Reusable Classes */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            color: var(--gold);
+            margin-bottom: 3rem;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 3px;
+            background: var(--gold-gradient);
+            margin: 1rem auto 0;
+            border-radius: 2px;
+        }
+
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(var(--glass-blur));
+            -webkit-backdrop-filter: blur(var(--glass-blur));
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border-color: rgba(212, 168, 67, 0.3);
+        }
+
+        .gold-text {
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Scroll Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .delay-1 { transition-delay: 0.1s; }
+        .delay-2 { transition-delay: 0.2s; }
+        .delay-3 { transition-delay: 0.3s; }
+
+        /* Floating Orbs */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(212, 168, 67, 0.2), transparent);
+            filter: blur(20px);
+            z-index: 0;
+            animation: float 10s infinite ease-in-out alternate;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(30px, -50px); }
+        }
+
+        /* 1. COVER */
+        #cover {
+            text-align: center;
+            background: radial-gradient(circle at center, var(--blue-light) 0%, var(--deep-blue) 100%);
+            overflow: hidden;
+        }
+
+        #cover .container {
+            position: relative;
+            z-index: 2;
+        }
+
+        .cover-cross {
+            font-size: 3rem;
+            color: var(--gold);
+            margin-bottom: 1rem;
+        }
+
+        .cover-title {
+            font-size: 4.5rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .cover-year {
+            font-size: 2rem;
+            margin-bottom: 3rem;
+            font-weight: 600;
+        }
+
+        .cover-details {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .cover-address {
+            font-size: 1rem;
+            opacity: 0.7;
+            margin-top: 2rem;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+            color: var(--gold);
+            font-size: 2rem;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0) translateX(-50%); }
+            40% { transform: translateY(-20px) translateX(-50%); }
+            60% { transform: translateY(-10px) translateX(-50%); }
+        }
+
+        /* 2. OBJETIVO GERAL */
+        .badge {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            background: rgba(212, 168, 67, 0.1);
+            color: var(--gold);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--gold);
+        }
+
+        .lead-text {
+            font-size: 1.8rem;
+            line-height: 1.6;
+            font-weight: 300;
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* 3. OBJETIVOS ESPECÍFICOS */
+        .grid-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .obj-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .obj-icon {
+            font-size: 1.5rem;
+            background: rgba(212, 168, 67, 0.1);
+            padding: 1rem;
+            border-radius: 12px;
+            color: var(--gold);
+        }
+
+        /* 4. JUSTIFICATIVA */
+        .elegant-text {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            border-left: 4px solid var(--gold);
+            padding-left: 2rem;
+            margin-bottom: 2rem;
+            background: linear-gradient(90deg, rgba(212, 168, 67, 0.05) 0%, transparent 100%);
+            padding-top: 1rem;
+            padding-bottom: 1rem;
+            border-radius: 0 8px 8px 0;
+        }
+
+        /* 5. PÚBLICO ALVO */
+        .target-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .target-card {
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+
+        .target-num {
+            font-size: 3rem;
+            font-weight: 800;
+            color: rgba(212, 168, 67, 0.2);
+            margin-bottom: 1rem;
+            font-family: var(--font-heading);
+        }
+
+        /* 6. CONTEÚDO PROGRAMÁTICO */
+        .program-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+        }
+
+        @media (max-width: 768px) {
+            .program-grid { grid-template-columns: 1fr; }
+        }
+
+        .cycle-box h3 {
+            color: var(--gold);
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 0.5rem;
+        }
+
+        .lesson-list {
+            list-style: none;
+        }
+
+        .lesson-list li {
+            padding: 0.8rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .lesson-num {
+            color: var(--gold);
+            font-weight: 600;
+            width: 24px;
+        }
+
+        /* 7. TEMAS TRANSVERSAIS */
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .theme-tag {
+            background: rgba(26, 35, 126, 0.5);
+            border: 1px solid var(--gold);
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .theme-tag:hover {
+            background: var(--gold);
+            color: var(--deep-blue);
+            transform: scale(1.05);
+        }
+
+        /* 8. EVENTOS */
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .event-card {
+            border-top: 3px solid var(--gold);
+        }
+        
+        .event-card h4 {
+            color: var(--gold);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* 9. ESTRUTURA ORGANIZACIONAL */
+        .org-chart {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+            padding: 2rem 0;
+        }
+
+        .org-node {
+            background: var(--glass-bg);
+            border: 1px solid var(--gold);
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-align: center;
+            position: relative;
+            min-width: 200px;
+        }
+
+        .org-node.main {
+            background: var(--gold-gradient);
+            color: var(--deep-blue);
+        }
+
+        .org-level {
+            display: flex;
+            gap: 2rem;
+            position: relative;
+        }
+
+        .org-level::before {
+            content: '';
+            position: absolute;
+            top: -2rem;
+            left: 50%;
+            width: 2px;
+            height: 2rem;
+            background: var(--gold);
+        }
+
+        .org-level.multi::before {
+            display: none;
+        }
+
+        .org-level-connector {
+            position: absolute;
+            top: -2rem;
+            left: 15%;
+            right: 15%;
+            height: 2px;
+            background: var(--gold);
+        }
+
+        .org-level-vertical {
+            position: absolute;
+            top: -2rem;
+            width: 2px;
+            height: 2rem;
+            background: var(--gold);
+            left: 50%;
+        }
+
+        @media (max-width: 768px) {
+            .org-level { flex-direction: column; }
+            .org-level-connector { display: none; }
+            .org-level-vertical { display: none; }
+            .org-node::before {
+                content: '';
+                position: absolute;
+                top: -2rem;
+                left: 50%;
+                width: 2px;
+                height: 2rem;
+                background: var(--gold);
+            }
+            .org-node:first-child::before { display: none; }
+        }
+
+        /* 12. ORÇAMENTO */
+        .budget-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2rem;
+            background: var(--glass-bg);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .budget-table th, .budget-table td {
+            padding: 1rem 1.5rem;
+            text-align: left;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .budget-table th {
+            background: rgba(212, 168, 67, 0.1);
+            color: var(--gold);
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .budget-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .budget-table .total-row {
+            background: rgba(212, 168, 67, 0.2);
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--gold);
+        }
+
+        .budget-note {
+            text-align: right;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 1rem;
+            font-style: italic;
+        }
+
+        /* 13. PLATAFORMA DIGITAL */
+        .platform-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .platform-hero-text {
+            text-align: center;
+            font-size: 1.3rem;
+            margin-bottom: 3rem;
+            color: var(--text-light);
+            background: rgba(26, 35, 126, 0.3);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--blue-light);
+        }
+
+        /* 14. CLOSING */
+        #closing {
+            text-align: center;
+        }
+
+        .verse {
+            font-size: 2rem;
+            font-family: var(--font-heading);
+            color: var(--gold);
+            font-style: italic;
+            margin-bottom: 4rem;
+        }
+
+        .signature-line {
+            width: 300px;
+            height: 1px;
+            background: var(--text-muted);
+            margin: 4rem auto 1rem;
+        }
+
+        /* Navigation & Controls */
+        .fixed-controls {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 100;
+        }
+
+        .btn-print {
+            background: var(--gold-gradient);
+            color: var(--deep-blue);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-family: var(--font-heading);
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(212, 168, 67, 0.4);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .btn-print:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 168, 67, 0.6);
+        }
+
+        .dot-nav {
+            position: fixed;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 100;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .dot.active {
+            background: var(--gold);
+            transform: scale(1.5);
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: #fff;
+                color: #000;
+            }
+            .glass-card, .theme-tag, .org-node, .platform-hero-text, .badge {
+                background: transparent;
+                border: 1px solid #000;
+                color: #000;
+                filter: none;
+                backdrop-filter: none;
+                -webkit-backdrop-filter: none;
+                box-shadow: none;
+            }
+            .gold-text, .section-title, .cycle-box h3, .lesson-num, .cover-cross, .obj-icon, .target-num, .event-card h4, .budget-table th, .budget-table .total-row, .verse {
+                color: #000;
+                -webkit-text-fill-color: #000;
+                background: none;
+            }
+            .section-title::after {
+                background: #000;
+            }
+            section {
+                min-height: auto;
+                page-break-inside: avoid;
+                padding: 2rem 0;
+            }
+            #cover {
+                min-height: 100vh;
+                background: #fff;
+            }
+            .fixed-controls, .dot-nav, .scroll-indicator, .orb {
+                display: none !important;
+            }
+            .fade-in {
+                opacity: 1;
+                transform: none;
+            }
+            .elegant-text {
+                border-left-color: #000;
+                background: none;
+            }
+            .org-node.main {
+                background: #eee;
+                color: #000;
+            }
+            .org-level::before, .org-level-connector, .org-level-vertical {
+                background: #000;
+            }
+            .budget-table th, .budget-table td {
+                border-color: #000;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Decorative Background Elements -->
+    <div class="orb" style="width: 300px; height: 300px; top: 10%; left: 5%;"></div>
+    <div class="orb" style="width: 400px; height: 400px; top: 40%; right: -5%; animation-delay: -2s;"></div>
+    <div class="orb" style="width: 250px; height: 250px; bottom: 10%; left: 20%; animation-delay: -4s;"></div>
+
+    <!-- Navigation -->
+    <div class="dot-nav" id="dotNav">
+        <!-- Dots generated by JS -->
+    </div>
+
+    <div class="fixed-controls">
+        <button class="btn-print" onclick="window.print()">
+            🖨️ Imprimir / Salvar PDF
+        </button>
+    </div>
+
+    <!-- 1. COVER -->
+    <section id="cover" class="scroll-section">
+        <div class="container fade-in">
+            <div class="cover-cross">✝️</div>
+            <h1 class="cover-title">PROJETO DISCIPULANDO</h1>
+            <div class="cover-year gold-text">2026</div>
+            <p class="cover-details">Departamento de Novos Convertidos</p>
+            <p class="cover-details">Assembleia de Deus CML CAB</p>
+            <br>
+            <p class="cover-details" style="color: var(--text-light); font-weight: 500;">Pr. Edvaldo Romualdo | Miss. Eunice Souza</p>
+            <p class="cover-address">Rua das Mangueiras, 19 – Novo Horizonte</p>
+        </div>
+        <div class="scroll-indicator">↓</div>
+    </section>
+
+    <!-- 2. OBJETIVO GERAL -->
+    <section id="objetivo-geral" class="scroll-section">
+        <div class="container fade-in">
+            <div style="text-align: center;">
+                <span class="badge">Propósito Fundacional</span>
+                <h2 class="section-title">Objetivo Geral</h2>
+            </div>
+            <div class="glass-card fade-in delay-1">
+                <p class="lead-text">
+                    Proporcionar às pessoas visitantes e novas decididas informações e serviços qualificados que favoreçam a recepção, acolhimento e consolidação delas na fé em Cristo e na comunidade congregacional. Proporcionando informação e serviços que promovam a afirmação e fundamentação da identidade cristã, o desenvolvimento espiritual, pessoal e social favorecendo o crescimento e a frutificação de cada indivíduo participante do corpo de Cristo.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. OBJETIVOS ESPECÍFICOS -->
+    <section id="objetivos-especificos" class="scroll-section">
+        <div class="container">
+            <h2 class="section-title fade-in">Objetivos Específicos</h2>
+            <div class="grid-cards">
+                <div class="glass-card obj-card fade-in delay-1">
+                    <div class="obj-icon">📝</div>
+                    <p>Recepcionar, acolher, cadastrar e acompanhar pessoas que decidiram seguir a Jesus.</p>
+                </div>
+                <div class="glass-card obj-card fade-in delay-2">
+                    <div class="obj-icon">🤝</div>
+                    <p>Desenvolver eventos e atividades que promovam estreitamento de laços relacionais com Deus e com os membros veteranos.</p>
+                </div>
+                <div class="glass-card obj-card fade-in delay-3">
+                    <div class="obj-icon">⛪</div>
+                    <p>Mobilizar outros departamentos da igreja local para o serviço cristão de acolhimento e apadrinhamento dos novos irmãos.</p>
+                </div>
+                <div class="glass-card obj-card fade-in delay-1">
+                    <div class="obj-icon">📚</div>
+                    <p>Fornecer apoio, orientação e direcionamento socioeducativo, pessoal, familiar, espiritual e social.</p>
+                </div>
+                <div class="glass-card obj-card fade-in delay-2">
+                    <div class="obj-icon">📉</div>
+                    <p>Criar, desenvolver e gerenciar rede de acolhimento e apoio com intuito de diminuir a estatística de desistência dos novos decididos.</p>
+                </div>
+                <div class="glass-card obj-card fade-in delay-3">
+                    <div class="obj-icon">🌟</div>
+                    <p>Proporcionar a congregação serviços e eventos qualificados que contribuam e promovam o crescimento do reino.</p>
+                </div>
+                <div class="glass-card obj-card fade-in delay-1">
+                    <div class="obj-icon">ℹ️</div>
+                    <p>Proporcionar aos visitantes informações sobre eventos e atividades desenvolvidas pela congregação.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. JUSTIFICATIVA -->
+    <section id="justificativa" class="scroll-section">
+        <div class="container fade-in">
+            <h2 class="section-title">Justificativa</h2>
+            <div class="elegant-text fade-in delay-1">
+                O departamento de discipulado é um programa fixo que visa servir de apoio à congregação local, campo e comunidade na consolidação de novos discípulos de Cristo, bem como despertar, incentivar e desenvolver o desejo de conhecer e se relacionar com Deus. Direcionando o ensino e aprendizagem dos participantes em relação a nova conduta e convicções acerca de todos os aspectos da vida do ser humano e principalmente da sua identidade e função no reino de Deus.
+            </div>
+            <div class="elegant-text fade-in delay-2">
+                Acreditamos que o indivíduo, que terá a oportunidade de participar do programa, adquirirá informações e desenvolverá habilidades que lhe permitirão esclarecer dúvidas, desconstruir falsos conceitos, bem como conhecer e exercer seus direitos e deveres de cidadão celestial enquanto estiver na terra.
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. PÚBLICO ALVO -->
+    <section id="publico-alvo" class="scroll-section">
+        <div class="container">
+            <h2 class="section-title fade-in">Público Alvo</h2>
+            <div class="target-cards">
+                <div class="glass-card target-card fade-in delay-1">
+                    <div class="target-num">01</div>
+                    <h3>Visitantes</h3>
+                    <p class="cover-details">Pessoas que visitam a congregação de forma esporádica.</p>
+                </div>
+                <div class="glass-card target-card fade-in delay-2">
+                    <div class="target-num">02</div>
+                    <h3>Novos Decididos</h3>
+                    <p class="cover-details">Pessoas recém decididas a serem discípulas de Cristo.</p>
+                </div>
+                <div class="glass-card target-card fade-in delay-3">
+                    <div class="target-num">03</div>
+                    <h3>Reconciliados</h3>
+                    <p class="cover-details">Pessoas afastadas que desejam reconciliar-se com Cristo e a igreja.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. CONTEÚDO PROGRAMÁTICO -->
+    <section id="conteudo" class="scroll-section">
+        <div class="container">
+            <h2 class="section-title fade-in">Conteúdo Programático</h2>
+            <div class="program-grid">
+                <div class="glass-card cycle-box fade-in delay-1">
+                    <h3>Ciclo 1 – Fundamentos da Fé</h3>
+                    <ul class="lesson-list">
+                        <li><span class="lesson-num">01</span> 📖 Conhecendo a Bíblia</li>
+                        <li><span class="lesson-num">02</span> ✝️ Conhecendo Deus</li>
+                        <li><span class="lesson-num">03</span> 🕊️ Conhecendo a Salvação</li>
+                        <li><span class="lesson-num">04</span> ⛪ Conhecendo a Igreja</li>
+                        <li><span class="lesson-num">05</span> 🙏 Conhecendo o Valor da Oração</li>
+                        <li><span class="lesson-num">06</span> 🛡️ O Discípulo e a Fé</li>
+                        <li><span class="lesson-num">07</span> 📜 O Discípulo e a Obediência</li>
+                        <li><span class="lesson-num">08</span> 💰 O Discípulo e o Dízimo</li>
+                        <li><span class="lesson-num">09</span> 🔥 O Discípulo e o Espírito Santo</li>
+                        <li><span class="lesson-num">10</span> 💧 O Discípulo Vivendo Cheio do E.S.</li>
+                        <li><span class="lesson-num">11</span> 🎁 O Discípulo e os Dons do E.S.</li>
+                        <li><span class="lesson-num">12</span> 🍇 O Discípulo e o Fruto do E.S.</li>
+                        <li><span class="lesson-num">13</span> 📣 O Discípulo e o Evangelismo</li>
+                    </ul>
+                </div>
+                <div class="glass-card cycle-box fade-in delay-2">
+                    <h3>Ciclo 2 – Vida Cristã Prática</h3>
+                    <ul class="lesson-list">
+                        <li><span class="lesson-num">01</span> 🤝 O Discípulo e a Comunidade</li>
+                        <li><span class="lesson-num">02</span> 🏠 O Discípulo e o Lar Cristão</li>
+                        <li><span class="lesson-num">03</span> ⚔️ O Discípulo e a Tentação</li>
+                        <li><span class="lesson-num">04</span> 🪞 O Discípulo e a Impureza</li>
+                        <li><span class="lesson-num">05</span> 🚫 O Discípulo e a Idolatria</li>
+                        <li><span class="lesson-num">06</span> ⚖️ O Discípulo e a Temperança</li>
+                        <li><span class="lesson-num">07</span> 💝 O Discípulo e o Perdão</li>
+                        <li><span class="lesson-num">08</span> 🔑 O Discípulo e a Mordomia Cristã</li>
+                        <li><span class="lesson-num">09</span> 🎵 O Discípulo e o Louvor</li>
+                        <li><span class="lesson-num">10</span> 🌊 O Discípulo e o Batismo nas Águas</li>
+                        <li><span class="lesson-num">11</span> 🍞 O Discípulo e a Santa Ceia</li>
+                        <li><span class="lesson-num">12</span> 👑 O Discípulo e a Volta de Jesus</li>
+                        <li><span class="lesson-num">13</span> 🌱 O Discípulo e a Missão de Discipular</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. TEMAS TRANSVERSAIS -->
+    <section id="temas" class="scroll-section">
+        <div class="container fade-in">
+            <h2 class="section-title">Temas Transversais / Workshops</h2>
+            <div class="tags-container">
+                <span class="theme-tag fade-in delay-1">Criacionismo</span>
+                <span class="theme-tag fade-in delay-1">Cristo</span>
+                <span class="theme-tag fade-in delay-1">Doutrinas Bíblicas</span>
+                <span class="theme-tag fade-in delay-2">Caráter e Temperamento Cristão</span>
+                <span class="theme-tag fade-in delay-2">Finanças</span>
+                <span class="theme-tag fade-in delay-2">Espírito Santo</span>
+                <span class="theme-tag fade-in delay-3">Feminismo X Machismo X Relativismo</span>
+                <span class="theme-tag fade-in delay-3">Sexualidade: Padrão Cristão</span>
+                <span class="theme-tag fade-in delay-3">Pecado</span>
+                <span class="theme-tag fade-in delay-1">Libertação</span>
+                <span class="theme-tag fade-in delay-1">Misticismo/Apostasia</span>
+                <span class="theme-tag fade-in delay-2">Chamado e Vocação</span>
+                <span class="theme-tag fade-in delay-2">Falsos Mestres e Falsas Doutrinas</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 8. EVENTOS DO DEPARTAMENTO -->
+    <section id="eventos" class="scroll-section">
+        <div class="container">
+            <h2 class="section-title fade-in">Eventos do Departamento</h2>
+            <div class="events-grid">
+                <div class="glass-card event-card fade-in delay-1">
+                    <h4>🎭 Festa a Fantasia</h4>
+                    <p class="cover-details">Culto temático com roupas, músicas e exposições bíblicas.</p>
+                </div>
+                <div class="glass-card event-card fade-in delay-2">
+                    <h4>🌾 Festa da Colheita</h4>
+                    <p class="cover-details">Celebração de agradecimento pelos frutos espirituais e vidas alcançadas.</p>
+                </div>
+                <div class="glass-card event-card fade-in delay-3">
+                    <h4>🏕️ Rally de Final de Semana</h4>
+                    <p class="cover-details">Diversas atividades, cultos, evangelismo e oficinas intensivas.</p>
+                </div>
+                <div class="glass-card event-card fade-in delay-1">
+                    <h4>🎬 Cine Tela Crente</h4>
+                    <p class="cover-details">Exibição de filmes com princípios cristãos seguidos de debates construtivos.</p>
+                </div>
+                <div class="glass-card event-card fade-in delay-2">
+                    <h4>📚 Seminários</h4>
+                    <p class="cover-details">Estudos aprofundados sobre Paternidade, Sexualidade e vida em família.</p>
+                </div>
+                <div class="glass-card event-card fade-in delay-3">
+                    <h4>🏠 Culto nos Lares</h4>
+                    <p class="cover-details">Equipe preparada para visitas frequentes e comunhão nas casas.</p>
+                </div>
+                <div class="glass-card event-card fade-in delay-1">
+                    <h4>🌍 Ação Social</h4>
+                    <p class="cover-details">Visita a instituições carentes, demonstrando o amor de Cristo na prática.</p>
+                </div>
+                <div class="glass-card event-card fade-in delay-2">
+                    <h4>📣 Evangelismo Prático</h4>
+                    <p class="cover-details">Ações quinzenais nas ruas aplicando o que foi aprendido em sala de aula.</p>
+                </div>
+                <div class="glass-card event-card fade-in delay-3">
+                    <h4>🙏 Semana de Consagração</h4>
+                    <p class="cover-details">Período dedicado à oração, jejum e foco total na missão e avivamento.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 9. ESTRUTURA ORGANIZACIONAL -->
+    <section id="estrutura" class="scroll-section">
+        <div class="container fade-in">
+            <h2 class="section-title">Estrutura Organizacional</h2>
+            <div class="org-chart">
+                <div class="org-node main">Pastor Presidente / Congregação</div>
+                
+                <div class="org-level" style="margin-top: 2rem;">
+                    <div class="org-node">Coordenação do Departamento</div>
+                </div>
+
+                <div class="org-level multi" style="margin-top: 3rem;">
+                    <div class="org-level-connector"></div>
+                    <div class="org-level-vertical" style="left: 15%"></div>
+                    <div class="org-level-vertical" style="left: 50%"></div>
+                    <div class="org-level-vertical" style="left: 85%"></div>
+                    
+                    <div class="org-node">Equipe de Professores</div>
+                    <div class="org-node">Equipe de Acolhimento</div>
+                    <div class="org-node">Equipe de Eventos</div>
+                </div>
+
+                <div class="org-level" style="margin-top: 2rem;">
+                    <div class="org-node main" style="background: rgba(212, 168, 67, 0.2); border: 2px dashed var(--gold);">Alunos / Discípulos</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 10. PERFIL DOS GESTORES E COLABORADORES -->
+    <section id="perfil" class="scroll-section">
+        <div class="container">
+            <h2 class="section-title fade-in">Perfil da Equipe</h2>
+            <div class="program-grid">
+                <div class="glass-card fade-in delay-1">
+                    <h3 class="gold-text" style="font-size: 1.5rem; margin-bottom: 1rem;">Gestores</h3>
+                    <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.8rem;">
+                        <li>✓ Ser cristão maduro</li>
+                        <li>✓ Ter disponibilidade de tempo</li>
+                        <li>✓ Amar o trabalho de discipulado</li>
+                        <li>✓ Acreditar no potencial das pessoas</li>
+                        <li>✓ Compreender que o foco principal é servir</li>
+                    </ul>
+                </div>
+                <div class="glass-card fade-in delay-2">
+                    <h3 class="gold-text" style="font-size: 1.5rem; margin-bottom: 1rem;">Colaboradores</h3>
+                    <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.8rem;">
+                        <li>✓ Observar os objetivos do projeto</li>
+                        <li>✓ Planejar os temas abordados</li>
+                        <li>✓ Desenvolver afetividade com a turma</li>
+                        <li>✓ Ser exemplo de conduta</li>
+                        <li>✓ Vida de oração constante</li>
+                        <li>✓ Avaliar o desenvolvimento</li>
+                        <li>✓ Comprometimento e Visão Missionária</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 11. FUNCIONAMENTO -->
+    <section id="funcionamento" class="scroll-section">
+        <div class="container">
+            <h2 class="section-title fade-in">Funcionamento</h2>
+            <div class="target-cards">
+                <div class="glass-card fade-in delay-1" style="text-align: center;">
+                    <div style="font-size: 2.5rem; margin-bottom: 1rem;">🗓️</div>
+                    <h3 class="gold-text">Encontros</h3>
+                    <p>EBD para Novos Convertidos +<br>Encontros a cada 15 dias para estudo do discipulado</p>
+                </div>
+                <div class="glass-card fade-in delay-2" style="text-align: center;">
+                    <div style="font-size: 2.5rem; margin-bottom: 1rem;">⏳</div>
+                    <h3 class="gold-text">Duração</h3>
+                    <p>Mínimo de 1 ano por turma<br>Frequência mínima exigida: 75%</p>
+                </div>
+                <div class="glass-card fade-in delay-3" style="text-align: center;">
+                    <div style="font-size: 2.5rem; margin-bottom: 1rem;">🎓</div>
+                    <h3 class="gold-text">Encerramento</h3>
+                    <p>Confraternização final com<br>entrega de Certificados</p>
+                </div>
+            </div>
+            <div class="glass-card fade-in" style="margin-top: 2rem; text-align: center; border-color: var(--gold);">
+                <p><strong>Horário Sugerido:</strong> 07:00h às 10:00h (Domingos)</p>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- 13. PLATAFORMA DIGITAL (DIFERENCIAL) -->
+    <section id="plataforma" class="scroll-section">
+        <div class="container">
+            <div style="text-align: center;">
+                <span class="badge" style="background: var(--gold); color: var(--deep-blue);">Novo! Diferencial 2026</span>
+                <h2 class="section-title">Plataforma Digital Integrada</h2>
+            </div>
+            
+            <div class="platform-hero-text fade-in">
+                "Além do conteúdo presencial de excelência, este projeto conta com uma plataforma digital moderna e exclusiva. Uma ferramenta que revoluciona e facilita o cadastro, acompanhamento, gestão de presenças e comunicação direta com nossos novos convertidos."
+            </div>
+
+            <div class="platform-features">
+                <div class="glass-card fade-in delay-1">
+                    <h3 class="gold-text" style="margin-bottom: 0.5rem;">📱 Cadastro via QR Code</h3>
+                    <p class="cover-details">Visitantes e alunos se cadastram rapidamente usando o próprio celular ao chegar na igreja.</p>
+                </div>
+                <div class="glass-card fade-in delay-2">
+                    <h3 class="gold-text" style="margin-bottom: 0.5rem;">💻 Portal do Aluno</h3>
+                    <p class="cover-details">Acesso a materiais complementares, avisos, acompanhamento de faltas e cronograma.</p>
+                </div>
+                <div class="glass-card fade-in delay-3">
+                    <h3 class="gold-text" style="margin-bottom: 0.5rem;">🎓 Certificados Digitais</h3>
+                    <p class="cover-details">Geração automática de certificados de conclusão validados para cada ciclo terminado.</p>
+                </div>
+                <div class="glass-card fade-in delay-1">
+                    <h3 class="gold-text" style="margin-bottom: 0.5rem;">📊 Relatórios Dinâmicos</h3>
+                    <p class="cover-details">Dashboard completo para os gestores com estatísticas de retenção, idade e perfil da turma.</p>
+                </div>
+                <div class="glass-card fade-in delay-2">
+                    <h3 class="gold-text" style="margin-bottom: 0.5rem;">💬 Mensagens Automáticas</h3>
+                    <p class="cover-details">Integração para envio de avisos e parabenizações via WhatsApp em apenas um clique.</p>
+                </div>
+                <div class="glass-card fade-in delay-3">
+                    <h3 class="gold-text" style="margin-bottom: 0.5rem;">📥 Exportação de Dados</h3>
+                    <p class="cover-details">Listas de chamadas, dados para secretaria da igreja e cadastros de batismo prontos para impressão ou PDF.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 14. CLOSING / REQUERIMENTO -->
+    <section id="closing" class="scroll-section">
+        <div class="container fade-in">
+            <h2 class="verse">
+                "Eu plantei, Apolo regou; mas Deus deu o crescimento."
+                <br><span style="font-size: 1.2rem; color: var(--text-muted); font-family: var(--font-body); font-style: normal;">— 1 Coríntios 3:6</span>
+            </h2>
+
+            <div style="margin-top: 5rem; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                <div class="signature-line"></div>
+                <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">Aprovação Pastoral</h3>
+                <p class="cover-details">Pr. Edvaldo Romualdo</p>
+            </div>
+
+            <div style="margin-top: 5rem;">
+                <h4 class="gold-text" style="font-size: 1.5rem; margin-bottom: 0.5rem;">Assembleia de Deus CML CAB</h4>
+                <p class="cover-details">Rua das Mangueiras, 19 – Novo Horizonte</p>
+                <p class="cover-details" style="margin-top: 1rem; opacity: 0.5;">Projeto elaborado e apresentado por: <strong>Roberto</strong></p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Intersection Observer for Scroll Animations
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.15
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.fade-in').forEach((el) => {
+                observer.observe(el);
+            });
+
+            // Dot Navigation Generation
+            const sections = document.querySelectorAll('.scroll-section');
+            const dotNav = document.getElementById('dotNav');
+
+            sections.forEach((section, index) => {
+                const dot = document.createElement('div');
+                dot.classList.add('dot');
+                if (index === 0) dot.classList.add('active');
+                
+                dot.addEventListener('click', () => {
+                    section.scrollIntoView({ behavior: 'smooth' });
+                });
+                
+                dotNav.appendChild(dot);
+            });
+
+            // Update Active Dot on Scroll
+            const dotObserverOptions = {
+                root: null,
+                rootMargin: '-50% 0px -50% 0px',
+                threshold: 0
+            };
+
+            const dots = document.querySelectorAll('.dot');
+            const dotObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const index = Array.from(sections).indexOf(entry.target);
+                        dots.forEach(d => d.classList.remove('active'));
+                        if(dots[index]) dots[index].classList.add('active');
+                    }
+                });
+            }, dotObserverOptions);
+
+            sections.forEach(section => {
+                dotObserver.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>

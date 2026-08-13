@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Novo Convertido - AD CML CAB</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        body {
+            background-color: var(--bg-color, #f4f7fa);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        .header-simple {
+            background: linear-gradient(135deg, #1a237e 0%, #0a0f3d 100%);
+            color: white;
+            padding: 2rem 1rem;
+            text-align: center;
+            border-bottom: 4px solid #D4A843;
+        }
+        .header-simple i.logo-icon {
+            font-size: 3rem;
+            color: #D4A843;
+            margin-bottom: 1rem;
+        }
+        .header-simple h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        .header-simple p.subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+        .header-simple p.welcome {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #f1c40f;
+        }
+
+        .main-container {
+            flex: 1;
+            padding: 2rem 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #333;
+        }
+        .form-group label span.req {
+            color: #e74c3c;
+        }
+        .input-group {
+            position: relative;
+        }
+        .input-group i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7f8c8d;
+        }
+        .input-group input, .input-group select, .input-group textarea {
+            width: 100%;
+            padding: 0.8rem 1rem 0.8rem 2.5rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        .input-group textarea {
+            padding-left: 1rem;
+        }
+        
+        .input-group input:focus, .input-group select:focus, .input-group textarea:focus {
+            border-color: #D4A843;
+            box-shadow: 0 0 0 3px rgba(212, 168, 67, 0.2);
+            outline: none;
+        }
+
+        .input-error {
+            border-color: #e74c3c !important;
+            background-color: #fdf0ef;
+        }
+
+        .expandable-section {
+            margin-top: 2rem;
+            border-top: 1px dashed #ccc;
+            padding-top: 1.5rem;
+        }
+        .toggle-btn {
+            background: none;
+            border: none;
+            color: #1a237e;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            padding: 0;
+        }
+        .optional-fields {
+            display: none;
+        }
+        .optional-fields.show {
+            display: block;
+            animation: fadeIn 0.4s;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #D4A843 0%, #C9952B 100%);
+            color: white;
+            border: none;
+            padding: 1rem;
+            width: 100%;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 1rem;
+            font-family: 'Outfit', sans-serif;
+        }
+        .btn-submit:hover {
+            box-shadow: 0 4px 15px rgba(212, 168, 67, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Success State */
+        #success-state {
+            display: none;
+            text-align: center;
+        }
+        .success-icon {
+            font-size: 4rem;
+            color: #2ecc71;
+            margin-bottom: 1rem;
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .success-title {
+            color: #1a237e;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+        .success-name {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 2rem;
+        }
+        .access-code-box {
+            background: #f8f9fa;
+            border: 2px dashed #D4A843;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .access-code-box p {
+            margin: 0;
+            color: #555;
+            margin-bottom: 0.5rem;
+        }
+        .access-code {
+            font-size: 2rem;
+            font-family: monospace;
+            font-weight: 700;
+            color: #1a237e;
+            letter-spacing: 2px;
+            display: block;
+            margin-bottom: 1rem;
+        }
+        .btn-copy {
+            background: #e0e0e0;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: 0.2s;
+        }
+        .btn-copy:hover {
+            background: #d0d0d0;
+        }
+        .btn-whatsapp {
+            background: #25D366;
+            color: white;
+            border: none;
+            padding: 1rem;
+            width: 100%;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            text-decoration: none;
+        }
+        .btn-whatsapp:hover {
+            background: #128C7E;
+            color: white;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #1a237e;
+            color: #1a237e;
+            padding: 1rem;
+            width: 100%;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 1rem;
+            display: block;
+            text-decoration: none;
+        }
+        .btn-outline:hover {
+            background: #1a237e;
+            color: white;
+        }
+
+        .footer {
+            background: #fff;
+            text-align: center;
+            padding: 1.5rem;
+            border-top: 1px solid #eee;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            80% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        #toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+        .toast {
+            background: #333;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin-top: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            animation: fadeIn 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .toast.error { background: #e74c3c; }
+        .toast.success { background: #2ecc71; }
+    </style>
+</head>
+<body>
+
+    <header class="header-simple">
+        <i class="fa-solid fa-cross logo-icon"></i>
+        <h1>Cadastro de Novo Convertido</h1>
+        <p class="subtitle">Assembleia de Deus CML CAB</p>
+        <p class="welcome">Parabéns por trazer alguém para Jesus! Preencha os dados abaixo.</p>
+    </header>
+
+    <main class="main-container">
+        
+        <div class="card" id="form-state">
+            <form id="registration-form" novalidate>
+                
+                <div class="form-group">
+                    <label for="name">Nome Completo <span class="req">*</span></label>
+                    <div class="input-group">
+                        <i class="fa-solid fa-user"></i>
+                        <input type="text" id="name" required placeholder="Ex: João da Silva">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Telefone/WhatsApp <span class="req">*</span></label>
+                    <div class="input-group">
+                        <i class="fa-brands fa-whatsapp"></i>
+                        <input type="tel" id="phone" required placeholder="(00) 00000-0000" maxlength="15">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">E-mail <span class="req">*</span></label>
+                    <div class="input-group">
+                        <i class="fa-solid fa-envelope"></i>
+                        <input type="email" id="email" required placeholder="Seu e-mail">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Senha <span class="req">*</span></label>
+                    <div class="input-group">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="password" required placeholder="Senha de acesso">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="decisionDate">Data da Decisão <span class="req">*</span></label>
+                    <div class="input-group">
+                        <i class="fa-solid fa-calendar-day"></i>
+                        <input type="date" id="decisionDate" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="evangelizer">Quem Evangelizou? <span class="req">*</span></label>
+                    <div class="input-group">
+                        <i class="fa-solid fa-hand-holding-heart"></i>
+                        <input type="text" id="evangelizer" required placeholder="Nome do irmão(ã)">
+                    </div>
+                </div>
+
+                <div class="expandable-section">
+                    <button type="button" class="toggle-btn" id="toggle-optional">
+                        <i class="fa-solid fa-chevron-down"></i> Mais Informações (Opcional)
+                    </button>
+                    
+                    <div class="optional-fields" id="optional-fields">
+                        <div class="form-group">
+                            <label for="birthDate">Data de Nascimento</label>
+                            <div class="input-group">
+                                <i class="fa-solid fa-cake-candles"></i>
+                                <input type="date" id="birthDate">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">E-mail</label>
+                            <div class="input-group">
+                                <i class="fa-solid fa-envelope"></i>
+                                <input type="email" id="email" placeholder="email@exemplo.com">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="maritalStatus">Estado Civil</label>
+                            <div class="input-group">
+                                <i class="fa-solid fa-ring"></i>
+                                <select id="maritalStatus">
+                                    <option value="">Selecione...</option>
+                                    <option value="Solteiro(a)">Solteiro(a)</option>
+                                    <option value="Casado(a)">Casado(a)</option>
+                                    <option value="Divorciado(a)">Divorciado(a)</option>
+                                    <option value="Viúvo(a)">Viúvo(a)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="gender">Sexo</label>
+                            <div class="input-group">
+                                <i class="fa-solid fa-venus-mars"></i>
+                                <select id="gender">
+                                    <option value="">Selecione...</option>
+                                    <option value="Masculino">Masculino</option>
+                                    <option value="Feminino">Feminino</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="address">Endereço Completo</label>
+                            <div class="input-group">
+                                <textarea id="address" rows="3" placeholder="Rua, Número, Bairro..."></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="notes">Necessidades/Observações (Pedidos de Oração)</label>
+                            <div class="input-group">
+                                <textarea id="notes" rows="4" placeholder="Algum pedido de oração especial?"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    <i class="fa-solid fa-user-plus"></i> Cadastrar Novo Convertido
+                </button>
+            </form>
+        </div>
+
+        <div class="card" id="success-state">
+            <i class="fa-solid fa-circle-check success-icon"></i>
+            <h2 class="success-title">Cadastro Realizado com Sucesso!</h2>
+            <p class="success-name" id="success-student-name">Nome do Aluno</p>
+
+            <div class="access-code-box">
+                <p>O cadastro foi criado e os dados de acesso são o <b>e-mail</b> e a <b>senha</b> cadastrados.</p>
+            </div>
+
+            <button class="btn-whatsapp" id="btn-send-whatsapp">
+                <i class="fa-brands fa-whatsapp"></i> Enviar Boas-vindas via WhatsApp
+            </button>
+            
+            <button class="btn-outline" id="btn-register-another">
+                <i class="fa-solid fa-plus"></i> Cadastrar Outro
+            </button>
+            
+            <a href="index.html" class="btn-outline" style="border:none; color:#666; background:#eee;">
+                <i class="fa-solid fa-home"></i> Voltar ao Início
+            </a>
+        </div>
+
+    </main>
+
+    <footer class="footer">
+        <p><strong>Assembleia de Deus CML CAB</strong></p>
+        <p>Pr. Edvaldo Romualdo</p>
+        <p>Rua das Mangueiras 19 – Novo Horizonte</p>
+    </footer>
+
+    <div id="toast-container"></div>
+
+    <script src="js/data.js"></script>`n    <script type="module" src="js/firebase-sync.js"></script>`n    <script type="module" src="js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('decisionDate').value = today;
+
+            const phoneInput = document.getElementById('phone');
+            phoneInput.addEventListener('input', function (e) {
+                let x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
+                e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+            });
+
+            const toggleBtn = document.getElementById('toggle-optional');
+            const optionalFields = document.getElementById('optional-fields');
+            toggleBtn.addEventListener('click', () => {
+                const isHidden = optionalFields.style.display === '' || optionalFields.style.display === 'none';
+                if (isHidden) {
+                    optionalFields.style.display = 'block';
+                    optionalFields.classList.add('show');
+                    toggleBtn.innerHTML = '<i class="fa-solid fa-chevron-up"></i> Menos Informações';
+                } else {
+                    optionalFields.style.display = 'none';
+                    optionalFields.classList.remove('show');
+                    toggleBtn.innerHTML = '<i class="fa-solid fa-chevron-down"></i> Mais Informações (Opcional)';
+                }
+            });
+
+            const showToastMessage = (msg, type = 'error') => {
+                if (typeof showToast === 'function') {
+                    showToast(msg, type);
+                } else {
+                    const container = document.getElementById('toast-container');
+                    const toast = document.createElement('div');
+                    toast.className = `toast ${type}`;
+                    toast.innerHTML = `<i class="fa-solid fa-${type === 'error' ? 'circle-exclamation' : 'check-circle'}"></i> ${msg}`;
+                    container.appendChild(toast);
+                    setTimeout(() => toast.remove(), 3000);
+                }
+            };
+
+            const form = document.getElementById('registration-form');
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                document.querySelectorAll('.input-error').forEach(el => el.classList.remove('input-error'));
+                
+                const name = document.getElementById('name').value.trim();
+                const phone = document.getElementById('phone').value.trim();
+                const decisionDate = document.getElementById('decisionDate').value;
+                const evangelizer = document.getElementById('evangelizer').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const password = document.getElementById('password').value.trim();
+
+                let hasError = false;
+                let firstErrorEl = null;
+
+                if (!name) { document.getElementById('name').classList.add('input-error'); hasError = true; firstErrorEl = firstErrorEl || document.getElementById('name'); }
+                if (!phone || phone.length < 14) { document.getElementById('phone').classList.add('input-error'); hasError = true; firstErrorEl = firstErrorEl || document.getElementById('phone'); }
+                if (!decisionDate) { document.getElementById('decisionDate').classList.add('input-error'); hasError = true; firstErrorEl = firstErrorEl || document.getElementById('decisionDate'); }
+                if (!evangelizer) { document.getElementById('evangelizer').classList.add('input-error'); hasError = true; firstErrorEl = firstErrorEl || document.getElementById('evangelizer'); }
+                if (!email) { document.getElementById('email').classList.add('input-error'); hasError = true; firstErrorEl = firstErrorEl || document.getElementById('email'); }
+                if (!password || password.length < 6) { document.getElementById('password').classList.add('input-error'); hasError = true; firstErrorEl = firstErrorEl || document.getElementById('password'); }
+
+                if (hasError) {
+                    showToastMessage('Por favor, preencha todos os campos obrigatórios.', 'error');
+                    firstErrorEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstErrorEl.focus();
+                    return;
+                }
+
+                const studentData = {
+                    name: name,
+                    phone: phone,
+                    decisionDate: decisionDate,
+                    evangelizer: evangelizer,
+                    birthDate: document.getElementById('birthDate').value,
+                    email: email,
+                    maritalStatus: document.getElementById('maritalStatus').value,
+                    gender: document.getElementById('gender').value,
+                    address: document.getElementById('address').value.trim(),
+                    notes: document.getElementById('notes').value.trim(),
+                    status: 'active'
+                };
+
+                try {
+                    showToastMessage('Criando conta no Firebase...', 'info');
+                    
+                    // Create user in Firebase Auth
+                    await window.registerUser(email, password, 'student');
+
+                    // Save locally and sync to firestore via firebase-sync.js
+                    const newStudent = StudentManager.add(studentData);
+                    
+                    document.getElementById('form-state').style.display = 'none';
+                    document.getElementById('success-state').style.display = 'block';
+                    
+                    document.getElementById('success-student-name').textContent = newStudent.name;
+                    
+                    const btnWhatsapp = document.getElementById('btn-send-whatsapp');
+                    btnWhatsapp.onclick = () => {
+                        const msg = encodeURIComponent(`Olá ${newStudent.name}! Seja muito bem-vindo(a) à Assembleia de Deus CML CAB. Seu acesso para a plataforma de discipulado é o seu e-mail (${email}) e a senha que você cadastrou.`);
+                        const phoneNum = newStudent.phone.replace(/\D/g, '');
+                        window.open(`https://wa.me/55${phoneNum}?text=${msg}`, '_blank');
+                    };
+
+                    showToastMessage('Cadastro realizado com sucesso!', 'success');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    
+                } catch (error) {
+                    console.error(error);
+                    showToastMessage('Erro ao salvar cadastro. Verifique se o email já está em uso.', 'error');
+                }
+            });
+
+            // The copy code logic was removed since we no longer generate codes
+
+
+            document.getElementById('btn-register-another').addEventListener('click', () => {
+                form.reset();
+                document.getElementById('decisionDate').value = new Date().toISOString().split('T')[0];
+                document.getElementById('success-state').style.display = 'none';
+                document.getElementById('form-state').style.display = 'block';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+</html>
