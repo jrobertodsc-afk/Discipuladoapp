@@ -1267,28 +1267,31 @@
         document.addEventListener('DOMContentLoaded', async () => {
             // Check auth first
             try {
-                const authData = await window.checkAuth();
-                if (authData) {
-                    const { user, role } = authData;
-                    if (role === 'teacher' || role === 'admin') {
-                        const allTeachers = TeacherManager.getAll();
-                        let teacher = allTeachers.find(t => t.email === user.email);
-                        if (teacher || role === 'admin') {
-                            currentTeacher = teacher || { name: 'Admin', role: 'admin' };
-                            loginScreen.style.display = 'none';
-                            teacherDashboardScreen.style.display = 'flex';
-                            updateTeacherDashboard();
-                            showToast(`Bem-vindo de volta, ${currentTeacher.name}!`, 'success');
-                        }
-                    } else if (role === 'student') {
-                        const allStudents = StudentManager.getAll();
-                        let student = allStudents.find(s => s.email === user.email);
-                        if (student) {
-                            currentStudent = student;
-                            loginScreen.style.display = 'none';
-                            dashboardScreen.style.display = 'flex';
-                            updateDashboard();
-                            showToast(`Bem-vindo de volta, ${student.name.split(' ')[0]}!`, 'success');
+                if (window.getCurrentUser) {
+                    const authData = await window.getCurrentUser();
+                    if (authData && authData.user && authData.userData) {
+                        const user = authData.user;
+                        const role = authData.userData.role;
+                        if (role === 'teacher' || role === 'admin') {
+                            const allTeachers = TeacherManager.getAll();
+                            let teacher = allTeachers.find(t => t.email === user.email);
+                            if (teacher || role === 'admin') {
+                                currentTeacher = teacher || { name: 'Admin', role: 'admin' };
+                                loginScreen.style.display = 'none';
+                                teacherDashboardScreen.style.display = 'flex';
+                                updateTeacherDashboard();
+                                showToast(`Bem-vindo de volta, ${currentTeacher.name}!`, 'success');
+                            }
+                        } else if (role === 'student') {
+                            const allStudents = StudentManager.getAll();
+                            let student = allStudents.find(s => s.email === user.email);
+                            if (student) {
+                                currentStudent = student;
+                                loginScreen.style.display = 'none';
+                                dashboardScreen.style.display = 'flex';
+                                updateDashboard();
+                                showToast(`Bem-vindo de volta, ${student.name.split(' ')[0]}!`, 'success');
+                            }
                         }
                     }
                 }
