@@ -373,23 +373,6 @@
 </head>
 <body>
 
-    <!-- ADMIN LOGIN OVERLAY -->
-    <div id="admin-login-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--blue-900); z-index: 9999; display: flex; align-items: center; justify-content: center; flex-direction: column; color: white;">
-        <div style="background: white; color: var(--text-dark); padding: 40px; border-radius: 1rem; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
-            <h2 style="font-family: 'Outfit'; color: var(--blue-900); margin-bottom: 24px;">Login Administrativo</h2>
-            <div class="form-group" style="text-align: left;">
-                <label>Email / Usuário</label>
-                <input type="text" id="admin-user" class="form-control" placeholder="admin">
-            </div>
-            <div class="form-group" style="text-align: left;">
-                <label>Senha</label>
-                <input type="password" id="admin-pass" class="form-control" placeholder="****">
-            </div>
-            <button class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 16px;" onclick="tryAdminLogin()">Entrar</button>
-            <p id="admin-login-error" style="color: #d93025; font-size: 0.85rem; margin-top: 16px; display: none;">Credenciais inválidas.</p>
-        </div>
-    </div>
-
 <div class="app-layout">
     <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
@@ -1152,35 +1135,21 @@
         // Initial setup
         initDashboard();
         generateQRCode();
-        
-        // Check local auth state
-        if (localStorage.getItem('disc_admin_auth') === 'true') {
-            document.getElementById('admin-login-overlay').style.display = 'none';
-        }
     });
 
-    function tryAdminLogin() {
-        const user = document.getElementById('admin-user').value;
-        const pass = document.getElementById('admin-pass').value;
-        
-        // Mock authentication (Will be replaced by Firebase Auth)
-        if (user === 'admin' && pass === '1234') {
-            localStorage.setItem('disc_admin_auth', 'true');
-            document.getElementById('admin-login-overlay').style.display = 'none';
-            if(window.showToast) showToast('Login realizado com sucesso!');
-        } else {
-            document.getElementById('admin-login-error').style.display = 'block';
-        }
-    }
-    
     // Add logout functionality to user profile badge
     document.querySelector('.user-profile').innerHTML = `
-        <span class="badge active" style="cursor:pointer;" onclick="adminLogout()">Admin (Sair)</span>
+        <div class="avatar">AD</div>
+        <span>Admin</span>
+        <button class="btn btn-danger btn-sm" onclick="adminLogout()" style="margin-left: 10px; padding: 4px 8px; font-size: 0.75rem;">Sair</button>
     `;
     
     function adminLogout() {
-        localStorage.removeItem('disc_admin_auth');
-        document.getElementById('admin-login-overlay').style.display = 'flex';
+        if (window.logoutUser) {
+            window.logoutUser();
+        } else {
+            window.location.href = 'portal.html';
+        }
     }
     
     // --- DASHBOARD ---
