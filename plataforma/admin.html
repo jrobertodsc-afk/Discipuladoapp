@@ -1070,12 +1070,10 @@
     // Wait for auth to be ready
     document.addEventListener('DOMContentLoaded', async () => {
         try {
-            const authData = await window.checkAuth();
-            if (!authData || authData.role !== 'admin') {
-                // If not admin, redirect to portal (where login is)
-                window.location.href = 'portal.html';
-            }
+            await window.checkAuth(['admin'], 'portal.html');
+            // If it succeeds, user is admin and is allowed to view the page.
         } catch (e) {
+            // Already redirects inside checkAuth, but fallback here
             window.location.href = 'portal.html';
         }
     });
