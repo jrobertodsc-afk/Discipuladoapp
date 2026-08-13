@@ -1264,40 +1264,43 @@
         // Format Phone input removed since it is not used in login anymore
 
         // Initialize Portal
-        document.addEventListener('DOMContentLoaded', async () => {
-            // Check auth first
-            try {
+        document.addEventListener('DOMContentLoaded', () => {
+            // Wait for auth module to be ready
+            const authCheckInterval = setInterval(async () => {
                 if (window.getCurrentUser) {
-                    const authData = await window.getCurrentUser();
-                    if (authData && authData.user && authData.userData) {
-                        const user = authData.user;
-                        const role = authData.userData.role;
-                        if (role === 'teacher' || role === 'admin') {
-                            const allTeachers = TeacherManager.getAll();
-                            let teacher = allTeachers.find(t => t.email === user.email);
-                            if (teacher || role === 'admin') {
-                                currentTeacher = teacher || { name: 'Admin', role: 'admin' };
-                                loginScreen.style.display = 'none';
-                                teacherDashboardScreen.style.display = 'flex';
-                                updateTeacherDashboard();
-                                showToast(`Bem-vindo de volta, ${currentTeacher.name}!`, 'success');
-                            }
-                        } else if (role === 'student') {
-                            const allStudents = StudentManager.getAll();
-                            let student = allStudents.find(s => s.email === user.email);
-                            if (student) {
-                                currentStudent = student;
-                                loginScreen.style.display = 'none';
-                                dashboardScreen.style.display = 'flex';
-                                updateDashboard();
-                                showToast(`Bem-vindo de volta, ${student.name.split(' ')[0]}!`, 'success');
+                    clearInterval(authCheckInterval);
+                    try {
+                        const authData = await window.getCurrentUser();
+                        if (authData && authData.user && authData.userData) {
+                            const user = authData.user;
+                            const role = authData.userData.role;
+                            if (role === 'teacher' || role === 'admin') {
+                                const allTeachers = TeacherManager.getAll();
+                                let teacher = allTeachers.find(t => t.email === user.email);
+                                if (teacher || role === 'admin') {
+                                    currentTeacher = teacher || { name: 'Admin', role: 'admin' };
+                                    loginScreen.style.display = 'none';
+                                    teacherDashboardScreen.style.display = 'flex';
+                                    updateTeacherDashboard();
+                                    showToast(`Bem-vindo de volta, ${currentTeacher.name}!`, 'success');
+                                }
+                            } else if (role === 'student') {
+                                const allStudents = StudentManager.getAll();
+                                let student = allStudents.find(s => s.email === user.email);
+                                if (student) {
+                                    currentStudent = student;
+                                    loginScreen.style.display = 'none';
+                                    dashboardScreen.style.display = 'flex';
+                                    updateDashboard();
+                                    showToast(`Bem-vindo de volta, ${student.name.split(' ')[0]}!`, 'success');
+                                }
                             }
                         }
+                    } catch (e) {
+                        console.error("Auto-login error", e);
                     }
                 }
-            } catch (e) {
-                console.error("Auto-login error", e);
-            }
+            }, 100);
 
             // Setup Tabs
             document.querySelectorAll('.portal-tab').forEach(tab => {
