@@ -19,7 +19,6 @@
     <style>
         /* Portal Specific Styles */
         body {
-            background-color: var(--bg-light);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -32,14 +31,11 @@
             justify-content: center;
             flex: 1;
             padding: 2rem;
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
         }
 
         .login-card {
-            background: white;
             padding: 3rem;
             border-radius: 20px;
-            box-shadow: var(--shadow-lg);
             width: 100%;
             max-width: 450px;
             text-align: center;
@@ -901,7 +897,7 @@
     <div id="teacher-dashboard-screen">
         <header class="dashboard-header">
             <div class="welcome-msg" id="teacher-header-left">
-                <h2 id="teacher-welcome-name">Olá, Professor(a)! 👋</h2>
+                <h2 id="teacher-welcome-name">Olá, Professor(a)! Ã°Å¸â€˜â€¹</h2>
                 <p id="teacher-subtitle">Selecione uma disciplina para gerenciar sua sala de aula virtual.</p>
             </div>
             <div class="header-actions">
@@ -932,7 +928,7 @@
                         <i class="fa-solid fa-chalkboard-user"></i> Mural e Aulas
                     </button>
                     <button class="portal-tab" data-ava-target="ava-students">
-                        <i class="fa-solid fa-users"></i> Alunos e Frequência
+                        <i class="fa-solid fa-heart-pulse"></i> Gestão e Cuidado
                     </button>
                     <button class="portal-tab" data-ava-target="ava-grades">
                         <i class="fa-solid fa-star"></i> Avaliações e Notas
@@ -941,15 +937,15 @@
 
                 <!-- Tab 1: Mural / Conteúdos -->
                 <div id="ava-mural" class="ava-tab-content active">
-                    <div class="new-post-box">
+                    <div class="new-post-box glass-card">
                         <h4 style="margin-bottom: 1rem;"><i class="fa-solid fa-plus"></i> Postar Novo Conteúdo</h4>
                         <form id="ava-post-form">
                             <div style="display: flex; gap: 10px; margin-bottom: 10px;">
                                 <input type="text" id="post-title" class="form-control" placeholder="Título da Aula/Aviso *" required style="flex: 2;">
                                 <select id="post-type" class="form-control" style="flex: 1;">
-                                    <option value="video">🎥 Vídeo (Link)</option>
-                                    <option value="link">🔗 Link Externo</option>
-                                    <option value="text">📝 Aviso/Texto</option>
+                                    <option value="video">Ã°Å¸Å½Â¥ Vídeo (Link)</option>
+                                    <option value="link">Ã°Å¸â€â€” Link Externo</option>
+                                    <option value="text">Ã°Å¸â€œÂ Aviso/Texto</option>
                                 </select>
                             </div>
                             <textarea id="post-desc" class="form-control" placeholder="Instruções ou resumo..." rows="2" style="margin-bottom: 10px;"></textarea>
@@ -965,10 +961,97 @@
                     </div>
                 </div>
 
-                <!-- Tab 2: Alunos e Frequência -->
+                <!-- Tab 2: Gestão e Cuidado de Vidas -->
                 <div id="ava-students" class="ava-tab-content" style="display: none;">
-                    <div class="students-grid" id="ava-students-grid">
-                        <!-- Populated by JS -->
+                    
+                    <div id="care-list-view">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                            <h3 style="color: var(--primary-color);">Selecione um Aluno para Gerenciar</h3>
+                            <input type="text" id="care-search" class="form-control" placeholder="Buscar aluno..." style="max-width: 300px;">
+                        </div>
+                        <div class="students-grid" id="ava-students-grid">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <div id="care-detail-view" style="display: none; background: white; padding: 1.5rem; border-radius: 15px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);">
+                        <button class="btn btn-outline" id="btn-back-to-care-list" style="margin-bottom: 1rem;"><i class="fa-solid fa-arrow-left"></i> Voltar para a lista</button>
+                        
+                        <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
+                            <div style="font-size: 3rem; color: var(--secondary-color);"><i class="fa-solid fa-user-circle"></i></div>
+                            <div>
+                                <h3 id="care-student-name" style="margin-bottom: 5px;">Nome do Aluno</h3>
+                                <p id="care-student-info" style="color: var(--text-light); margin: 0;"><i class="fa-solid fa-phone"></i> Telefone &bull; <i class="fa-solid fa-envelope"></i> Email</p>
+                                <p style="color: var(--primary-color); margin-top: 5px; font-weight: bold;"><i class="fa-solid fa-hands-holding-child"></i> Padrinho/Líder: <span id="care-student-mentor">Não Atribuído</span></p>
+                            </div>
+                        </div>
+
+                        <!-- 2 Columns: Frequência and Interações -->
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            
+                            <!-- Col 1: Registrar Frequência -->
+                            <div style="background: var(--bg-light); padding: 1.5rem; border-radius: 10px;">
+                                <h4 style="margin-bottom: 1rem;"><i class="fa-solid fa-calendar-check"></i> Registrar Frequência</h4>
+                                <form id="form-add-attendance">
+                                    <input type="hidden" id="att-student-id">
+                                    <div style="margin-bottom: 10px;">
+                                        <label style="font-size: 0.85rem; color: var(--text-light);">Tipo de Evento</label>
+                                        <select id="att-type" class="form-control" required>
+                                            <option value="culto">Culto</option>
+                                            <option value="ebd">Escola Bíblica (EBD)</option>
+                                            <option value="discipulado" selected>Discipulado</option>
+                                            <option value="evento">Evento Especial</option>
+                                        </select>
+                                    </div>
+                                    <div style="margin-bottom: 10px;">
+                                        <label style="font-size: 0.85rem; color: var(--text-light);">Data</label>
+                                        <input type="date" id="att-date" class="form-control" required>
+                                    </div>
+                                    <div style="margin-bottom: 15px;">
+                                        <label style="font-size: 0.85rem; color: var(--text-light);">Situação</label>
+                                        <select id="att-present" class="form-control" required>
+                                            <option value="true">Ã¢Å“â€¦ Presente</option>
+                                            <option value="false">Ã¢ Å’ Faltou</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary" style="width: 100%;">Salvar Frequência</button>
+                                </form>
+
+                                <h5 style="margin-top: 2rem; margin-bottom: 1rem; color: var(--primary-color);">ÃƒÅ¡ltimas Frequências</h5>
+                                <div id="care-attendance-list" style="display: flex; flex-direction: column; gap: 10px; max-height: 200px; overflow-y: auto;">
+                                    <!-- Populated by JS -->
+                                </div>
+                            </div>
+
+                            <!-- Col 2: Interações / Relatório de Cuidado -->
+                            <div style="background: var(--bg-light); padding: 1.5rem; border-radius: 10px;">
+                                <h4 style="margin-bottom: 1rem;"><i class="fa-solid fa-handshake-angle"></i> Novo Relatório de Cuidado</h4>
+                                <form id="form-add-interaction">
+                                    <input type="hidden" id="int-student-id">
+                                    <div style="margin-bottom: 10px;">
+                                        <label style="font-size: 0.85rem; color: var(--text-light);">Tipo de Interação</label>
+                                        <select id="int-type" class="form-control" required>
+                                            <option value="ligacao">Ligação / Mensagem</option>
+                                            <option value="visita">Visita Domiciliar</option>
+                                            <option value="oracao">Oração Juntos</option>
+                                            <option value="aconselhamento">Aconselhamento</option>
+                                            <option value="geral">Outros</option>
+                                        </select>
+                                    </div>
+                                    <div style="margin-bottom: 15px;">
+                                        <label style="font-size: 0.85rem; color: var(--text-light);">Relato do Encontro/Contato</label>
+                                        <textarea id="int-desc" class="form-control" rows="3" placeholder="Ex: Liguei para saber como ele está e oramos juntos." required></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary" style="width: 100%;">Registrar Interação</button>
+                                </form>
+
+                                <h5 style="margin-top: 2rem; margin-bottom: 1rem; color: var(--primary-color);">Histórico de Cuidado</h5>
+                                <div id="care-interaction-list" style="display: flex; flex-direction: column; gap: 10px; max-height: 200px; overflow-y: auto;">
+                                    <!-- Populated by JS -->
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
 
@@ -1024,7 +1107,7 @@
         
         <footer class="portal-footer">
             <p><strong>Assembleia de Deus CML CAB</strong></p>
-            <p>Rua das Mangueiras 19 – Novo Horizonte</p>
+            <p>Rua das Mangueiras 19 Ã¢â‚¬â€œ Novo Horizonte</p>
             <p>Pr. Edvaldo Romualdo</p>
         </footer>
     </div>
@@ -1035,7 +1118,7 @@
         <!-- Header -->
         <header class="dashboard-header">
             <div class="welcome-msg">
-                <h2 id="welcome-name">Olá, Aluno! 👋</h2>
+                <h2 id="welcome-name">Olá, Aluno! Ã°Å¸â€˜â€¹</h2>
                 <p>Acompanhe seu progresso no discipulado.</p>
             </div>
             <div class="header-actions">
@@ -1138,8 +1221,8 @@
             <!-- Tab Content: Lessons -->
             <div id="tab-lessons" class="tab-pane active">
                 <div class="cycle-tabs">
-                    <button class="cycle-tab active" data-cycle="cycle1">Ciclo 1 – Fundamentos</button>
-                    <button class="cycle-tab" data-cycle="cycle2">Ciclo 2 – Vida Cristã</button>
+                    <button class="cycle-tab active" data-cycle="cycle1">Ciclo 1 Ã¢â‚¬â€œ Fundamentos</button>
+                    <button class="cycle-tab" data-cycle="cycle2">Ciclo 2 Ã¢â‚¬â€œ Vida Cristã</button>
                 </div>
 
                 <div id="lessons-grid-cycle1" class="lessons-grid">
@@ -1190,12 +1273,12 @@
                                         
                                         <i class="fa-solid fa-cross cert-logo"></i>
                                         <div class="cert-church">Assembleia de Deus CML CAB</div>
-                                        <div class="cert-title">CERTIFICADO DE CONCLUSÃO</div>
+                                        <div class="cert-title">CERTIFICADO DE CONCLUSÃƒÆ’O</div>
                                         
                                         <div class="cert-body">Certificamos que</div>
                                         <div class="cert-name" id="cert-c1-name">[NOME DO ALUNO]</div>
                                         <div class="cert-body">concluiu com êxito o</div>
-                                        <div class="cert-course">Ciclo 1 – Fundamentos da Fé do Programa de Discipulado</div>
+                                        <div class="cert-course">Ciclo 1 Ã¢â‚¬â€œ Fundamentos da Fé do Programa de Discipulado</div>
                                         
                                         <div class="cert-footer">
                                             <div class="cert-sign">
@@ -1243,12 +1326,12 @@
                                         
                                         <i class="fa-solid fa-cross cert-logo"></i>
                                         <div class="cert-church">Assembleia de Deus CML CAB</div>
-                                        <div class="cert-title">CERTIFICADO DE CONCLUSÃO</div>
+                                        <div class="cert-title">CERTIFICADO DE CONCLUSÃƒÆ’O</div>
                                         
                                         <div class="cert-body">Certificamos que</div>
                                         <div class="cert-name" id="cert-c2-name">[NOME DO ALUNO]</div>
                                         <div class="cert-body">concluiu com êxito o</div>
-                                        <div class="cert-course">Ciclo 2 – Vida Cristã do Programa de Discipulado</div>
+                                        <div class="cert-course">Ciclo 2 Ã¢â‚¬â€œ Vida Cristã do Programa de Discipulado</div>
                                         
                                         <div class="cert-footer">
                                             <div class="cert-sign">
@@ -1275,7 +1358,7 @@
             <!-- Tab Content: Profile -->
             <div id="tab-profile" class="tab-pane">
                 <div class="profile-container">
-                    <div class="profile-card">
+                    <div class="profile-card glass-card">
                         <div class="profile-header">
                             <div class="profile-avatar">
                                 <i class="fa-solid fa-user"></i>
@@ -1289,9 +1372,13 @@
                                 <div class="info-label">Código de Acesso</div>
                                 <div class="info-value" id="profile-code" style="font-family: monospace; font-size: 1.2rem; letter-spacing: 2px;">---</div>
                             </div>
-                            <div class="profile-info-item">
+                                                        <div class="profile-info-item">
                                 <div class="info-label">Telefone</div>
                                 <div class="info-value" id="profile-phone">---</div>
+                            </div>
+                            <div class="profile-info-item">
+                                <div class="info-label">Padrinho / Discipulador</div>
+                                <div class="info-value" id="profile-mentor" style="color: var(--primary-color); font-weight: bold;">---</div>
                             </div>
                             <div class="profile-info-item">
                                 <div class="info-label">Data de Matrícula</div>
@@ -1304,7 +1391,7 @@
                         </div>
                     </div>
                     
-                    <div class="profile-card">
+                    <div class="profile-card glass-card">
                         <h3 style="margin-bottom: 1.5rem; color: var(--primary-color);">Linha do Tempo</h3>
                         <div class="timeline-container" id="profile-timeline">
                             <!-- Populated by JS -->
@@ -1318,7 +1405,7 @@
 
         <footer class="portal-footer">
             <p><strong>Assembleia de Deus CML CAB</strong></p>
-            <p>Rua das Mangueiras 19 – Novo Horizonte</p>
+            <p>Rua das Mangueiras 19 Ã¢â‚¬â€œ Novo Horizonte</p>
             <p>Pr. Edvaldo Romualdo</p>
         </footer>
     </div>
@@ -1371,7 +1458,7 @@
             const toast = document.createElement('div');
             toast.className = `toast toast-${type}`;
             toast.innerHTML = `<div style="display:flex; align-items:center; gap:10px;">
-                                   <div>${type === 'success' ? '✅' : (type === 'error' ? '❌' : 'ℹ️')}</div>
+                                   <div>${type === 'success' ? 'Ã¢Å“â€¦' : (type === 'error' ? 'Ã¢ÂÅ’' : 'Ã¢â€žÂ¹Ã¯Â¸Â')}</div>
                                    <div>${message}</div>
                                </div>`;
             container.appendChild(toast);
@@ -1555,7 +1642,7 @@
         function updateTeacherDashboard() {
             if (!currentTeacher) return;
             
-            document.getElementById('teacher-welcome-name').innerText = `Olá, Professor(a) ${currentTeacher.name}! 👋`;
+            document.getElementById('teacher-welcome-name').innerText = `Olá, Professor(a) ${currentTeacher.name}! Ã°Å¸â€˜â€¹`;
             
             // Show Home, Hide Classroom
             document.getElementById('teacher-home-view').style.display = 'block';
@@ -1640,7 +1727,7 @@
             }
 
             contents.forEach(c => {
-                let icon = c.type === 'video' ? '🎥' : c.type === 'link' ? '🔗' : '📝';
+                let icon = c.type === 'video' ? 'Ã°Å¸Å½Â¥' : c.type === 'link' ? 'Ã°Å¸â€â€”' : 'Ã°Å¸â€œÂ';
                 let linkHtml = c.url ? `<a href="${c.url}" target="_blank" class="btn btn-outline" style="display:inline-block; margin-top:10px;">Acessar Link</a>` : '';
                 
                 feed.innerHTML += `
@@ -1689,12 +1776,16 @@
             const grid = document.getElementById('ava-students-grid');
             grid.innerHTML = '';
             
+            // Show list view, hide detail view
+            document.getElementById('care-list-view').style.display = 'block';
+            document.getElementById('care-detail-view').style.display = 'none';
+            
             const allStudents = StudentManager.getAll();
             // A student is in this class if they have the teacherId, or maybe we just show all students assigned to this teacher
             const myStudents = allStudents.filter(s => s.teacherId === currentTeacher.id);
             
             if (myStudents.length === 0) {
-                grid.innerHTML = '<p class="text-light" style="grid-column: 1/-1;">Você ainda não possui alunos vinculados.</p>';
+                grid.innerHTML = '<p class="text-light" style="grid-column: 1/-1;">Você ainda não possui alunos vinculados para gerenciar.</p>';
                 return;
             }
             
@@ -1710,11 +1801,124 @@
                 card.innerHTML = `
                     <h4>${student.name}</h4>
                     <p><i class="fa-solid fa-phone"></i> ${student.phone || 'N/A'}</p>
-                    <p><i class="fa-solid fa-envelope"></i> ${student.email || 'N/A'}</p>
+                    <p><i class="fa-solid fa-hands-holding-child"></i> Líder: ${student.mentor || 'Nenhum'}</p>
+                    <button class="btn btn-outline" style="margin-top: 10px; width: 100%; border-color: var(--secondary-color); color: var(--secondary-color);">Gerenciar Cuidado</button>
                 `;
+                card.onclick = () => openCarePanel(student);
                 grid.appendChild(card);
             });
         }
+
+        // --- CRM LOGIC ---
+        document.getElementById('care-search').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const cards = document.querySelectorAll('#ava-students-grid .student-card');
+            cards.forEach(card => {
+                if(card.innerText.toLowerCase().includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        document.getElementById('btn-back-to-care-list').addEventListener('click', () => {
+            document.getElementById('care-list-view').style.display = 'block';
+            document.getElementById('care-detail-view').style.display = 'none';
+        });
+
+        function openCarePanel(student) {
+            document.getElementById('care-list-view').style.display = 'none';
+            document.getElementById('care-detail-view').style.display = 'block';
+            
+            document.getElementById('care-student-name').innerText = student.name;
+            document.getElementById('care-student-info').innerHTML = `<i class="fa-solid fa-phone"></i> ${student.phone || 'N/A'} &bull; <i class="fa-solid fa-envelope"></i> ${student.email || 'N/A'}`;
+            document.getElementById('care-student-mentor').innerText = student.mentor || 'Não Atribuído';
+            
+            document.getElementById('att-student-id').value = student.id;
+            document.getElementById('int-student-id').value = student.id;
+            document.getElementById('att-date').value = new Date().toISOString().split('T')[0];
+            
+            loadCareData(student.id);
+        }
+
+        function loadCareData(studentId) {
+            // Load Attendance
+            const attList = document.getElementById('care-attendance-list');
+            attList.innerHTML = '';
+            const attendances = AttendanceManager.getByStudent(studentId);
+            attendances.sort((a,b) => new Date(b.date) - new Date(a.date));
+            
+            if(attendances.length === 0) {
+                attList.innerHTML = '<p class="text-light" style="font-size: 0.9rem;">Nenhum registro de frequência.</p>';
+            } else {
+                attendances.forEach(a => {
+                    const isPresent = a.present ? '<span style="color: var(--success-color);"><i class="fa-solid fa-check"></i> Presente</span>' : '<span style="color: var(--danger-color);"><i class="fa-solid fa-xmark"></i> Faltou</span>';
+                    const typeLabel = a.eventType ? a.eventType.toUpperCase() : 'DISCIPULADO';
+                    attList.innerHTML += `
+                        <div style="background: white; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem;">
+                            <div>
+                                <strong>${formatDate(a.date)}</strong>
+                                <span class="badge badge-secondary" style="font-size: 0.7rem; margin-left: 8px;">${typeLabel}</span>
+                            </div>
+                            <div>${isPresent}</div>
+                        </div>
+                    `;
+                });
+            }
+
+            // Load Interactions
+            const intList = document.getElementById('care-interaction-list');
+            intList.innerHTML = '';
+            const interactions = NotesManager.getByStudent(studentId); // Reusing Notes for interactions
+            interactions.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+            
+            if(interactions.length === 0) {
+                intList.innerHTML = '<p class="text-light" style="font-size: 0.9rem;">Nenhum relatório de interação.</p>';
+            } else {
+                interactions.forEach(n => {
+                    let icon = 'fa-comment';
+                    if(n.type === 'ligacao') icon = 'fa-phone';
+                    if(n.type === 'visita') icon = 'fa-house-user';
+                    if(n.type === 'oracao') icon = 'fa-person-praying';
+                    
+                    intList.innerHTML += `
+                        <div style="background: white; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); font-size: 0.9rem;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 5px; color: var(--text-light); font-size: 0.8rem;">
+                                <span><i class="fa-solid ${icon}"></i> ${n.type.toUpperCase()}</span>
+                                <span>${formatDate(n.createdAt)}</span>
+                            </div>
+                            <p style="margin: 0;">${n.text}</p>
+                        </div>
+                    `;
+                });
+            }
+        }
+
+        document.getElementById('form-add-attendance').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const studentId = document.getElementById('att-student-id').value;
+            const date = document.getElementById('att-date').value;
+            const type = document.getElementById('att-type').value;
+            const present = document.getElementById('att-present').value === 'true';
+            
+            AttendanceManager.record(studentId, date, present, type);
+            if(window.showToast) showToast('Frequência registrada!', 'success');
+            loadCareData(studentId);
+        });
+
+        document.getElementById('form-add-interaction').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const studentId = document.getElementById('int-student-id').value;
+            const type = document.getElementById('int-type').value;
+            const desc = document.getElementById('int-desc').value;
+            
+            NotesManager.add(studentId, desc, type);
+            if(window.showToast) showToast('Interação salva!', 'success');
+            document.getElementById('int-desc').value = '';
+            loadCareData(studentId);
+        });
+
 
         // Load Grades
         function loadAvaGrades() {
@@ -1769,7 +1973,7 @@
 
             // 1. Header
             const firstName = currentStudent.name.split(' ')[0];
-            document.getElementById('welcome-name').innerText = `Olá, ${firstName}! 👋`;
+            document.getElementById('welcome-name').innerText = `Olá, ${firstName}! Ã°Å¸â€˜â€¹`;
 
             // 2. Calculate Progress
             const completedIds = currentStudent.completedLessons || [];
@@ -1842,7 +2046,7 @@
             
             // Student sees all content from all disciplines of their teacher
             if(!currentStudent.teacherId) {
-                feed.innerHTML = '<p class="text-light" style="text-align: center;">Você não possui professor vinculado. Solicite à secretaria.</p>';
+                feed.innerHTML = '<p class="text-light" style="text-align: center;">Você não possui professor vinculado. Solicite ÃƒÂ  secretaria.</p>';
                 return;
             }
 
@@ -1868,7 +2072,7 @@
             allContents.forEach(c => {
                 const lesson = [...(LessonManager.getCycle('cycle1')||[]), ...(LessonManager.getCycle('cycle2')||[])].find(l => l.id === c.disciplineId);
                 const discName = lesson ? lesson.title : 'Geral';
-                let icon = c.type === 'video' ? '🎥' : c.type === 'link' ? '🔗' : '📝';
+                let icon = c.type === 'video' ? 'Ã°Å¸Å½Â¥' : c.type === 'link' ? 'Ã°Å¸â€â€”' : 'Ã°Å¸â€œÂ';
                 let linkHtml = c.url ? `<a href="${c.url}" target="_blank" class="btn btn-outline" style="display:inline-block; margin-top:10px;">Acessar Link</a>` : '';
                 
                 feed.innerHTML += `
@@ -1954,7 +2158,7 @@
                 const scheduledItem = schedule.find(s => s.lessonId === lesson.id);
                 if (scheduledItem) {
                     const dateStr = new Date(scheduledItem.date).toLocaleDateString('pt-BR');
-                    scheduledDateHtml = `<div style="font-size: 0.8rem; color: var(--gold-500); margin-top: 8px;">📅 Previsto: ${dateStr}</div>`;
+                    scheduledDateHtml = `<div style="font-size: 0.8rem; color: var(--gold-500); margin-top: 8px;">Ã°Å¸â€œâ€¦ Previsto: ${dateStr}</div>`;
                 }
             }
 
@@ -1962,7 +2166,7 @@
                 <div class="lesson-card-header">
                     <div class="lesson-number">${lesson.number}</div>
                     <div class="lesson-status">
-                        ${isCompleted ? '✅ Concluída' : '⏳ Pendente'}
+                        ${isCompleted ? 'Ã¢Å“â€¦ Concluída' : 'Ã¢ÂÂ³ Pendente'}
                     </div>
                 </div>
                 <h3>${lesson.icon} ${lesson.title}</h3>
@@ -2085,6 +2289,10 @@
             document.getElementById('profile-name').innerText = currentStudent.name;
             document.getElementById('profile-code').innerText = currentStudent.accessCode;
             document.getElementById('profile-phone').innerText = currentStudent.phone || 'Não informado';
+            
+            const mentorEl = document.getElementById('profile-mentor');
+            if(mentorEl) mentorEl.innerText = currentStudent.mentor || 'Não Atribuído';
+
             document.getElementById('profile-enrollment').innerText = formatDate(currentStudent.enrollmentDate);
 
             // Attendance Rate
@@ -2188,3 +2396,7 @@
     display: block;
 }
 </style>
+
+
+
+
