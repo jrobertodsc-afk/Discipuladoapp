@@ -897,14 +897,17 @@
         </div>
     </div>
 
-    <!-- STATE 2: TEACHER DASHBOARD -->
+    <!-- STATE 2: TEACHER DASHBOARD (AVA) -->
     <div id="teacher-dashboard-screen">
         <header class="dashboard-header">
-            <div class="welcome-msg">
+            <div class="welcome-msg" id="teacher-header-left">
                 <h2 id="teacher-welcome-name">Olá, Professor(a)! 👋</h2>
-                <p>Acompanhe o progresso dos seus alunos.</p>
+                <p id="teacher-subtitle">Selecione uma disciplina para gerenciar sua sala de aula virtual.</p>
             </div>
             <div class="header-actions">
+                <button class="btn-logout" id="btn-teacher-back" title="Voltar" style="display:none; margin-right:10px;">
+                    <i class="fa-solid fa-arrow-left"></i> Voltar
+                </button>
                 <button class="btn-logout" id="btn-teacher-logout" title="Sair">
                     <i class="fa-solid fa-right-from-bracket"></i>
                 </button>
@@ -912,15 +915,111 @@
         </header>
 
         <main class="dashboard-content">
-            <h3 style="color: var(--primary-color); margin-bottom: 1rem;">Minhas Disciplinas</h3>
-            <div id="teacher-disciplines-list" style="margin-bottom: 2rem; display: flex; gap: 10px; flex-wrap: wrap;">
-                <!-- Populated by JS -->
+            
+            <!-- TEACHER HOME VIEW: List of Disciplines -->
+            <div id="teacher-home-view">
+                <h3 style="color: var(--primary-color); margin-bottom: 1.5rem;">Minhas Disciplinas (Salas de Aula)</h3>
+                <div class="disciplines-grid" id="teacher-disciplines-grid">
+                    <!-- Populated by JS -->
+                </div>
             </div>
 
-            <h3 style="color: var(--primary-color); margin-bottom: 1rem;">Meus Alunos</h3>
-            <div class="students-grid" id="teacher-students-grid">
-                <!-- Populated by JS -->
+            <!-- TEACHER CLASSROOM VIEW: Inside a Discipline -->
+            <div id="teacher-classroom-view" style="display: none;">
+                <!-- Classroom Navigation Tabs -->
+                <div class="portal-tabs" style="margin-bottom: 2rem;">
+                    <button class="portal-tab active" data-ava-target="ava-mural">
+                        <i class="fa-solid fa-chalkboard-user"></i> Mural e Aulas
+                    </button>
+                    <button class="portal-tab" data-ava-target="ava-students">
+                        <i class="fa-solid fa-users"></i> Alunos e Frequência
+                    </button>
+                    <button class="portal-tab" data-ava-target="ava-grades">
+                        <i class="fa-solid fa-star"></i> Avaliações e Notas
+                    </button>
+                </div>
+
+                <!-- Tab 1: Mural / Conteúdos -->
+                <div id="ava-mural" class="ava-tab-content active">
+                    <div class="new-post-box">
+                        <h4 style="margin-bottom: 1rem;"><i class="fa-solid fa-plus"></i> Postar Novo Conteúdo</h4>
+                        <form id="ava-post-form">
+                            <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                                <input type="text" id="post-title" class="form-control" placeholder="Título da Aula/Aviso *" required style="flex: 2;">
+                                <select id="post-type" class="form-control" style="flex: 1;">
+                                    <option value="video">🎥 Vídeo (Link)</option>
+                                    <option value="link">🔗 Link Externo</option>
+                                    <option value="text">📝 Aviso/Texto</option>
+                                </select>
+                            </div>
+                            <textarea id="post-desc" class="form-control" placeholder="Instruções ou resumo..." rows="2" style="margin-bottom: 10px;"></textarea>
+                            <input type="url" id="post-url" class="form-control" placeholder="Cole o link do YouTube, Drive, etc (Opcional)" style="margin-bottom: 10px;">
+                            <div style="text-align: right;">
+                                <button type="submit" class="btn btn-primary">Postar no Mural</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div id="ava-mural-feed" style="margin-top: 2rem; display: flex; flex-direction: column; gap: 15px;">
+                        <!-- Posts Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Tab 2: Alunos e Frequência -->
+                <div id="ava-students" class="ava-tab-content" style="display: none;">
+                    <div class="students-grid" id="ava-students-grid">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Tab 3: Notas e Avaliações -->
+                <div id="ava-grades" class="ava-tab-content" style="display: none;">
+                    <div style="background: white; padding: 1.5rem; border-radius: 15px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                            <h4>Lançamento de Notas</h4>
+                        </div>
+                        
+                        <div style="overflow-x: auto;">
+                            <table class="data-table" style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th>Aluno</th>
+                                        <th>Avaliação / Atividade</th>
+                                        <th>Nota</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ava-grades-tbody">
+                                    <!-- Populated by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
+                            <h4>Nova Nota</h4>
+                            <form id="ava-grade-form" style="display: flex; gap: 10px; align-items: flex-end; margin-top: 1rem;">
+                                <div style="flex: 2;">
+                                    <label style="font-size: 0.85rem; color: var(--text-light);">Aluno</label>
+                                    <select id="grade-student" class="form-control" required></select>
+                                </div>
+                                <div style="flex: 2;">
+                                    <label style="font-size: 0.85rem; color: var(--text-light);">Nome da Avaliação</label>
+                                    <input type="text" id="grade-name" class="form-control" placeholder="Ex: Prova 1" required>
+                                </div>
+                                <div style="flex: 1;">
+                                    <label style="font-size: 0.85rem; color: var(--text-light);">Nota</label>
+                                    <input type="number" step="0.1" id="grade-value" class="form-control" placeholder="0 a 10" required>
+                                </div>
+                                <div>
+                                    <button type="submit" class="btn btn-primary">Salvar Nota</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
             </div>
+
         </main>
         
         <footer class="portal-footer">
@@ -999,9 +1098,41 @@
             <!-- Tabs Navigation -->
             <div class="portal-tabs">
                 <button class="portal-tab active" data-target="tab-lessons">Lições</button>
+                <button class="portal-tab" data-target="tab-mural">Mural e Aulas (AVA)</button>
+                <button class="portal-tab" data-target="tab-grades">Meu Boletim</button>
                 <button class="portal-tab" data-target="tab-activities">Eventos/Atividades</button>
                 <button class="portal-tab" data-target="tab-certificates">Certificados</button>
                 <button class="portal-tab" data-target="tab-profile">Meu Perfil</button>
+            </div>
+
+            <!-- Tab Content: Mural e Aulas (AVA) -->
+            <div id="tab-mural" class="tab-pane">
+                <h3 style="color: var(--primary-color); margin-bottom: 1.5rem;">Conteúdos e Aulas</h3>
+                <div id="student-mural-feed" style="display: flex; flex-direction: column; gap: 15px;">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <!-- Tab Content: Boletim (AVA) -->
+            <div id="tab-grades" class="tab-pane">
+                <div style="background: white; padding: 1.5rem; border-radius: 15px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);">
+                    <h3 style="color: var(--primary-color); margin-bottom: 1.5rem;">Meu Boletim</h3>
+                    <div style="overflow-x: auto;">
+                        <table class="data-table" style="width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th>Disciplina</th>
+                                    <th>Avaliação / Atividade</th>
+                                    <th>Nota</th>
+                                    <th>Data</th>
+                                </tr>
+                            </thead>
+                            <tbody id="student-grades-tbody">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
 
             <!-- Tab Content: Lessons -->
@@ -1417,31 +1548,149 @@
             }
         });
 
-        // Update Teacher Dashboard
+        // --- AVA STATE VARIABLES ---
+        let currentDisciplineId = null;
+
+        // Update Teacher Dashboard (Home View)
         function updateTeacherDashboard() {
             if (!currentTeacher) return;
             
             document.getElementById('teacher-welcome-name').innerText = `Olá, Professor(a) ${currentTeacher.name}! 👋`;
             
-            // Populate Disciplines
-            const discList = document.getElementById('teacher-disciplines-list');
-            discList.innerHTML = '';
+            // Show Home, Hide Classroom
+            document.getElementById('teacher-home-view').style.display = 'block';
+            document.getElementById('teacher-classroom-view').style.display = 'none';
+            document.getElementById('btn-teacher-back').style.display = 'none';
+            document.getElementById('teacher-subtitle').innerText = 'Selecione uma disciplina para gerenciar sua sala de aula virtual.';
+
+            const grid = document.getElementById('teacher-disciplines-grid');
+            grid.innerHTML = '';
+            
             if (currentTeacher.disciplines && currentTeacher.disciplines.length > 0) {
                 const allLessons = [...(LessonManager.getCycle('cycle1')||[]), ...(LessonManager.getCycle('cycle2')||[])];
                 currentTeacher.disciplines.forEach(discId => {
                     const lesson = allLessons.find(l => l.id === discId);
                     if (lesson) {
-                        discList.innerHTML += `<span class="lesson-badge" style="margin:0; font-size: 0.9rem;">${lesson.icon} ${lesson.title}</span>`;
+                        const card = document.createElement('div');
+                        card.className = 'student-card'; // Reusing style for a nice card
+                        card.style.textAlign = 'center';
+                        card.innerHTML = `
+                            <div style="font-size: 3rem; margin-bottom: 1rem;">${lesson.icon}</div>
+                            <h4>${lesson.title}</h4>
+                            <p>Sala de Aula Virtual</p>
+                            <button class="btn btn-primary" style="margin-top: 10px; width: 100%;">Entrar na Sala</button>
+                        `;
+                        card.onclick = () => openDisciplineRoom(discId, lesson);
+                        grid.appendChild(card);
                     }
                 });
             } else {
-                discList.innerHTML = '<span class="text-light">Nenhuma disciplina atribuída.</span>';
+                grid.innerHTML = '<p class="text-light" style="grid-column: 1/-1;">Nenhuma disciplina atribuída a você.</p>';
+            }
+        }
+
+        // --- AVA CLASSROOM LOGIC ---
+
+        function openDisciplineRoom(discId, lesson) {
+            currentDisciplineId = discId;
+            
+            // Switch Views
+            document.getElementById('teacher-home-view').style.display = 'none';
+            document.getElementById('teacher-classroom-view').style.display = 'block';
+            document.getElementById('btn-teacher-back').style.display = 'inline-block';
+            document.getElementById('teacher-subtitle').innerText = `Sala Virtual: ${lesson.icon} ${lesson.title}`;
+
+            // Reset tabs to Mural
+            document.querySelectorAll('.portal-tab').forEach(t => t.classList.remove('active'));
+            document.querySelector('[data-ava-target="ava-mural"]').classList.add('active');
+            document.querySelectorAll('.ava-tab-content').forEach(t => t.style.display = 'none');
+            document.getElementById('ava-mural').style.display = 'block';
+
+            // Load Data
+            loadAvaMural();
+            loadAvaStudents();
+            loadAvaGrades();
+        }
+
+        document.getElementById('btn-teacher-back').addEventListener('click', () => {
+            currentDisciplineId = null;
+            updateTeacherDashboard();
+        });
+
+        // Tab Switching for AVA
+        document.querySelectorAll('[data-ava-target]').forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                document.querySelectorAll('.portal-tab').forEach(t => t.classList.remove('active'));
+                e.currentTarget.classList.add('active');
+                
+                document.querySelectorAll('.ava-tab-content').forEach(c => c.style.display = 'none');
+                document.getElementById(e.currentTarget.dataset.avaTarget).style.display = 'block';
+            });
+        });
+
+        // Load Mural
+        function loadAvaMural() {
+            const feed = document.getElementById('ava-mural-feed');
+            feed.innerHTML = '';
+            
+            const contents = ContentManager.getByDiscipline(currentDisciplineId);
+            if (contents.length === 0) {
+                feed.innerHTML = '<p class="text-light" style="text-align: center;">Nenhum conteúdo postado ainda.</p>';
+                return;
             }
 
-            const grid = document.getElementById('teacher-students-grid');
+            contents.forEach(c => {
+                let icon = c.type === 'video' ? '🎥' : c.type === 'link' ? '🔗' : '📝';
+                let linkHtml = c.url ? `<a href="${c.url}" target="_blank" class="btn btn-outline" style="display:inline-block; margin-top:10px;">Acessar Link</a>` : '';
+                
+                feed.innerHTML += `
+                    <div style="background: white; padding: 1.5rem; border-radius: 15px; border-left: 4px solid var(--primary-color); box-shadow: var(--shadow-sm);">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                            <h4 style="margin: 0;">${icon} ${c.title}</h4>
+                            <span style="font-size: 0.8rem; color: var(--text-light);">${new Date(c.createdAt).toLocaleDateString()}</span>
+                        </div>
+                        <p style="color: var(--text-color); margin-bottom: 0;">${c.description || ''}</p>
+                        ${linkHtml}
+                        <div style="margin-top: 10px; text-align: right;">
+                            <button class="btn" style="background: transparent; color: var(--danger-color); padding: 5px;" onclick="deleteContent('${c.id}')"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        window.deleteContent = (id) => {
+            if(confirm("Excluir este conteúdo?")) {
+                ContentManager.remove(id);
+                loadAvaMural();
+                if(window.showToast) showToast('Conteúdo excluído!');
+            }
+        };
+
+        // Post New Content
+        document.getElementById('ava-post-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const data = {
+                teacherId: currentTeacher.id,
+                disciplineId: currentDisciplineId,
+                title: document.getElementById('post-title').value,
+                type: document.getElementById('post-type').value,
+                description: document.getElementById('post-desc').value,
+                url: document.getElementById('post-url').value,
+            };
+            ContentManager.add(data);
+            e.target.reset();
+            loadAvaMural();
+            if(window.showToast) showToast('Conteúdo postado com sucesso!', 'success');
+        });
+
+        // Load Students
+        function loadAvaStudents() {
+            const grid = document.getElementById('ava-students-grid');
             grid.innerHTML = '';
             
             const allStudents = StudentManager.getAll();
+            // A student is in this class if they have the teacherId, or maybe we just show all students assigned to this teacher
             const myStudents = allStudents.filter(s => s.teacherId === currentTeacher.id);
             
             if (myStudents.length === 0) {
@@ -1449,38 +1698,70 @@
                 return;
             }
             
+            const select = document.getElementById('grade-student');
+            select.innerHTML = '<option value="">Selecione...</option>';
+
             myStudents.forEach(student => {
-                const totalLessons = (LessonManager.getCycle('cycle1')?.length || 13) + (LessonManager.getCycle('cycle2')?.length || 13);
-                const completed = student.completedLessons ? student.completedLessons.length : 0;
-                const progress = totalLessons === 0 ? 0 : Math.round((completed / totalLessons) * 100);
-                
-                const attendances = AttendanceManager.getByStudent(student.id);
-                const attendanceTotal = attendances.length;
-                const presenceCount = attendances.filter(a => a.status === 'present').length;
-                const rate = attendanceTotal > 0 ? Math.round((presenceCount / attendanceTotal) * 100) : 0;
-                
+                // Add to grade select
+                select.innerHTML += `<option value="${student.id}">${student.name}</option>`;
+
                 const card = document.createElement('div');
                 card.className = 'student-card';
-                // Can be hooked up to show a student profile modal if needed
                 card.innerHTML = `
                     <h4>${student.name}</h4>
                     <p><i class="fa-solid fa-phone"></i> ${student.phone || 'N/A'}</p>
-                    <p><i class="fa-solid fa-calendar"></i> Cadastrado em: ${formatDate(student.enrollmentDate)}</p>
-                    
-                    <div class="student-stats">
-                        <div class="stat-item">
-                            <div class="stat-value">${progress}%</div>
-                            <div class="stat-label">Conclusão</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-value">${rate}%</div>
-                            <div class="stat-label">Presença</div>
-                        </div>
-                    </div>
+                    <p><i class="fa-solid fa-envelope"></i> ${student.email || 'N/A'}</p>
                 `;
                 grid.appendChild(card);
             });
         }
+
+        // Load Grades
+        function loadAvaGrades() {
+            const tbody = document.getElementById('ava-grades-tbody');
+            tbody.innerHTML = '';
+
+            const grades = GradeManager.getByDiscipline(currentDisciplineId);
+            if(grades.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Nenhuma nota lançada.</td></tr>';
+                return;
+            }
+
+            grades.forEach(g => {
+                const student = StudentManager.getById(g.studentId);
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${student ? student.name : 'Desconhecido'}</td>
+                        <td>${g.assessmentName}</td>
+                        <td style="font-weight: bold; color: ${g.grade >= 7 ? 'var(--success-color)' : 'var(--danger-color)'}">${g.grade}</td>
+                        <td>
+                            <button class="btn btn-icon" onclick="deleteGrade('${g.id}')" style="color: var(--danger-color);"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        window.deleteGrade = (id) => {
+            if(confirm("Excluir esta nota?")) {
+                GradeManager.removeGrade(id);
+                loadAvaGrades();
+                if(window.showToast) showToast('Nota excluída!');
+            }
+        };
+
+        // Save Grade
+        document.getElementById('ava-grade-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const studentId = document.getElementById('grade-student').value;
+            const assessmentName = document.getElementById('grade-name').value;
+            const gradeValue = parseFloat(document.getElementById('grade-value').value);
+            
+            GradeManager.saveGrade(studentId, currentDisciplineId, assessmentName, gradeValue);
+            e.target.reset();
+            loadAvaGrades();
+            if(window.showToast) showToast('Nota salva com sucesso!', 'success');
+        });
 
         // Update Dashboard Data
         function updateDashboard() {
@@ -1548,6 +1829,86 @@
             
             // Update Activities Tab
             updateActivitiesTab();
+
+            // Load AVA Content
+            loadStudentAvaMural();
+            loadStudentAvaGrades();
+        }
+
+        function loadStudentAvaMural() {
+            const feed = document.getElementById('student-mural-feed');
+            if(!feed) return;
+            feed.innerHTML = '';
+            
+            // Student sees all content from all disciplines of their teacher
+            if(!currentStudent.teacherId) {
+                feed.innerHTML = '<p class="text-light" style="text-align: center;">Você não possui professor vinculado. Solicite à secretaria.</p>';
+                return;
+            }
+
+            const teacher = TeacherManager.getById(currentStudent.teacherId);
+            if(!teacher || !teacher.disciplines || teacher.disciplines.length === 0) {
+                feed.innerHTML = '<p class="text-light" style="text-align: center;">Nenhuma sala virtual disponível no momento.</p>';
+                return;
+            }
+
+            let allContents = [];
+            teacher.disciplines.forEach(discId => {
+                const discContents = ContentManager.getByDiscipline(discId);
+                allContents = allContents.concat(discContents);
+            });
+
+            allContents.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+            if(allContents.length === 0) {
+                feed.innerHTML = '<p class="text-light" style="text-align: center;">Nenhum conteúdo postado ainda.</p>';
+                return;
+            }
+
+            allContents.forEach(c => {
+                const lesson = [...(LessonManager.getCycle('cycle1')||[]), ...(LessonManager.getCycle('cycle2')||[])].find(l => l.id === c.disciplineId);
+                const discName = lesson ? lesson.title : 'Geral';
+                let icon = c.type === 'video' ? '🎥' : c.type === 'link' ? '🔗' : '📝';
+                let linkHtml = c.url ? `<a href="${c.url}" target="_blank" class="btn btn-outline" style="display:inline-block; margin-top:10px;">Acessar Link</a>` : '';
+                
+                feed.innerHTML += `
+                    <div style="background: white; padding: 1.5rem; border-radius: 15px; border-left: 4px solid var(--primary-color); box-shadow: var(--shadow-sm);">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                            <h4 style="margin: 0;">${icon} ${c.title} <span class="badge badge-primary" style="font-size:0.7rem; margin-left:10px;">${discName}</span></h4>
+                            <span style="font-size: 0.8rem; color: var(--text-light);">${new Date(c.createdAt).toLocaleDateString()}</span>
+                        </div>
+                        <p style="color: var(--text-color); margin-bottom: 0;">${c.description || ''}</p>
+                        ${linkHtml}
+                    </div>
+                `;
+            });
+        }
+
+        function loadStudentAvaGrades() {
+            const tbody = document.getElementById('student-grades-tbody');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+
+            const grades = GradeManager.getByStudent(currentStudent.id);
+            if(grades.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Nenhuma nota lançada.</td></tr>';
+                return;
+            }
+
+            grades.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+
+            grades.forEach(g => {
+                const lesson = [...(LessonManager.getCycle('cycle1')||[]), ...(LessonManager.getCycle('cycle2')||[])].find(l => l.id === g.disciplineId);
+                const discName = lesson ? lesson.title : 'Desconhecida';
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${discName}</strong></td>
+                        <td>${g.assessmentName}</td>
+                        <td style="font-weight: bold; font-size: 1.2rem; color: ${g.grade >= 7 ? 'var(--success-color)' : 'var(--danger-color)'}">${g.grade}</td>
+                        <td>${new Date(g.updatedAt).toLocaleDateString()}</td>
+                    </tr>
+                `;
+            });
         }
 
         function updateActivitiesTab() {
@@ -1810,3 +2171,20 @@
     </script>
 </body>
 </html>
+<style>
+/* AVA Styles */
+.new-post-box {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 15px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+}
+.ava-tab-content {
+    display: none;
+    animation: fadeIn 0.3s ease-out;
+}
+.ava-tab-content.active {
+    display: block;
+}
+</style>

@@ -14,6 +14,8 @@ const DB = {
     LESSONS_DATA: 'disc_lessons_data',
     ACTIVITIES: 'disc_activities',
     CALENDAR: 'disc_calendar',
+    CONTENTS: 'disc_contents',
+    GRADES: 'disc_grades',
   },
 
   // Initialize default data
@@ -1187,3 +1189,70 @@ const CalendarManager = {
 
 // Initialize DB on load
 DB.init();
+// ============================================
+// ContentManager (AVA: Materiais, Vídeos, Avisos)
+// ============================================
+const ContentManager = {
+  getAll() {
+    return DB.getAll(DB.KEYS.CONTENTS) || [];
+  },
+  getByDiscipline(disciplineId) {
+    return this.getAll()
+      .filter(c => c.disciplineId === disciplineId)
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  },
+  add(contentData) {
+    const newContent = {
+      ...contentData,
+      id: generateId(),
+      createdAt: new Date().toISOString()
+    };
+    DB.add(DB.KEYS.CONTENTS, newContent);
+    return newContent;
+  },
+  remove(id) {
+    const contents = this.getAll().filter(c => c.id !== id);
+    DB.save(DB.KEYS.CONTENTS, contents);
+  }
+};
+
+// ============================================
+// GradeManager (AVA: Notas e Avaliações)
+// ============================================
+const GradeManager = {
+  getAll() {
+    return DB.getAll(DB.KEYS.GRADES) || [];
+  },
+  getByDiscipline(disciplineId) {
+    return this.getAll().filter(g => g.disciplineId === disciplineId);
+  },
+  getByStudent(studentId) {
+    return this.getAll().filter(g => g.studentId === studentId);
+  },
+  saveGrade(studentId, disciplineId, assessmentName, gradeValue) {
+    const grades = this.getAll();
+    const index = grades.findIndex(g => g.studentId === studentId && g.disciplineId === disciplineId && g.assessmentName === assessmentName);
+    if (index >= 0) {
+      grades[index].grade = gradeValue;
+      grades[index].updatedAt = new Date().toISOString();
+    } else {
+      grades.push({
+        id: generateId(),
+        studentId,
+        disciplineId,
+        assessmentName,
+        grade: gradeValue,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      });
+    }
+    DB.save(DB.KEYS.GRADES, grades);
+  },
+  removeGrade(id) {
+    const grades = this.getAll().filter(g => g.id !== id);
+    DB.save(DB.KEYS.GRADES, grades);
+  }
+};
+
+window.ContentManager = ContentManager;
+window.GradeManager = GradeManager;
