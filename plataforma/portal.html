@@ -2288,19 +2288,40 @@
         function updateProfileTab() {
             document.getElementById('profile-name').innerText = currentStudent.name;
             document.getElementById('profile-code').innerText = currentStudent.accessCode;
-            document.getElementById('profile-phone').innerText = currentStudent.phone || 'N�o informado';
+            document.getElementById('profile-phone').innerText = currentStudent.phone || 'No informado';
             
             const mentorEl = document.getElementById('profile-mentor');
-            if(mentorEl) mentorEl.innerText = currentStudent.mentor || 'N�o Atribu�do';
+            if(mentorEl) mentorEl.innerText = currentStudent.mentor || 'No Atribudo';
 
             document.getElementById('profile-enrollment').innerText = formatDate(currentStudent.enrollmentDate);
 
-            // Attendance Rate
+            // Attendance Rate — split by event type
             const attendances = AttendanceManager.getByStudent(currentStudent.id);
-            const attendanceTotal = attendances.length;
-            const presenceCount = attendances.filter(a => a.status === 'present').length;
-            const rate = attendanceTotal > 0 ? Math.round((presenceCount / attendanceTotal) * 100) : 0;
-            document.getElementById('profile-attendance').innerText = `${rate}% (${presenceCount} presen�as em ${attendanceTotal} registros)`;
+
+            const calcRate = (type) => {
+                const filtered = attendances.filter(a => (a.eventType || 'discipulado') === type);
+                if (filtered.length === 0) return null;
+                const present = filtered.filter(a => a.present === true).length;
+                return { rate: Math.round((present / filtered.length) * 100), present, total: filtered.length };
+            };
+
+            const disc = calcRate('discipulado');
+            const culto = calcRate('culto');
+            const ebd = calcRate('ebd');
+
+            const attEl = document.getElementById('profile-attendance');
+            if (attEl) {
+                const cardStyle = `display:inline-block; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); border-radius:12px; padding:10px 16px; margin:4px; text-align:center; min-width:110px;`;
+                const makeCard = (label, icon, data) => data
+                    ? `<div style="${cardStyle}"><div style="font-size:1.5rem">${icon}</div><div style="font-size:1.1rem;font-weight:700">${data.rate}%</div><div style="font-size:0.7rem;color:var(--text-light)">${label}</div><div style="font-size:0.7rem;color:var(--text-light)">${data.present}/${data.total}</div></div>`
+                    : `<div style="${cardStyle} opacity:0.4"><div style="font-size:1.5rem">${icon}</div><div style="font-size:0.85rem;color:var(--text-light)">Sem registros</div><div style="font-size:0.7rem;color:var(--text-light)">${label}</div></div>`;
+
+                attEl.innerHTML = `<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:8px">
+                    ${makeCard('Discipulado', '📚', disc)}
+                    ${makeCard('Cultos', '⛪', culto)}
+                    ${makeCard('EBD', '📖', ebd)}
+                </div>`;
+            }
 
             // Timeline (Mock dates for completed lessons, since we only store IDs)
             // Ideally we would store {id, date} for completion, but based on typical DB schema provided, we just have IDs.

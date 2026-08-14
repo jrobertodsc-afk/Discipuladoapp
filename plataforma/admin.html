@@ -363,6 +363,105 @@
                 padding: 16px;
             }
         }
+
+        /* ── Firebase Sync Icon ────────────────── */
+        .sync-icon {
+            font-size: 1.3rem;
+            cursor: default;
+            transition: filter 0.3s;
+        }
+        .sync-icon.syncing { animation: pulse 1.2s infinite; }
+        .sync-icon.ok { filter: none; }
+        .sync-icon.error { filter: sepia(1) saturate(3) hue-rotate(-20deg); }
+        @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
+
+        /* ── Cuidado de Vidas ───────────────────── */
+        .care-header-row {
+            display: flex; justify-content: space-between; align-items: flex-start;
+            margin-bottom: 20px;
+        }
+        .care-legend {
+            display: flex; align-items: center; gap: 6px;
+            padding: 10px 20px; margin-bottom: 20px;
+            font-size: 0.85rem; border-radius: 12px;
+        }
+        .care-status-dot {
+            width: 10px; height: 10px; border-radius: 50%; display: inline-block;
+        }
+        .care-status-dot.ok     { background: #22c55e; }
+        .care-status-dot.atencao { background: #f59e0b; }
+        .care-status-dot.alerta  { background: #ef4444; }
+
+        .care-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .care-card {
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 16px;
+            padding: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            animation: fadeIn 0.3s ease;
+        }
+        .care-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+        .care-card-header {
+            display: flex; align-items: center; gap: 12px; margin-bottom: 14px;
+        }
+        .care-avatar {
+            width: 46px; height: 46px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.4rem; font-weight: 700;
+            flex-shrink: 0;
+        }
+        .care-avatar.ok     { background: rgba(34,197,94,0.2);  color: #22c55e; }
+        .care-avatar.atencao{ background: rgba(245,158,11,0.2); color: #f59e0b; }
+        .care-avatar.alerta { background: rgba(239,68,68,0.2);  color: #ef4444; }
+        .care-card-name { font-weight: 600; font-size: 1rem; margin: 0; }
+        .care-card-phone { font-size: 0.8rem; color: var(--text-light); margin: 2px 0 0; }
+        .care-last-contact {
+            font-size: 0.78rem; padding: 4px 10px; border-radius: 20px;
+            display: inline-block; margin-bottom: 12px;
+        }
+        .care-last-contact.ok     { background: rgba(34,197,94,0.15);  color: #22c55e; }
+        .care-last-contact.atencao{ background: rgba(245,158,11,0.15); color: #f59e0b; }
+        .care-last-contact.alerta { background: rgba(239,68,68,0.15);  color: #ef4444; }
+        .care-card-actions {
+            display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap;
+        }
+        .care-card-actions .btn {
+            font-size: 0.8rem; padding: 6px 12px; flex: 1;
+            justify-content: center;
+        }
+
+        /* ── Modal de Interação ────────────────── */
+        .interaction-modal-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+            z-index: 5000; align-items: center; justify-content: center;
+        }
+        .interaction-modal-overlay.open { display: flex; }
+        .interaction-modal {
+            background: var(--blue-950, #0f172a);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 20px; padding: 32px;
+            width: 100%; max-width: 500px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            animation: fadeIn 0.25s ease;
+        }
+        .interaction-modal h3 { margin: 0 0 24px; font-family: 'Outfit'; font-size: 1.3rem; }
+        .interaction-history { margin-top: 20px; max-height: 220px; overflow-y: auto; }
+        .interaction-item {
+            display: flex; gap: 10px; padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            font-size: 0.85rem;
+        }
+        .interaction-item:last-child { border-bottom: none; }
+        .interaction-item-icon { font-size: 1.2rem; flex-shrink: 0; }
+        .interaction-item-body { flex: 1; }
+        .interaction-item-desc { margin: 0; }
+        .interaction-item-meta { color: var(--text-light); font-size: 0.75rem; margin-top: 2px; }
     </style>
 </head>
 <body>
@@ -414,6 +513,13 @@
         </div>
         
         <div class="nav-section">
+            <div class="nav-section-title">Pastoral</div>
+            <a class="nav-item" data-target="cuidado">
+                <span class="nav-item-icon">💛</span> Cuidado de Vidas
+            </a>
+        </div>
+
+        <div class="nav-section">
             <div class="nav-section-title">Dados</div>
             <a class="nav-item" data-target="exportar">
                 <span class="nav-item-icon">📤</span> Exportar Dados
@@ -435,7 +541,8 @@
                 <h1 style="font-family: 'Outfit'; margin:0;">Dashboard</h1>
                 <p style="color: var(--text-light); margin:0;" id="current-date-display"></p>
             </div>
-            <div class="user-profile">
+            <div class="user-profile" style="display:flex; align-items:center; gap:12px;">
+                <span id="firebase-sync-icon" class="sync-icon" title="Status Firebase">☁️</span>
                 <span class="badge active">Admin</span>
             </div>
         </div>
@@ -569,7 +676,12 @@
             <div class="card glass-card">
                 <div class="card-header">
                     <h2>Registro de Frequência</h2>
-                    <div style="display: flex; gap: 16px; align-items: center;">
+                    <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+                        <select id="attendance-event-type" class="form-control" style="width: auto;" onchange="renderAttendanceList()">
+                            <option value="discipulado">📚 Discipulado</option>
+                            <option value="culto">⛪ Culto da Semana</option>
+                            <option value="ebd">📖 EBD - Escola Dominical</option>
+                        </select>
                         <input type="date" id="attendance-date" class="form-control" style="width: auto;" onchange="renderAttendanceList()">
                     </div>
                 </div>
@@ -579,7 +691,7 @@
                 </div>
                 
                 <div style="margin-top: 24px; text-align: right;">
-                    <button class="btn btn-primary" onclick="saveAttendance()">Salvar Frequência</button>
+                    <button class="btn btn-primary" onclick="saveAttendance()">💾 Salvar Chamada</button>
                 </div>
             </div>
         </section>
@@ -641,6 +753,39 @@
                         </tbody>
                     </table>
                 </div>
+            </div>
+        </section>
+
+        <!-- SECTION: CUIDADO DE VIDAS -->
+        <section id="cuidado" class="section">
+            <div class="care-header-row">
+                <div>
+                    <h2 style="margin:0; font-family:'Outfit'">💛 Cuidado de Vidas</h2>
+                    <p style="color:var(--text-light); margin:4px 0 0">Acompanhamento pastoral dos novos convertidos</p>
+                </div>
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <button class="btn btn-outline" onclick="renderCareDashboard()">🔄 Atualizar</button>
+                </div>
+            </div>
+
+            <!-- Legenda de Status -->
+            <div class="care-legend glass-card">
+                <span class="care-status-dot ok"></span> Contato recente (&lt;7 dias)
+                <span class="care-status-dot atencao" style="margin-left:20px"></span> Atenção (7–21 dias)
+                <span class="care-status-dot alerta" style="margin-left:20px"></span> Alerta (&gt;21 dias ou sem contato)
+            </div>
+
+            <!-- Filtros de status -->
+            <div class="filter-bar" style="margin-bottom:20px;">
+                <button class="btn btn-outline active" data-care-filter="todos" onclick="setCareFilter('todos', this)">Todos</button>
+                <button class="btn btn-outline" data-care-filter="alerta" onclick="setCareFilter('alerta', this)">🔴 Alerta</button>
+                <button class="btn btn-outline" data-care-filter="atencao" onclick="setCareFilter('atencao', this)">🟡 Atenção</button>
+                <button class="btn btn-outline" data-care-filter="ok" onclick="setCareFilter('ok', this)">🟢 Em dia</button>
+            </div>
+
+            <!-- Grid de alunos -->
+            <div id="care-students-grid" class="care-grid">
+                <!-- Populated by JS -->
             </div>
         </section>
 
@@ -834,6 +979,37 @@
 </div>
 
 <!-- MODALS -->
+
+<!-- Modal: Registrar Interação Pastoral -->
+<div class="interaction-modal-overlay" id="interaction-modal-overlay" onclick="if(event.target===this) closeInteractionModal()">
+    <div class="interaction-modal">
+        <h3 id="interaction-modal-title">💬 Registrar Contato</h3>
+
+        <div class="form-group">
+            <label>Tipo de Contato</label>
+            <select id="interaction-type" class="form-control">
+                <option value="ligacao">📞 Ligação Telefônica</option>
+                <option value="whatsapp">💬 Mensagem WhatsApp</option>
+                <option value="visita">🏠 Visita Pessoal</option>
+                <option value="oracao">🙏 Oração / Intercessão</option>
+                <option value="presencial">🤝 Encontro Presencial</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Descrição / Observações</label>
+            <textarea id="interaction-description" class="form-control" rows="4" placeholder="Ex: Liguei para o João, ele está bem mas disse que não poderá vir no próximo encontro..."></textarea>
+        </div>
+
+        <div style="display:flex; gap:12px; justify-content:flex-end; margin-top:24px;">
+            <button class="btn btn-outline" onclick="closeInteractionModal()">Cancelar</button>
+            <button class="btn btn-primary" onclick="saveInteraction()">💾 Salvar Contato</button>
+        </div>
+
+        <!-- Histórico de interações do aluno selecionado -->
+        <div class="interaction-history" id="interaction-history-list"></div>
+    </div>
+</div>
 
 <!-- Student Modal -->
 <div class="modal" id="student-modal">
@@ -1118,7 +1294,16 @@
                 if (target === 'qrcodes') generateQRCode();
                 if (target === 'certificados') initCertificates();
                 if (target === 'configuracoes') initConfig();
+                if (target === 'cuidado') initCareDashboard();
             });
+        });
+
+        // Refresh care dashboard when Firebase data loads
+        window.addEventListener('firebase-synced', () => {
+            const careSection = document.getElementById('cuidado');
+            if (careSection && careSection.classList.contains('active')) {
+                renderCareDashboard();
+            }
         });
         
         // Mobile toggle
@@ -1490,8 +1675,13 @@
     function renderAttendanceList() {
         if(typeof AttendanceManager === 'undefined' || typeof StudentManager === 'undefined') return;
         const date = document.getElementById('attendance-date').value;
+        const eventTypeEl = document.getElementById('attendance-event-type');
+        const eventType = eventTypeEl ? eventTypeEl.value : 'discipulado';
         const students = StudentManager.getActive();
-        const existingArr = AttendanceManager.getByDate(date) || [];
+
+        // Filter attendance records for this date AND this event type
+        const allForDate = AttendanceManager.getByDate(date) || [];
+        const existingArr = allForDate.filter(a => !a.eventType || a.eventType === eventType);
         
         const existing = {};
         existingArr.forEach(a => existing[a.studentId] = a.present);
@@ -1503,15 +1693,18 @@
             container.innerHTML = '<p class="empty-state">Nenhum aluno ativo no momento.</p>';
             return;
         }
+
+        const eventLabels = { discipulado: '📚 Discipulado', culto: '⛪ Culto', ebd: '📖 EBD' };
         
-        let html = '<table class="data-table"><thead><tr><th>Aluno</th><th>Presente</th></tr></thead><tbody>';
+        let html = `<p style="color:var(--text-light); margin-bottom:12px; font-size:0.9rem">Chamada de <strong>${eventLabels[eventType] || eventType}</strong> — ${date}</p>`;
+        html += '<table class="data-table"><thead><tr><th>Aluno</th><th style="text-align:center">Presente</th></tr></thead><tbody>';
         students.forEach(s => {
             const isPresent = existing[s.id] === true;
             html += `
                 <tr>
                     <td>${s.name}</td>
-                    <td>
-                        <input type="checkbox" class="att-checkbox" data-id="${s.id}" ${isPresent ? 'checked' : ''} style="width:20px; height:20px;">
+                    <td style="text-align:center">
+                        <input type="checkbox" class="att-checkbox" data-id="${s.id}" ${isPresent ? 'checked' : ''} style="width:20px; height:20px; cursor:pointer">
                     </td>
                 </tr>
             `;
@@ -1522,20 +1715,152 @@
     
     function saveAttendance() {
         const date = document.getElementById('attendance-date').value;
+        const eventTypeEl = document.getElementById('attendance-event-type');
+        const eventType = eventTypeEl ? eventTypeEl.value : 'discipulado';
         const checkboxes = document.querySelectorAll('.att-checkbox');
         
-        // Remove existing records for this date to prevent duplicates
-        const existingArr = AttendanceManager.getByDate(date) || [];
-        existingArr.forEach(a => DB.delete(DB.KEYS.ATTENDANCE, a.id));
+        // Remove existing records for this date/eventType to prevent duplicates
+        const allForDate = AttendanceManager.getByDate(date) || [];
+        const toRemove = allForDate.filter(a => !a.eventType || a.eventType === eventType);
+        const allAttendance = DB.getAll(DB.KEYS.ATTENDANCE);
+        const filtered = allAttendance.filter(a => !toRemove.find(r => r.id === a.id));
+        DB.save(DB.KEYS.ATTENDANCE, filtered);
         
+        // Save new records
         checkboxes.forEach(cb => {
             const studentId = cb.getAttribute('data-id');
             const present = cb.checked;
-            AttendanceManager.record(studentId, date, present);
+            AttendanceManager.record(studentId, date, present, eventType);
         });
         
-        if(window.showToast) showToast('Frequência salva com sucesso!');
-        initDashboard(); // Update absent stats
+        const eventLabels = { discipulado: 'Discipulado', culto: 'Culto', ebd: 'EBD' };
+        if(window.showToast) showToast(`✅ Chamada de ${eventLabels[eventType] || eventType} salva com sucesso!`);
+        initDashboard();
+    }
+
+    // ─── CUIDADO DE VIDAS ─────────────────────────────────────
+    let currentCareFilter = 'todos';
+    let currentInteractionStudentId = null;
+
+    function initCareDashboard() {
+        renderCareDashboard();
+    }
+
+    function setCareFilter(filter, btn) {
+        currentCareFilter = filter;
+        document.querySelectorAll('[data-care-filter]').forEach(b => b.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+        renderCareDashboard();
+    }
+
+    function renderCareDashboard() {
+        if (typeof StudentManager === 'undefined' || typeof InteractionManager === 'undefined') return;
+        const grid = document.getElementById('care-students-grid');
+        if (!grid) return;
+
+        let students = StudentManager.getActive();
+
+        if (currentCareFilter !== 'todos') {
+            students = students.filter(s => InteractionManager.getContactStatus(s.id) === currentCareFilter);
+        }
+
+        // Sort: alerta first, then atencao, then ok
+        const order = { alerta: 0, atencao: 1, ok: 2 };
+        students.sort((a, b) => {
+            const sa = InteractionManager.getContactStatus(a.id);
+            const sb = InteractionManager.getContactStatus(b.id);
+            return (order[sa] ?? 3) - (order[sb] ?? 3);
+        });
+
+        if (students.length === 0) {
+            grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:48px; color:var(--text-light)">
+                <div style="font-size:3rem; margin-bottom:12px">🙌</div>
+                <p>Nenhum aluno nesta categoria. Continue cuidando das vidas!</p>
+            </div>`;
+            return;
+        }
+
+        grid.innerHTML = students.map(s => {
+            const status = InteractionManager.getContactStatus(s.id);
+            const lastList = InteractionManager.getByStudent(s.id);
+            const last = lastList[0];
+            const statusLabels = { ok: '🟢 Contato recente', atencao: '🟡 Requer atenção', alerta: '🔴 Sem contato recente' };
+            const initials = (s.name || '?').split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
+            const lastText = last
+                ? `${InteractionManager.getTypeLabel(last.type)} — ${new Date(last.createdAt).toLocaleDateString('pt-BR')}`
+                : 'Nenhum contato registrado';
+
+            return `<div class="care-card">
+                <div class="care-card-header">
+                    <div class="care-avatar ${status}">${initials}</div>
+                    <div>
+                        <p class="care-card-name">${s.name}</p>
+                        <p class="care-card-phone">${s.phone || 'Sem telefone'}</p>
+                    </div>
+                </div>
+                <div class="care-last-contact ${status}">${statusLabels[status]}</div>
+                <div style="font-size:0.8rem; color:var(--text-light); margin-bottom:4px">Último: ${lastText}</div>
+                <div class="care-card-actions">
+                    <button class="btn btn-outline" onclick="openInteractionModal('${s.id}', '${s.name.replace(/'/g, "&apos;")}')">📝 Registrar Contato</button>
+                    ${s.phone ? `<button class="btn btn-outline" style="background:rgba(37,211,102,0.1); border-color:#25D366; color:#25D366" onclick="window.open('https://wa.me/${s.phone.replace(/\D/g,'')}','_blank')">💬 WhatsApp</button>` : ''}
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    function openInteractionModal(studentId, studentName) {
+        currentInteractionStudentId = studentId;
+        document.getElementById('interaction-modal-title').textContent = `💬 Registrar Contato — ${studentName}`;
+        document.getElementById('interaction-type').value = 'ligacao';
+        document.getElementById('interaction-description').value = '';
+        renderInteractionHistory(studentId);
+        document.getElementById('interaction-modal-overlay').classList.add('open');
+    }
+
+    function closeInteractionModal() {
+        document.getElementById('interaction-modal-overlay').classList.remove('open');
+        currentInteractionStudentId = null;
+    }
+
+    function renderInteractionHistory(studentId) {
+        const container = document.getElementById('interaction-history-list');
+        const interactions = InteractionManager.getByStudent(studentId);
+
+        if (interactions.length === 0) {
+            container.innerHTML = `<p style="text-align:center; color:var(--text-light); font-size:0.85rem; margin-top:16px">Nenhum contato registrado ainda.</p>`;
+            return;
+        }
+
+        const html = `
+            <h4 style="font-size:0.85rem; color:var(--text-light); margin:16px 0 8px; text-transform:uppercase; letter-spacing:0.05em">Histórico de Contatos</h4>
+            ${interactions.map(i => `
+            <div class="interaction-item">
+                <div class="interaction-item-icon">${InteractionManager.getTypeLabel(i.type).split(' ')[0]}</div>
+                <div class="interaction-item-body">
+                    <p class="interaction-item-desc">${i.description || '(sem descrição)'}</p>
+                    <p class="interaction-item-meta">${InteractionManager.getTypeLabel(i.type)} · ${new Date(i.createdAt).toLocaleString('pt-BR')}</p>
+                </div>
+            </div>`).join('')}
+        `;
+        container.innerHTML = html;
+    }
+
+    function saveInteraction() {
+        if (!currentInteractionStudentId) return;
+        const type = document.getElementById('interaction-type').value;
+        const description = document.getElementById('interaction-description').value.trim();
+
+        if (!description) {
+            if (window.showToast) showToast('Por favor, descreva o contato realizado.', 'error');
+            return;
+        }
+
+        InteractionManager.add(currentInteractionStudentId, type, description, 'Admin');
+        if (window.showToast) showToast('✅ Contato registrado e sincronizado!');
+        renderInteractionHistory(currentInteractionStudentId);
+        document.getElementById('interaction-description').value = '';
+        // Refresh the care grid so the status dot updates
+        setTimeout(() => renderCareDashboard(), 300);
     }
     
     // --- MENSAGENS ---

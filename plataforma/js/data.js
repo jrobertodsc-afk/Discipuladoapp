@@ -16,6 +16,7 @@ const DB = {
     CALENDAR: 'disc_calendar',
     CONTENTS: 'disc_contents',
     GRADES: 'disc_grades',
+    INTERACTIONS: 'disc_interactions',
   },
 
   // Initialize default data
@@ -42,6 +43,9 @@ const DB = {
     }
     if (!localStorage.getItem(this.KEYS.ACTIVITIES)) {
       localStorage.setItem(this.KEYS.ACTIVITIES, JSON.stringify([]));
+    }
+    if (!localStorage.getItem(this.KEYS.INTERACTIONS)) {
+      localStorage.setItem(this.KEYS.INTERACTIONS, JSON.stringify([]));
     }
     if (!localStorage.getItem(this.KEYS.LESSONS_DATA)) {
       // Migrate hardcoded LESSONS if available, else empty arrays
@@ -1257,3 +1261,64 @@ const GradeManager = {
 
 window.ContentManager = ContentManager;
 window.GradeManager = GradeManager;
+
+// ============================================
+// Interaction Manager (Gestão e Cuidado de Vidas)
+// Registra o histórico pastoral de contatos com os alunos.
+// Tipos válidos: 'ligacao' | 'whatsapp' | 'visita' | 'oracao' | 'presencial'
+// ============================================
+const InteractionManager = {
+  add(studentId, type, description, authorName) {
+    const interaction = { studentId, type, description, authorName: authorName || 'Admin' };
+    return DB.add(DB.KEYS.INTERACTIONS, interaction);
+  },
+
+  getByStudent(studentId) {
+    return DB.getAll(DB.KEYS.INTERACTIONS)
+      .filter(i => i.studentId === studentId)
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  },
+
+  getAll() {
+    return DB.getAll(DB.KEYS.INTERACTIONS)
+      .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  },
+
+  // Retorna a interação mais recente de cada aluno (para o painel de cuidado)
+  getLastInteractionPerStudent() {
+    const all = this.getAll();
+    const map = {};
+    for (const i of all) {
+      if (!map[i.studentId]) map[i.studentId] = i;
+    }
+    return map; // { studentId: latestInteraction }
+  },
+
+  // Retorna status pastoral: 'ok' (<7 dias), 'atencao' (7-21 dias), 'alerta' (>21 dias ou nunca)
+  getContactStatus(studentId) {
+    const last = this.getByStudent(studentId)[0];
+    if (!last) return 'alerta';
+    const days = Math.floor((Date.now() - new Date(last.createdAt)) / 86400000);
+    if (days <= 7) return 'ok';
+    if (days <= 21) return 'atencao';
+    return 'alerta';
+  },
+
+  // Retorna label do tipo de interação
+  getTypeLabel(type) {
+    const labels = {
+      ligacao: '📞 Ligação',
+      whatsapp: '💬 WhatsApp',
+      visita: '🏠 Visita',
+      oracao: '🙏 Oração',
+      presencial: '🤝 Encontro Presencial',
+    };
+    return labels[type] || type;
+  },
+
+  remove(id) {
+    DB.remove(DB.KEYS.INTERACTIONS, id);
+  },
+};
+
+window.InteractionManager = InteractionManager;
