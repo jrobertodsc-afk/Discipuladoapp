@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -377,66 +377,66 @@
     <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <h2 class="sidebar-title">âœï¸ Painel Admin</h2>
+            <h2 class="sidebar-title">✝️ Painel Admin</h2>
             <div class="sidebar-subtitle">AD CML CAB</div>
         </div>
         
         <div class="nav-section">
             <div class="nav-section-title">Principal</div>
             <a class="nav-item active" data-target="dashboard">
-                <span class="nav-item-icon">ðŸ“Š</span> Dashboard
+                <span class="nav-item-icon">📊</span> Dashboard
             </a>
             <a class="nav-item" data-target="alunos">
-                <span class="nav-item-icon">ðŸ‘¥</span> Alunos
+                <span class="nav-item-icon">👥</span> Alunos
             </a>
             <a class="nav-item" data-target="professores">
-                <span class="nav-item-icon">ðŸ‘¨â€ðŸ«</span> Professores
+                <span class="nav-item-icon">👨‍🏫</span> Professores
             </a>
             <a class="nav-item" data-target="frequencia">
-                <span class="nav-item-icon">ðŸ“…</span> FrequÃªncia
+                <span class="nav-item-icon">📅</span> Frequência
             </a>
         </div>
         
         <div class="nav-section">
             <div class="nav-section-title">Ferramentas</div>
             <a class="nav-item" data-target="licoes">
-                <span class="nav-item-icon">ðŸ“–</span> Disciplinas/LiÃ§Ãµes
+                <span class="nav-item-icon">📖</span> Disciplinas/Lições
             </a>
             <a class="nav-item" data-target="calendario">
-                <span class="nav-item-icon">ðŸ“…</span> CalendÃ¡rio
+                <span class="nav-item-icon">📅</span> Calendário
             </a>
             <a class="nav-item" data-target="atividades">
-                <span class="nav-item-icon">ðŸŽ­</span> Atividades
+                <span class="nav-item-icon">🎭</span> Atividades
             </a>
             <a class="nav-item" data-target="mensagens">
-                <span class="nav-item-icon">ðŸ’¬</span> Mensagens
+                <span class="nav-item-icon">💬</span> Mensagens
             </a>
             <a class="nav-item" data-target="qrcodes">
-                <span class="nav-item-icon">ðŸ“±</span> QR Codes
+                <span class="nav-item-icon">📱</span> QR Codes
             </a>
             <a class="nav-item" data-target="certificados">
-                <span class="nav-item-icon">ðŸŽ“</span> Certificados
+                <span class="nav-item-icon">🎓</span> Certificados
             </a>
         </div>
         
         <div class="nav-section">
             <div class="nav-section-title">Dados</div>
             <a class="nav-item" data-target="exportar">
-                <span class="nav-item-icon">ðŸ“¤</span> Exportar Dados
+                <span class="nav-item-icon">📤</span> Exportar Dados
             </a>
             <a class="nav-item" data-target="backup">
-                <span class="nav-item-icon">ðŸ’¾</span> Backup
+                <span class="nav-item-icon">💾</span> Backup
             </a>
             <a class="nav-item" data-target="configuracoes">
-                <span class="nav-item-icon">âš™ï¸</span> ConfiguraÃ§Ãµes
+                <span class="nav-item-icon">⚙️</span> Configurações
             </a>
         </div>
     </aside>
 
     <!-- Main Content -->
     <main class="main-content">
-        <div class="topbar glass-panel" style="margin: 1rem; border-radius: 20px;">
-            <button class="mobile-toggle" id="mobileToggle">â˜°</button>
+        <div class="topbar">
+            <button class="mobile-toggle" id="mobileToggle">☰</button>
             <div id="topbar-title">
                 <h1 style="font-family: 'Outfit'; margin:0;">Dashboard</h1>
                 <p style="color: var(--text-light); margin:0;" id="current-date-display"></p>
@@ -449,45 +449,45 @@
         <!-- SECTION: DASHBOARD -->
         <section id="dashboard" class="section active">
             <div class="stat-grid">
-                <div class="stat-card glass-card">
+                <div class="stat-card">
                     <div class="stat-card-title">Total de Alunos</div>
                     <div class="stat-card-value" id="stat-total">0</div>
                 </div>
-                <div class="stat-card glass-card">
+                <div class="stat-card">
                     <div class="stat-card-title">Alunos Ativos</div>
                     <div class="stat-card-value" id="stat-active">0</div>
                 </div>
-                <div class="stat-card glass-card">
+                <div class="stat-card">
                     <div class="stat-card-title">Formados</div>
                     <div class="stat-card-value" id="stat-graduated">0</div>
                 </div>
-                <div class="stat-card glass-card">
-                    <div class="stat-card-title">Ausentes (Ãšlt. Encontro)</div>
+                <div class="stat-card">
+                    <div class="stat-card-title">Ausentes (Últ. Encontro)</div>
                     <div class="stat-card-value" id="stat-absent">0</div>
                 </div>
             </div>
 
             <div class="dashboard-grid">
-                <div class="card glass-card">
+                <div class="card">
                     <div class="card-header">
                         <h3>Crescimento de Alunos</h3>
                     </div>
                     <canvas id="growthChart" height="250"></canvas>
                 </div>
-                <div class="card glass-card">
+                <div class="card">
                     <div class="card-header">
-                        <h3>RetenÃ§Ã£o vs EvasÃ£o</h3>
+                        <h3>Retenção vs Evasão</h3>
                     </div>
                     <canvas id="retentionChart" height="250"></canvas>
                 </div>
-                <div class="card glass-card">
+                <div class="card">
                     <div class="card-header">
-                        <h3>MÃ©dia de FrequÃªncia</h3>
+                        <h3>Média de Frequência</h3>
                     </div>
                     <canvas id="attendanceChart" height="250"></canvas>
                 </div>
                 <div class="flex-column" style="display:flex; flex-direction:column; gap:24px;">
-                    <div class="card glass-card">
+                    <div class="card">
                         <div class="card-header">
                             <h3>Atividade Recente</h3>
                         </div>
@@ -495,9 +495,9 @@
                             <!-- Populated by JS -->
                         </div>
                     </div>
-                    <div class="card glass-card">
+                    <div class="card">
                         <div class="card-header">
-                            <h3>Aniversariantes do MÃªs</h3>
+                            <h3>Aniversariantes do Mês</h3>
                         </div>
                         <div id="birthdays-list">
                             <!-- Populated by JS -->
@@ -509,10 +509,10 @@
 
         <!-- SECTION: ALUNOS -->
         <section id="alunos" class="section">
-            <div class="card glass-card">
+            <div class="card">
                 <div class="card-header">
                     <h2>Gerenciamento de Alunos</h2>
-                    <button class="btn btn-primary" onclick="openModal('cadastro-modal')">âž• Cadastrar Novo</button>
+                    <button class="btn btn-primary" onclick="openModal('cadastro-modal')">➕ Cadastrar Novo</button>
                 </div>
                 
                 <div class="filter-bar">
@@ -531,8 +531,8 @@
                                 <th>Telefone</th>
                                 <th>Status</th>
                                 <th>Progresso</th>
-                                <th>FrequÃªncia</th>
-                                <th>AÃ§Ãµes</th>
+                                <th>Frequência</th>
+                                <th>Ações</th>
                             </tr>
                         </thead>
                         <tbody id="students-table-body">
@@ -545,7 +545,7 @@
 
         <!-- SECTION: PROFESSORES -->
         <section id="professores" class="section">
-            <div class="card glass-card">
+            <div class="card">
                 <div class="card-header">
                     <h2>Gerenciamento de Professores</h2>
                     <button class="btn btn-primary" onclick="openTeacherModal()">+ Cadastrar Novo</button>
@@ -558,8 +558,8 @@
                                 <th>Nome</th>
                                 <th>Telefone</th>
                                 <th>Disciplinas</th>
-                                <th>CÃ³digo de Acesso</th>
-                                <th>AÃ§Ãµes</th>
+                                <th>Código de Acesso</th>
+                                <th>Ações</th>
                             </tr>
                         </thead>
                         <tbody id="teachers-table-body">
@@ -570,11 +570,11 @@
             </div>
         </section>
 
-        <!-- SECTION: FREQUÃŠNCIA -->
+        <!-- SECTION: FREQUÊNCIA -->
         <section id="frequencia" class="section">
-            <div class="card glass-card">
+            <div class="card">
                 <div class="card-header">
-                    <h2>Registro de FrequÃªncia</h2>
+                    <h2>Registro de Frequência</h2>
                     <div style="display: flex; gap: 16px; align-items: center;">
                         <input type="date" id="attendance-date" class="form-control" style="width: auto;" onchange="renderAttendanceList()">
                     </div>
@@ -585,17 +585,17 @@
                 </div>
                 
                 <div style="margin-top: 24px; text-align: right;">
-                    <button class="btn btn-primary" onclick="saveAttendance()">Salvar FrequÃªncia</button>
+                    <button class="btn btn-primary" onclick="saveAttendance()">Salvar Frequência</button>
                 </div>
             </div>
         </section>
 
-        <!-- SECTION: DISCIPLINAS/LIÃ‡Ã•ES -->
+        <!-- SECTION: DISCIPLINAS/LIÇÕES -->
         <section id="licoes" class="section">
-            <div class="card glass-card">
+            <div class="card">
                 <div class="card-header">
-                    <h2>Disciplinas e LiÃ§Ãµes</h2>
-                    <button class="btn btn-primary" onclick="openModal('lesson-modal'); document.getElementById('lesson-form').reset(); currentLessonId=null;">âž• Nova LiÃ§Ã£o</button>
+                    <h2>Disciplinas e Lições</h2>
+                    <button class="btn btn-primary" onclick="openModal('lesson-modal'); document.getElementById('lesson-form').reset(); currentLessonId=null;">➕ Nova Lição</button>
                 </div>
                 
                 <div class="filter-bar" style="margin-top: 16px;">
@@ -609,8 +609,8 @@
                             <tr>
                                 <th>ID</th>
                                 <th>Tema</th>
-                                <th>TÃ­tulo</th>
-                                <th>AÃ§Ãµes</th>
+                                <th>Título</th>
+                                <th>Ações</th>
                             </tr>
                         </thead>
                         <tbody id="lessons-table-body">
@@ -621,15 +621,15 @@
             </div>
         </section>
 
-        <!-- SECTION: CALENDÃRIO -->
+        <!-- SECTION: CALENDÁRIO -->
         <section id="calendario" class="section">
-            <div class="card glass-card">
+            <div class="card">
                 <div class="card-header">
-                    <h2>CalendÃ¡rio Anual de Aulas</h2>
+                    <h2>Calendário Anual de Aulas</h2>
                     <div style="display:flex; gap:10px; align-items:center;">
-                        <label style="margin:0;">Data de InÃ­cio:</label>
+                        <label style="margin:0;">Data de Início:</label>
                         <input type="date" id="calendar-start-date" class="form-control" style="width: auto;">
-                        <button class="btn btn-primary" onclick="generateCalendar()">Gerar CalendÃ¡rio (1 Ano)</button>
+                        <button class="btn btn-primary" onclick="generateCalendar()">Gerar Calendário (1 Ano)</button>
                     </div>
                 </div>
                 <div style="overflow-x: auto;">
@@ -638,8 +638,8 @@
                             <tr>
                                 <th>Data (A cada 15 dias)</th>
                                 <th>Ciclo</th>
-                                <th>Disciplina / LiÃ§Ã£o</th>
-                                <th>Professor ResponsÃ¡vel</th>
+                                <th>Disciplina / Lição</th>
+                                <th>Professor Responsável</th>
                             </tr>
                         </thead>
                         <tbody id="calendar-table-body">
@@ -652,20 +652,20 @@
 
         <!-- SECTION: ATIVIDADES -->
         <section id="atividades" class="section">
-            <div class="card glass-card">
+            <div class="card">
                 <div class="card-header">
                     <h2>Eventos e Atividades</h2>
-                    <button class="btn btn-primary" onclick="openModal('activity-modal')">âž• Nova Atividade</button>
+                    <button class="btn btn-primary" onclick="openModal('activity-modal')">➕ Nova Atividade</button>
                 </div>
                 
                 <div style="overflow-x: auto;">
                     <table class="data-table">
                         <thead>
                             <tr>
-                                <th>TÃ­tulo</th>
+                                <th>Título</th>
                                 <th>Data</th>
-                                <th>DescriÃ§Ã£o</th>
-                                <th>AÃ§Ãµes</th>
+                                <th>Descrição</th>
+                                <th>Ações</th>
                             </tr>
                         </thead>
                         <tbody id="activities-table-body">
@@ -682,7 +682,7 @@
             <div class="template-grid">
                 
                 <div class="template-card">
-                    <h3>ðŸ‘‹ Boas-vindas</h3>
+                    <h3>👋 Boas-vindas</h3>
                     <p style="font-size:0.85rem; color:var(--text-light); margin-bottom:16px;">Envie uma mensagem para novos alunos.</p>
                     <div class="form-group">
                         <select id="msg-welcome-student" class="form-control">
@@ -693,10 +693,10 @@
                 </div>
 
                 <div class="template-card">
-                    <h3>ðŸ“… Lembrete de Encontro</h3>
-                    <p style="font-size:0.85rem; color:var(--text-light); margin-bottom:16px;">Avise sobre a prÃ³xima aula.</p>
+                    <h3>📅 Lembrete de Encontro</h3>
+                    <p style="font-size:0.85rem; color:var(--text-light); margin-bottom:16px;">Avise sobre a próxima aula.</p>
                     <div class="form-group">
-                        <input type="text" id="msg-reminder-topic" class="form-control" placeholder="TÃ³pico da Aula">
+                        <input type="text" id="msg-reminder-topic" class="form-control" placeholder="Tópico da Aula">
                     </div>
                     <div class="form-group">
                         <select id="msg-reminder-student" class="form-control">
@@ -707,7 +707,7 @@
                 </div>
 
                 <div class="template-card">
-                    <h3>âš ï¸ Aluno Ausente</h3>
+                    <h3>⚠️ Aluno Ausente</h3>
                     <p style="font-size:0.85rem; color:var(--text-light); margin-bottom:16px;">Mostre que sentimos a falta dele.</p>
                     <div class="form-group">
                         <select id="msg-absent-student" class="form-control">
@@ -723,32 +723,32 @@
         <!-- SECTION: QR CODES -->
         <section id="qrcodes" class="section">
             <div class="dashboard-grid">
-                <div class="card glass-card">
+                <div class="card">
                     <h2>Gerador de QR Code</h2>
-                    <p>Facilite o acesso dos alunos Ã s plataformas.</p>
+                    <p>Facilite o acesso dos alunos às plataformas.</p>
                     
                     <div class="form-group" style="margin-top: 24px;">
                         <label>Selecione o Link:</label>
                         <select id="qr-link-select" class="form-control" onchange="generateQRCode()">
-                            <option value="cadastro.html">PÃ¡gina de Cadastro de Novos Alunos</option>
+                            <option value="cadastro.html">Página de Cadastro de Novos Alunos</option>
                             <option value="portal.html">Portal do Aluno</option>
                         </select>
                     </div>
                     
                     <div style="display: flex; gap:16px; margin-top:24px;">
-                        <button class="btn btn-primary" onclick="printQRCode()">ðŸ–¨ï¸ Imprimir Card</button>
-                        <button class="btn btn-outline" onclick="downloadQRCode()">â¬‡ï¸ Baixar Imagem</button>
+                        <button class="btn btn-primary" onclick="printQRCode()">🖨️ Imprimir Card</button>
+                        <button class="btn btn-outline" onclick="downloadQRCode()">⬇️ Baixar Imagem</button>
                     </div>
                 </div>
                 
-                <div class="card glass-card" style="display:flex; align-items:center; justify-content:center; background:#f9f9f9;">
+                <div class="card" style="display:flex; align-items:center; justify-content:center; background:#f9f9f9;">
                     <div class="qr-card-preview" id="qr-print-area">
                         <h3 style="font-family:'Outfit'; color:var(--blue-dark); margin:0;">Discipulado</h3>
                         <p style="font-size:0.8rem; color:var(--gold); font-weight:bold; margin-bottom:16px;">AD CML CAB</p>
                         
                         <div id="qrcode-display" class="qr-container"></div>
                         
-                        <p style="font-size:0.85rem; color:var(--text-dark); margin-top:16px;">Aponte a cÃ¢mera para acessar.</p>
+                        <p style="font-size:0.85rem; color:var(--text-dark); margin-top:16px;">Aponte a câmera para acessar.</p>
                     </div>
                 </div>
             </div>
@@ -756,14 +756,14 @@
 
         <!-- SECTION: CERTIFICADOS -->
         <section id="certificados" class="section">
-            <div class="card glass-card">
-                <h2>EmissÃ£o de Certificados</h2>
-                <p style="color:var(--text-light); margin-bottom: 24px;">Alunos que concluÃ­ram todas as 13 liÃ§Ãµes do Ciclo 1 ou 2.</p>
+            <div class="card">
+                <h2>Emissão de Certificados</h2>
+                <p style="color:var(--text-light); margin-bottom: 24px;">Alunos que concluíram todas as 13 lições do Ciclo 1 ou 2.</p>
                 
                 <div class="form-group">
-                    <label>Selecione o Aluno ElegÃ­vel:</label>
+                    <label>Selecione o Aluno Elegível:</label>
                     <select id="cert-student-select" class="form-control">
-                        <option value="">Nenhum aluno elegÃ­vel no momento...</option>
+                        <option value="">Nenhum aluno elegível no momento...</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -780,44 +780,44 @@
 
         <!-- SECTION: EXPORTAR -->
         <section id="exportar" class="section">
-            <div class="card glass-card">
+            <div class="card">
                 <h2>Exportar Dados</h2>
                 <p style="color:var(--text-light); margin-bottom: 24px;">Baixe os dados do sistema em formato CSV (pode ser aberto no Excel ou Google Sheets).</p>
                 
                 <div style="display: flex; gap:16px;">
-                    <button class="btn btn-primary" onclick="exportStudentsCSV()">ðŸ“Š Exportar Alunos (CSV)</button>
-                    <button class="btn btn-outline" onclick="exportAttendanceCSV()">ðŸ“… Exportar FrequÃªncia (CSV)</button>
+                    <button class="btn btn-primary" onclick="exportStudentsCSV()">📊 Exportar Alunos (CSV)</button>
+                    <button class="btn btn-outline" onclick="exportAttendanceCSV()">📅 Exportar Frequência (CSV)</button>
                 </div>
             </div>
         </section>
 
         <!-- SECTION: BACKUP -->
         <section id="backup" class="section">
-            <div class="card glass-card">
+            <div class="card">
                 <h2>Backup do Sistema</h2>
-                <p style="color:var(--text-light); margin-bottom: 24px;">Como o sistema funciona no seu navegador, Ã© essencial fazer backups regulares dos dados.</p>
+                <p style="color:var(--text-light); margin-bottom: 24px;">Como o sistema funciona no seu navegador, é essencial fazer backups regulares dos dados.</p>
                 
                 <div style="margin-bottom: 32px;">
                     <h3>Fazer Backup</h3>
                     <p style="font-size:0.9rem;">Baixa um arquivo completo com todos os dados atuais.</p>
-                    <button class="btn btn-primary" style="margin-top: 8px;" onclick="downloadBackup()">ðŸ’¾ Baixar Arquivo de Backup</button>
+                    <button class="btn btn-primary" style="margin-top: 8px;" onclick="downloadBackup()">💾 Baixar Arquivo de Backup</button>
                 </div>
                 
                 <hr style="border:0; border-top:1px solid #eee; margin:24px 0;">
                 
                 <div>
                     <h3 style="color:var(--error, #d93025);">Restaurar Backup</h3>
-                    <p style="font-size:0.9rem; color:var(--error, #d93025);">âš ï¸ ATENÃ‡ÃƒO: Isso irÃ¡ sobrescrever todos os dados atuais!</p>
+                    <p style="font-size:0.9rem; color:var(--error, #d93025);">⚠️ ATENÇÃO: Isso irá sobrescrever todos os dados atuais!</p>
                     <input type="file" id="backup-file" accept=".json" class="form-control" style="margin: 16px 0;">
                     <button class="btn btn-outline" onclick="restoreBackup()">Restaurar Dados</button>
                 </div>
             </div>
         </section>
 
-        <!-- SECTION: CONFIGURAÃ‡Ã•ES -->
+        <!-- SECTION: CONFIGURAÇÕES -->
         <section id="configuracoes" class="section">
-            <div class="card glass-card" style="max-width: 600px;">
-                <h2>ConfiguraÃ§Ãµes da Igreja</h2>
+            <div class="card" style="max-width: 600px;">
+                <h2>Configurações da Igreja</h2>
                 
                 <div class="form-group" style="margin-top: 24px;">
                     <label>Nome da Igreja</label>
@@ -828,11 +828,11 @@
                     <input type="text" id="config-pastor-name" class="form-control">
                 </div>
                 <div class="form-group">
-                    <label>EndereÃ§o</label>
+                    <label>Endereço</label>
                     <input type="text" id="config-address" class="form-control">
                 </div>
                 
-                <button class="btn btn-primary" onclick="saveSettings()">Salvar ConfiguraÃ§Ãµes</button>
+                <button class="btn btn-primary" onclick="saveSettings()">Salvar Configurações</button>
             </div>
         </section>
 
@@ -843,10 +843,10 @@
 
 <!-- Student Modal -->
 <div class="modal" id="student-modal">
-    <div class="modal-content glass-panel">
+    <div class="modal-content">
         <div class="modal-header">
             <h2 id="modal-student-name">Nome do Aluno</h2>
-            <button class="close-modal" onclick="closeModal('student-modal')">Ã—</button>
+            <button class="close-modal" onclick="closeModal('student-modal')">×</button>
         </div>
         <div class="modal-body">
             <div id="student-view-mode">
@@ -855,7 +855,7 @@
                         <span id="modal-student-status" class="badge">Ativo</span>
                         <span style="color:var(--text-light); font-size:0.9rem;">Registrado em: <span id="modal-student-date"></span></span>
                     </div>
-                    <button class="btn btn-outline" onclick="toggleStudentEditMode(true)">âœï¸ Editar Dados</button>
+                    <button class="btn btn-outline" onclick="toggleStudentEditMode(true)">✏️ Editar Dados</button>
                 </div>
                 
                 <h3>Progresso</h3>
@@ -869,14 +869,14 @@
                     </div>
                 </div>
                 
-                <h3>AnotaÃ§Ãµes</h3>
+                <h3>Anotações</h3>
                 <div class="form-group">
                     <textarea id="modal-student-note" class="form-control" rows="3" placeholder="Adicione uma nota sobre o aluno..."></textarea>
                     <button class="btn btn-outline" style="margin-top:8px;" onclick="addStudentNote()">Adicionar Nota</button>
                 </div>
                 <div id="modal-notes-list" style="margin-bottom: 24px; font-size:0.9rem;"></div>
                 
-                <h3>AÃ§Ãµes</h3>
+                <h3>Ações</h3>
                 <div style="display:flex; gap:16px; flex-wrap:wrap; margin-top:16px;">
                     <button class="btn btn-outline" onclick="changeStudentStatus('active')">Marcar Ativo</button>
                     <button class="btn btn-outline" onclick="changeStudentStatus('graduated')">Marcar Formado</button>
@@ -899,22 +899,18 @@
                         <input type="date" id="edit-nascimento" class="form-control">
                     </div>
                     <div class="form-group">
-                        <label>EndereÃ§o</label>
+                        <label>Endereço</label>
                         <input type="text" id="edit-endereco" class="form-control">
                     </div>
                     <div class="form-group">
-                        <label>Professor (VÃ­nculo)</label>
+                        <label>Professor (Vínculo)</label>
                         <select id="edit-teacher" class="form-control">
                             <option value="">Nenhum (Sem Professor)</option>
                             <!-- Populated dynamically -->
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label>Padrinho / Discipulador</label>
-                        <input type="text" id="edit-mentor" class="form-control" placeholder="Nome do lder ou padrinho">
-                    </div>
                     <div style="display:flex; gap:16px; margin-top: 24px;">
-                        <button type="submit" class="btn btn-primary" style="flex:1;">Salvar AlteraÃ§Ãµes</button>
+                        <button type="submit" class="btn btn-primary" style="flex:1;">Salvar Alterações</button>
                         <button type="button" class="btn btn-outline" style="flex:1;" onclick="toggleStudentEditMode(false)">Cancelar</button>
                     </div>
                 </form>
@@ -925,10 +921,10 @@
 
 <!-- Teacher Modal -->
 <div class="modal" id="teacher-modal">
-    <div class="modal-content glass-panel">
+    <div class="modal-content">
         <div class="modal-header">
             <h2>Cadastrar Professor</h2>
-            <button class="close-modal" onclick="closeModal('teacher-modal')">Ã—</button>
+            <button class="close-modal" onclick="closeModal('teacher-modal')">×</button>
         </div>
         <div class="modal-body">
             <form id="teacher-form" onsubmit="handleTeacherSubmit(event)">
@@ -941,7 +937,7 @@
                     <input type="tel" id="teacher-phone" class="form-control" required>
                 </div>
                 <div class="form-group">
-                    <label>Disciplinas (Segure Ctrl para selecionar vÃ¡rias)</label>
+                    <label>Disciplinas (Segure Ctrl para selecionar várias)</label>
                     <select id="teacher-disciplines" class="form-control" multiple style="height: 120px;">
                         <!-- Injetado via JS -->
                     </select>
@@ -954,10 +950,10 @@
 
 <!-- Lesson Modal -->
 <div class="modal" id="lesson-modal">
-    <div class="modal-content glass-panel">
+    <div class="modal-content">
         <div class="modal-header">
-            <h2>Nova/Editar LiÃ§Ã£o</h2>
-            <button class="close-modal" onclick="closeModal('lesson-modal')">Ã—</button>
+            <h2>Nova/Editar Lição</h2>
+            <button class="close-modal" onclick="closeModal('lesson-modal')">×</button>
         </div>
         <div class="modal-body">
             <form id="lesson-form" onsubmit="handleLessonSubmit(event)">
@@ -969,7 +965,7 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>TÃ­tulo da LiÃ§Ã£o *</label>
+                    <label>Título da Lição *</label>
                     <input type="text" id="lesson-title" class="form-control" required>
                 </div>
                 <div class="form-group">
@@ -977,14 +973,14 @@
                     <input type="text" id="lesson-theme" class="form-control" required>
                 </div>
                 <div class="form-group">
-                    <label>VersÃ­culo(s)</label>
+                    <label>Versículo(s)</label>
                     <input type="text" id="lesson-verses" class="form-control">
                 </div>
                 <div class="form-group">
                     <label>Resumo</label>
                     <textarea id="lesson-summary" class="form-control" rows="3"></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary" style="width:100%;">Salvar LiÃ§Ã£o</button>
+                <button type="submit" class="btn btn-primary" style="width:100%;">Salvar Lição</button>
             </form>
         </div>
     </div>
@@ -992,15 +988,15 @@
 
 <!-- Activity Modal -->
 <div class="modal" id="activity-modal">
-    <div class="modal-content glass-panel">
+    <div class="modal-content">
         <div class="modal-header">
             <h2>Nova Atividade/Evento</h2>
-            <button class="close-modal" onclick="closeModal('activity-modal')">Ã—</button>
+            <button class="close-modal" onclick="closeModal('activity-modal')">×</button>
         </div>
         <div class="modal-body">
             <form id="activity-form" onsubmit="handleActivitySubmit(event)">
                 <div class="form-group">
-                    <label>TÃ­tulo *</label>
+                    <label>Título *</label>
                     <input type="text" id="activity-title" class="form-control" required>
                 </div>
                 <div class="form-group">
@@ -1008,7 +1004,7 @@
                     <input type="date" id="activity-date" class="form-control" required>
                 </div>
                 <div class="form-group">
-                    <label>DescriÃ§Ã£o</label>
+                    <label>Descrição</label>
                     <textarea id="activity-description" class="form-control" rows="3"></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary" style="width:100%;">Cadastrar Atividade</button>
@@ -1019,10 +1015,10 @@
 
 <!-- Cadastro Modal -->
 <div class="modal" id="cadastro-modal">
-    <div class="modal-content glass-panel">
+    <div class="modal-content">
         <div class="modal-header">
             <h2>Cadastrar Novo Aluno</h2>
-            <button class="close-modal" onclick="closeModal('cadastro-modal')">Ã—</button>
+            <button class="close-modal" onclick="closeModal('cadastro-modal')">×</button>
         </div>
         <div class="modal-body">
             <form id="admin-cadastro-form" onsubmit="handleAdminCadastro(event)">
@@ -1039,7 +1035,7 @@
                     <input type="date" id="cad-nascimento" class="form-control">
                 </div>
                 <div class="form-group">
-                    <label>EndereÃ§o</label>
+                    <label>Endereço</label>
                     <input type="text" id="cad-endereco" class="form-control">
                 </div>
                 <button type="submit" class="btn btn-primary" style="width:100%;">Cadastrar</button>
@@ -1078,7 +1074,7 @@
         const toast = document.createElement('div');
         toast.className = `toast toast-${type}`;
         toast.innerHTML = `<div style="display:flex; align-items:center; gap:10px;">
-                               <div>${type === 'success' ? 'âœ…' : (type === 'error' ? 'âŒ' : 'â„¹ï¸')}</div>
+                               <div>${type === 'success' ? '✅' : (type === 'error' ? '❌' : 'ℹ️')}</div>
                                <div>${message}</div>
                            </div>`;
         container.appendChild(toast);
@@ -1193,13 +1189,13 @@
         bdaysList.innerHTML = '';
         const bdays = StudentManager.getBirthdays ? StudentManager.getBirthdays(new Date().getMonth() + 1) : [];
         if(bdays.length === 0) {
-            bdaysList.innerHTML = '<p class="empty-state" style="padding:16px;">Nenhum aniversariante neste mÃªs.</p>';
+            bdaysList.innerHTML = '<p class="empty-state" style="padding:16px;">Nenhum aniversariante neste mês.</p>';
         } else {
             bdays.forEach(s => {
                 const d = new Date(s.birthDate + 'T12:00:00');
                 bdaysList.innerHTML += `
                     <div style="padding:12px 0; border-bottom:1px solid #eee; display:flex; justify-content:space-between;">
-                        <span>ðŸŽ‚ <strong>${s.name}</strong></span>
+                        <span>🎂 <strong>${s.name}</strong></span>
                         <span style="color:#888; font-size:0.85rem;">Dia ${d.getDate()}</span>
                     </div>
                 `;
@@ -1314,7 +1310,7 @@
             data: {
                 labels: labels.length ? labels : ['Sem dados'],
                 datasets: [{
-                    label: 'MÃ©dia (%)',
+                    label: 'Média (%)',
                     data: data.length ? data : [0],
                     backgroundColor: '#1a237e',
                     borderRadius: 4
@@ -1383,8 +1379,8 @@
                     </td>
                     <td>${attPct}% freq.</td>
                     <td>
-                        <button class="action-btn" title="Ver Detalhes" onclick="openStudentModal('${s.id}')">ðŸ‘ï¸</button>
-                        <button class="action-btn whatsapp" title="WhatsApp" onclick="window.open('https://wa.me/${s.phone.replace(/\D/g,'')}', '_blank')"><i class="bx bxl-whatsapp"></i>ðŸ’¬</button>
+                        <button class="action-btn" title="Ver Detalhes" onclick="openStudentModal('${s.id}')">👁️</button>
+                        <button class="action-btn whatsapp" title="WhatsApp" onclick="window.open('https://wa.me/${s.phone.replace(/\D/g,'')}', '_blank')"><i class="bx bxl-whatsapp"></i>💬</button>
                     </td>
                 </tr>
             `;
@@ -1423,11 +1419,11 @@
     
     function deleteStudent() {
         if(!currentStudentId) return;
-        if(confirm('Tem certeza que deseja excluir este aluno? Esta aÃ§Ã£o nÃ£o pode ser desfeita.')) {
+        if(confirm('Tem certeza que deseja excluir este aluno? Esta ação não pode ser desfeita.')) {
             StudentManager.deleteStudent(currentStudentId);
             closeModal('student-modal');
             renderStudentsTable();
-            if(window.showToast) showToast('Aluno excluÃ­do.');
+            if(window.showToast) showToast('Aluno excluído.');
         }
     }
     
@@ -1445,7 +1441,7 @@
                     <div style="background:#f9f9f9; padding:12px; border-radius:8px; margin-bottom:8px;">
                         <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
                             <small style="color:#888;">${new Date(n.date).toLocaleString('pt-BR')}</small>
-                            <button class="action-btn delete" style="padding:0; font-size:1rem;" onclick="deleteNote('${n.id}')">ðŸ—‘ï¸</button>
+                            <button class="action-btn delete" style="padding:0; font-size:1rem;" onclick="deleteNote('${n.id}')">🗑️</button>
                         </div>
                         <div>${n.text}</div>
                     </div>
@@ -1540,7 +1536,7 @@
             AttendanceManager.record(studentId, date, present);
         });
         
-        if(window.showToast) showToast('FrequÃªncia salva com sucesso!');
+        if(window.showToast) showToast('Frequência salva com sucesso!');
         initDashboard(); // Update absent stats
     }
     
@@ -1566,22 +1562,22 @@
         const id = document.getElementById('msg-welcome-student').value;
         if(!id) return alert('Selecione um aluno');
         const s = StudentManager.getById(id);
-        const text = window.WhatsAppTemplates ? WhatsAppTemplates.welcome(s.name) : `OlÃ¡ ${s.name}, bem-vindo(a)!`;
+        const text = window.WhatsAppTemplates ? WhatsAppTemplates.welcome(s.name) : `Olá ${s.name}, bem-vindo(a)!`;
         window.open(`https://wa.me/${s.phone.replace(/\D/g,'')}?text=${encodeURIComponent(text)}`, '_blank');
     }
     function sendMsgReminder() {
         const id = document.getElementById('msg-reminder-student').value;
-        const topic = document.getElementById('msg-reminder-topic').value || 'nossa prÃ³xima aula';
+        const topic = document.getElementById('msg-reminder-topic').value || 'nossa próxima aula';
         if(!id) return alert('Selecione um aluno');
         const s = StudentManager.getById(id);
-        const text = window.WhatsAppTemplates ? WhatsAppTemplates.reminder(s.name, topic, '', '') : `OlÃ¡ ${s.name}, lembrete do encontro sobre ${topic}.`;
+        const text = window.WhatsAppTemplates ? WhatsAppTemplates.reminder(s.name, topic, '', '') : `Olá ${s.name}, lembrete do encontro sobre ${topic}.`;
         window.open(`https://wa.me/${s.phone.replace(/\D/g,'')}?text=${encodeURIComponent(text)}`, '_blank');
     }
     function sendMsgAbsent() {
         const id = document.getElementById('msg-absent-student').value;
         if(!id) return alert('Selecione um aluno');
         const s = StudentManager.getById(id);
-        const text = window.WhatsAppTemplates ? WhatsAppTemplates.absent(s.name) : `OlÃ¡ ${s.name}, sentimos sua falta!`;
+        const text = window.WhatsAppTemplates ? WhatsAppTemplates.absent(s.name) : `Olá ${s.name}, sentimos sua falta!`;
         window.open(`https://wa.me/${s.phone.replace(/\D/g,'')}?text=${encodeURIComponent(text)}`, '_blank');
     }
     
@@ -1612,7 +1608,7 @@
                 body { font-family: sans-serif; text-align: center; padding: 40px; }
                 .card { border: 2px solid #D4A843; padding: 32px; border-radius: 16px; display: inline-block; }
             </style>
-            </head><body><div class="card glass-card">${printContent}</div>
+            </head><body><div class="card">${printContent}</div>
             <script>window.onload=()=>{window.print();window.close();}<\/script></body></html>
         `);
         w.document.close();
@@ -1677,7 +1673,7 @@
         
         doc.setFontSize(20);
         doc.setFont('helvetica', 'normal');
-        doc.text("DE CONCLUSÃƒO", 148, 65, { align: 'center' });
+        doc.text("DE CONCLUSÃO", 148, 65, { align: 'center' });
         
         doc.setTextColor(50, 50, 50);
         doc.setFontSize(16);
@@ -1691,7 +1687,7 @@
         doc.setTextColor(50, 50, 50);
         doc.setFontSize(14);
         doc.setFont('helvetica', 'normal');
-        const text = `concluiu com Ãªxito o Ciclo ${cycle} do programa de Discipulado da ${churchName}.`;
+        const text = `concluiu com êxito o Ciclo ${cycle} do programa de Discipulado da ${churchName}.`;
         doc.text(text, 148, 130, { align: 'center' });
         
         doc.text(`Data: ${new Date().toLocaleDateString('pt-BR')}`, 148, 150, { align: 'center' });
@@ -1700,7 +1696,7 @@
         doc.setLineWidth(0.5);
         doc.line(100, 180, 197, 180);
         doc.setFontSize(12);
-        doc.text("Assinatura do Pastor/LÃ­der", 148, 186, { align: 'center' });
+        doc.text("Assinatura do Pastor/Líder", 148, 186, { align: 'center' });
         
         doc.save(`Certificado_${s.name.replace(/\s+/g,'_')}.pdf`);
     }
@@ -1723,7 +1719,7 @@
         if(window.ExportManager) {
             ExportManager.restoreBackup(file).then(success => {
                 if(success) {
-                    alert('Backup restaurado com sucesso! A pÃ¡gina serÃ¡ recarregada.');
+                    alert('Backup restaurado com sucesso! A página será recarregada.');
                     location.reload();
                 }
             });
@@ -1746,7 +1742,7 @@
                 pastorName: document.getElementById('config-pastor-name').value,
                 address: document.getElementById('config-address').value
             });
-            if(window.showToast) showToast('ConfiguraÃ§Ãµes salvas!');
+            if(window.showToast) showToast('Configurações salvas!');
         }
     }
     
@@ -1791,7 +1787,7 @@
                     <td><small>${discNames}</small></td>
                     <td><code>${t.accessCode}</code></td>
                     <td>
-                        <button class="action-btn delete" onclick="deleteTeacher('${t.id}')">ðŸ—‘ï¸</button>
+                        <button class="action-btn delete" onclick="deleteTeacher('${t.id}')">🗑️</button>
                     </td>
                 </tr>
             `;
@@ -1836,7 +1832,7 @@
         }
     }
 
-    // --- PHASE 3: DISCIPLINAS/LIÃ‡Ã•ES ---
+    // --- PHASE 3: DISCIPLINAS/LIÇÕES ---
     let currentCycleView = 'cycle1';
     let currentLessonId = null;
 
@@ -1851,7 +1847,7 @@
         const lessons = LessonManager.getCycle(cycle);
         tbody.innerHTML = '';
         if (lessons.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="5" class="empty-state">Nenhuma liÃ§Ã£o encontrada neste ciclo.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="5" class="empty-state">Nenhuma lição encontrada neste ciclo.</td></tr>`;
             return;
         }
         lessons.forEach(l => {
@@ -1861,7 +1857,7 @@
                     <td><span class="badge active">${l.theme}</span></td>
                     <td>${l.title}</td>
                     <td>
-                        <button class="action-btn" onclick="editLesson('${cycle}', '${l.id}')">âœï¸</button>
+                        <button class="action-btn" onclick="editLesson('${cycle}', '${l.id}')">✏️</button>
                     </td>
                 </tr>
             `;
@@ -1893,11 +1889,11 @@
         if (currentLessonId) {
             data.id = currentLessonId;
             LessonManager.updateLesson(cycle, currentLessonId, data);
-            if(window.showToast) showToast('LiÃ§Ã£o atualizada!');
+            if(window.showToast) showToast('Lição atualizada!');
         } else {
             data.id = 'L' + (LessonManager.getCycle(cycle).length + 1);
             LessonManager.addLesson(cycle, data);
-            if(window.showToast) showToast('LiÃ§Ã£o criada!');
+            if(window.showToast) showToast('Lição criada!');
         }
         
         closeModal('lesson-modal');
@@ -1905,12 +1901,12 @@
     }
 
     // --- PHASE 3: ATIVIDADES ---
-    // --- PHASE 4: CALENDÃRIO ---
+    // --- PHASE 4: CALENDÁRIO ---
     function generateCalendar() {
         const startDateInput = document.getElementById('calendar-start-date').value;
         if (!startDateInput) {
-            if(window.showToast) showToast('Selecione uma data de inÃ­cio!', 'error');
-            else alert('Selecione uma data de inÃ­cio!');
+            if(window.showToast) showToast('Selecione uma data de início!', 'error');
+            else alert('Selecione uma data de início!');
             return;
         }
 
@@ -1938,7 +1934,7 @@
         });
 
         CalendarManager.saveCalendar(schedule);
-        if(window.showToast) showToast('CalendÃ¡rio de 1 ano gerado com sucesso!');
+        if(window.showToast) showToast('Calendário de 1 ano gerado com sucesso!');
         renderCalendar();
     }
 
@@ -1949,7 +1945,7 @@
         tbody.innerHTML = '';
 
         if (schedule.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="4" class="empty-state">Nenhum calendÃ¡rio gerado. Selecione uma data e clique em Gerar.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="4" class="empty-state">Nenhum calendário gerado. Selecione uma data e clique em Gerar.</td></tr>`;
             return;
         }
 
@@ -1966,7 +1962,7 @@
                 <tr>
                     <td><strong>${dateStr}</strong></td>
                     <td><span class="badge ${item.cycle === 'Ciclo 1' ? 'badge-primary' : 'badge-gold'}">${item.cycle}</span></td>
-                    <td>${lesson ? lesson.title : 'LiÃ§Ã£o nÃ£o encontrada'}</td>
+                    <td>${lesson ? lesson.title : 'Lição não encontrada'}</td>
                     <td>${teacher ? teacher.name : '<span style="color:var(--danger)">A Definir</span>'}</td>
                 </tr>
             `;
@@ -1991,7 +1987,7 @@
                     <td>${d.toLocaleDateString('pt-BR')}</td>
                     <td>${a.description || '-'}</td>
                     <td>
-                        <button class="action-btn delete" onclick="deleteActivity('${a.id}')">ðŸ—‘ï¸</button>
+                        <button class="action-btn delete" onclick="deleteActivity('${a.id}')">🗑️</button>
                     </td>
                 </tr>
             `;
@@ -2030,7 +2026,6 @@
             document.getElementById('edit-telefone').value = s.phone;
             document.getElementById('edit-nascimento').value = s.birthDate || '';
             document.getElementById('edit-endereco').value = s.address || '';
-            document.getElementById('edit-mentor').value = s.mentor || '';
             
             // Populate teachers dropdown
             const sel = document.getElementById('edit-teacher');
@@ -2051,7 +2046,6 @@
             phone: document.getElementById('edit-telefone').value,
             birthDate: document.getElementById('edit-nascimento').value,
             address: document.getElementById('edit-endereco').value,
-            mentor: document.getElementById('edit-mentor').value,
             teacherId: document.getElementById('edit-teacher').value || null
         };
         StudentManager.update(currentStudentId, data);
@@ -2064,5 +2058,3 @@
 
 </body>
 </html>
-
-
