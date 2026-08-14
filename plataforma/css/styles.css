@@ -1,4 +1,4 @@
-/* ============================================
+﻿/* ============================================
    DISCIPULADO AD CML CAB - Design System
    ============================================ */
 
@@ -116,11 +116,39 @@ html {
 body {
   font-family: var(--font-body);
   color: var(--gray-800);
-  background: var(--gray-50);
+  background: #f4f7f6;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(212, 168, 67, 0.1) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(26, 35, 126, 0.08) 0px, transparent 50%),
+    radial-gradient(at 50% 100%, rgba(212, 168, 67, 0.05) 0px, transparent 50%);
+  background-attachment: fixed;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+}
+
+/* Glassmorphism Utilities */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.7) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05) !important;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.6) !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.5) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03) !important;
+  transition: all 0.3s ease !important;
+}
+.glass-card:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06) !important;
+  background: rgba(255, 255, 255, 0.8) !important;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -194,7 +222,8 @@ input:focus, select:focus, textarea:focus {
 .text-gold { color: var(--gold-500); }
 .text-blue { color: var(--blue-700); }
 .text-muted { color: var(--gray-500); }
-.text-white { color: white; }
+.text-white { color: var(--blue-900);
+}
 .text-sm { font-size: 0.875rem; }
 .text-xs { font-size: 0.75rem; }
 .text-lg { font-size: 1.125rem; }
@@ -318,7 +347,7 @@ input:focus, select:focus, textarea:focus {
 
 .btn-danger {
   background: var(--danger);
-  color: white;
+  color: var(--blue-900);
 }
 
 .btn-danger:hover {
@@ -637,7 +666,7 @@ input:focus, select:focus, textarea:focus {
 
 .section-dark {
   background: var(--gradient-dark);
-  color: white;
+  color: var(--blue-900);
 }
 
 .section-dark h2, .section-dark h3 {
@@ -773,7 +802,7 @@ table {
 
 table thead {
   background: var(--blue-900);
-  color: white;
+  color: var(--blue-900);
 }
 
 table th {
@@ -985,7 +1014,7 @@ table tbody tr:last-child td {
 }
 
 .lesson-card.completed::after {
-  content: '✓';
+  content: 'âœ“';
   position: absolute;
   top: 12px;
   right: 12px;
@@ -1303,8 +1332,8 @@ body.has-navbar {
 
 .sidebar {
   width: 260px;
-  background: var(--blue-950);
-  color: white;
+  background: transparent;
+  color: var(--blue-900);
   padding: var(--space-lg) 0;
   position: fixed;
   top: 0;
@@ -1317,7 +1346,7 @@ body.has-navbar {
 
 .sidebar-header {
   padding: 0 var(--space-lg) var(--space-lg);
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+  border-bottom: 1px solid rgba(0,0,0,0.05);
   margin-bottom: var(--space-md);
 }
 
@@ -1326,15 +1355,15 @@ body.has-navbar {
   align-items: center;
   gap: 0.75rem;
   padding: 0.75rem var(--space-lg);
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--gray-600);
   font-size: 0.9rem;
   font-weight: 500;
   transition: all var(--transition-fast);
 }
 
 .sidebar-nav a:hover {
-  background: rgba(255, 255, 255, 0.05);
-  color: white;
+  background: rgba(26, 35, 126, 0.05);
+  color: var(--blue-900);
 }
 
 .sidebar-nav a.active {
@@ -1348,7 +1377,7 @@ body.has-navbar {
   font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: rgba(255,255,255,0.3);
+  color: var(--gray-400);
   font-weight: 600;
 }
 
@@ -1421,3 +1450,9 @@ body.has-navbar {
   bottom: -30px;
   right: -30px;
 }
+
+
+
+
+
+
