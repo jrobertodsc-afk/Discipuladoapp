@@ -443,18 +443,18 @@
         }
         .interaction-modal-overlay.open { display: flex; }
         .interaction-modal {
-            background: var(--blue-950, #0f172a);
-            border: 1px solid rgba(255,255,255,0.15);
+            background: var(--white);
+            border: 1px solid var(--gray-200);
             border-radius: 20px; padding: 32px;
-            width: 100%; max-width: 500px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            width: 100%; max-width: 520px;
+            box-shadow: var(--shadow-xl);
             animation: fadeIn 0.25s ease;
         }
-        .interaction-modal h3 { margin: 0 0 24px; font-family: 'Outfit'; font-size: 1.3rem; }
+        .interaction-modal h3 { margin: 0 0 24px; font-family: 'Outfit'; font-size: 1.3rem; color: var(--navy); }
         .interaction-history { margin-top: 20px; max-height: 220px; overflow-y: auto; }
         .interaction-item {
             display: flex; gap: 10px; padding: 10px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
+            border-bottom: 1px solid var(--gray-100);
             font-size: 0.85rem;
         }
         .interaction-item:last-child { border-bottom: none; }
@@ -535,15 +535,15 @@
 
     <!-- Main Content -->
     <main class="main-content">
-        <div class="topbar glass-panel" style="margin: 1rem; border-radius: 20px;">
+        <div class="topbar" id="topbar">
             <button class="mobile-toggle" id="mobileToggle">☰</button>
             <div id="topbar-title">
                 <h1 style="font-family: 'Outfit'; margin:0;">Dashboard</h1>
-                <p style="color: var(--text-light); margin:0;" id="current-date-display"></p>
+                <p style="color: var(--gray-400); margin:0; font-size:0.85rem;" id="current-date-display"></p>
             </div>
             <div class="user-profile" style="display:flex; align-items:center; gap:12px;">
                 <span id="firebase-sync-icon" class="sync-icon" title="Status Firebase">☁️</span>
-                <span class="badge active">Admin</span>
+                <span class="badge badge-navy">Admin</span>
             </div>
         </div>
 
